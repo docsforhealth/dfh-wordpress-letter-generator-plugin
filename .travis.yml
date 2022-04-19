@@ -1,0 +1,39 @@
+language: node_js
+node_js:
+  - 14
+os: linux
+dist: xenial
+# Only build for tags, not for untagged commits
+# see https://github.com/travis-ci/travis-ci/issues/6893#issuecomment-354967391
+if: tag IS present
+cache: yarn
+# Handle git submodules yourself
+# see https://stackoverflow.com/a/24600210
+git:
+  submodules: false
+# Use sed to replace the SSH URL with the public URL, then initialize submodules
+# see https://stackoverflow.com/a/24600210
+before_install:
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+  - git submodule update --init --recursive
+  - npm config set spin false
+  - npm install --global yarn
+install:
+  - yarn install
+script:
+  - yarn test
+  - yarn build
+before_deploy:
+  # see https://superuser.com/a/496903
+  # we include the `src` folder to keep needed PHP and base assets
+  - zip -r /tmp/dfh-wordpress-letter-generator-plugin-${TRAVIS_TAG}.zip . -x 'node_modules/*' 'tests/*' '.git*'
+deploy:
+  # using dpl v1 instead of v2 right now
+  - provider: releases
+    token: ${GITHUB_TOKEN}
+    file: /tmp/dfh-wordpress-letter-generator-plugin-${TRAVIS_TAG}.zip
+    skip_cleanup: true # v2: renamed to `cleanup`
+    overwrite: true
+    edge: false # use dpl v1 not v2
+    on:
+      tags: true

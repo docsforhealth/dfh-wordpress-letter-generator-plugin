@@ -1,0 +1,35 @@
+// *******************************************************
+// * EDIT BASE STYLES IN THEME INSTEAD OF HERE IN PLUGIN *
+// *******************************************************
+
+/**
+ * NOTE base styles below are included for easy extending in plugin-specific CSS
+ * These styles are reapplied by the theme via a shared Github repository. The theme's
+ * styles have a higher priority than the default Wordpress styles so the theme's styles
+ * will override the defaults. The stylesheets included by the plugin in this file have a
+ * lower priority than the default Wordpress styles so these alone will not sufficiently
+ * override the Wordpress defaults.
+ */
+
+// Base styles
+// -----------
+
+// path to base styles should be from BUILT LOCATION
+$path-base-styles: '../src/scss/base';
+
+// NOT ACTUALLY USED FOR STYLING, styles in corresponding theme are used instead as these have the
+// proper priority to override the WP defaults. Instead these files are imported here to allow
+// the frontend to be able to extend or include the necessary SCSS
+@import 'base/vars';
+@import 'base/animations';
+@import 'base/mixins';
+@import 'base/elements';
+@import 'base/controls';
+@import 'base/structure';
+@import 'base/typography';
+
+// Formats
+// -------
+
+// Blocks
+// ------
