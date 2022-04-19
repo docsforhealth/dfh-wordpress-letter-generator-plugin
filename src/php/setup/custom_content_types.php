@@ -10,6 +10,7 @@ function dlg_activation_rewrite_flush() {
     // They are only referenced in the post_type column with a post entry,
     // when you add a post of this CPT.
     dlg_register_content_type_letter_template();
+    dlg_register_content_type_global_data_element();
     // ATTENTION: This is *only* done during plugin activation hook
     // You should *NEVER EVER* do this on every page load!
     flush_rewrite_rules();
@@ -31,7 +32,7 @@ function dlg_register_content_type_letter_template() {
         'query_var'           => true,
         'can_export'          => true,
         'rewrite'             => array('slug' => 'dlg-letter-template', 'with_front' => false),
-        'menu_icon'           => 'dashicons-text-page',
+        'menu_icon'           => 'dashicons-welcome-write-blog',
         // 'template'            => array(array('')), // TODO
         // 'template_lock'       => 'insert', // TODO
         'labels'              => array(
@@ -69,6 +70,68 @@ function dlg_register_content_type_letter_template() {
             'use_featured_image'       => __('Use as featured image', DLG_TEXT_DOMAIN),
             'view_item'                => __('View Letter Template', DLG_TEXT_DOMAIN),
             'view_items'               => __('View Letter Templates', DLG_TEXT_DOMAIN),
+        ),
+    ));
+}
+
+add_action('init', 'dlg_register_content_type_global_data_element');
+function dlg_register_content_type_global_data_element() {
+  // see https://developer.wordpress.org/plugins/post-types/registering-custom-post-types/
+    register_post_type('dlg_data_element', array(
+        'description'         => 'Data Element',
+        'hierarchical'        => false,
+        'supports'            => array('title', 'editor'),
+        'public'              => true,
+        // One-liner to nest data elements within letter template menu instead of `add_submenu_page`
+        // see https://wordpress.stackexchange.com/a/110565
+        // see https://developer.wordpress.org/reference/functions/register_post_type/#show_in_menu
+        'show_in_menu'        => 'edit.php?post_type=dlg_letter_template',
+        'show_ui'             => true,
+        'show_in_rest'        => true,
+        'publicly_queryable'  => true,
+        'exclude_from_search' => true,
+        'has_archive'         => false,
+        'query_var'           => true,
+        'can_export'          => true,
+        'rewrite'             => array('slug' => 'dlg-data-element', 'with_front' => false),
+        'menu_icon'           => 'dashicons-database',
+        // 'template'            => array(array('')), // TODO
+        // 'template_lock'       => 'insert', // TODO
+        'labels'              => array(
+            'add_new'                  => __('Add New', DLG_TEXT_DOMAIN),
+            'add_new_item'             => __('Add New Data Element', DLG_TEXT_DOMAIN),
+            'all_items'                => __('Data Elements', DLG_TEXT_DOMAIN),
+            'archives'                 => __('Data Elements', DLG_TEXT_DOMAIN),
+            'attributes'               => __('Data Element Attributes', DLG_TEXT_DOMAIN),
+            'edit_item'                => __('Edit Data Element', DLG_TEXT_DOMAIN),
+            'featured_image'           => __('Featured image', DLG_TEXT_DOMAIN),
+            'filter_by_date'           => __('Filter by date', DLG_TEXT_DOMAIN),
+            'filter_items_list'        => __('Filter data elements list', DLG_TEXT_DOMAIN),
+            'insert_into_item'         => __('Insert into data element', DLG_TEXT_DOMAIN),
+            'item_link'                => __('Data Element Link', DLG_TEXT_DOMAIN),
+            'item_link_description'    => __('A link to a data element.', DLG_TEXT_DOMAIN),
+            'item_published'           => __('Data Element published.', DLG_TEXT_DOMAIN),
+            'item_published_privately' => __('Data Element published privately.', DLG_TEXT_DOMAIN),
+            'item_reverted_to_draft'   => __('Data Element reverted to draft.', DLG_TEXT_DOMAIN),
+            'item_scheduled'           => __('Data Element scheduled.', DLG_TEXT_DOMAIN),
+            'item_updated'             => __('Data Element updated.', DLG_TEXT_DOMAIN),
+            'items_list'               => __('Data Elements list', DLG_TEXT_DOMAIN),
+            'items_list_navigation'    => __('Data Elements list navigation', DLG_TEXT_DOMAIN),
+            'menu_name'                => __('Data Elements', DLG_TEXT_DOMAIN),
+            'name'                     => __('Data Elements', DLG_TEXT_DOMAIN),
+            'name_admin_bar'           => __('Data Element', DLG_TEXT_DOMAIN),
+            'new_item'                 => __('New Data Element', DLG_TEXT_DOMAIN),
+            'not_found'                => __('No Data Elements found', DLG_TEXT_DOMAIN),
+            'not_found_in_trash'       => __('No Data Elements found in Trash', DLG_TEXT_DOMAIN),
+            'parent_item_colon'        => __('Parent Data Element:', DLG_TEXT_DOMAIN),
+            'remove_featured_image'    => __('Remove featured image', DLG_TEXT_DOMAIN),
+            'search_items'             => __('Search for a data element...', DLG_TEXT_DOMAIN),
+            'set_featured_image'       => __('Set featured image', DLG_TEXT_DOMAIN),
+            'singular_name'            => __('Data Element', DLG_TEXT_DOMAIN),
+            'uploaded_to_this_item'    => __('Uploaded to this data element', DLG_TEXT_DOMAIN),
+            'use_featured_image'       => __('Use as featured image', DLG_TEXT_DOMAIN),
+            'view_item'                => __('View Data Element', DLG_TEXT_DOMAIN),
+            'view_items'               => __('View Data Elements', DLG_TEXT_DOMAIN),
         ),
     ));
 }
