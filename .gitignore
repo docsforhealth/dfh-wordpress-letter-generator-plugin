@@ -1,5 +1,6 @@
 *.log
-*.sublime*
+*.temp
+*.sublime-workspace
 .DS_Store
 build
 node_modules

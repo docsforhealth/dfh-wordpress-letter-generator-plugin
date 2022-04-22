@@ -1,0 +1,36 @@
+// Custom styling for the custom appender used in the InnerBlockWrapper block
+
+// TODO why not just use dfh auto label appender styles??
+
+// Restrict custom appender to DFH custom blocks
+// attribute selector: https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors
+[data-type^='dlg/'] {
+    // container element for appender, last child in `.block-editor-block-list__layout`
+    .block-list-appender {
+        position: relative;
+        display: flex;
+        justify-content: right;
+    }
+
+    .dlg-auto-label-appender {
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: $baseunit;
+        max-width: 75%;
+        padding: ($baseunit * 0.5);
+        padding-left: $baseunit;
+        background-color: $color-seafoam;
+        border: 1px solid $color-seafoam-dark-1;
+        border-radius: $border-radius;
+
+        &--deemphasized {
+            background-color: transparent;
+        }
+
+        &__label {
+            @extend %default-text;
+            @include scut-truncate;
+        }
+    }
+}

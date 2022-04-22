@@ -13,6 +13,9 @@
  * Text Domain: dlg
  */
 
+// TODO repackage this plugin as an add-on for the main DFH plugin
+// TODO at a minimum, make sure that this plugin executes AFTER the main DFH plugin
+
 defined('ABSPATH') || exit;
 
 if (!defined('DLG_PLUGIN_ROOT')) {
@@ -36,5 +39,6 @@ if (!defined('DLG_REQUIRED_PLUGINS')) {
 require_once DLG_PLUGIN_DIR . '/src/php/check-required-dependencies.php';
 
 // Plugin setup files
-require_once DLG_PLUGIN_DIR . '/src/php/setup/plugin.php';
+require_once DLG_PLUGIN_DIR . '/src/php/setup/blocks.php';
+require_once DLG_PLUGIN_DIR . '/src/php/setup/block_categories.php';
 require_once DLG_PLUGIN_DIR . '/src/php/setup/custom_content_types.php';
