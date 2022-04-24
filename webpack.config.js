@@ -2,7 +2,7 @@ const defaultConfig = require('./node_modules/@wordpress/scripts/config/webpack.
 const path = require('path');
 const { merge } = require('webpack-merge');
 
-module.exports = merge(defaultConfig, {
+module.exports = merge({}, defaultConfig, {
   // enables absolute urls, see https://stackoverflow.com/a/41684002
   // ONLY IN JS FILES, just directly use alias object key to start import
   resolve: {

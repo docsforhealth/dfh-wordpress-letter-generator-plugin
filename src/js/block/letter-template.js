@@ -14,7 +14,6 @@ registerBlockType(`${Constants.NAMESPACE}/letter-template`, {
     'Specify data elements and letter content for a letter template',
     Constants.TEXT_DOMAIN,
   ),
-  // supports: { inserter: false }, // TODO
   edit({ attributes, setAttributes }) {
     return <div {...useBlockProps()}></div>;
   },

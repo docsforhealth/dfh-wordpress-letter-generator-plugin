@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name: Docs for Health Letter Generator
+ * Plugin Name: Docs for Health Letter Generator (Preview)
  * Author: Eric Bai
  * Author URI: https://github.com/ericbai
  * Plugin URI: https://github.com/docsforhealth/dfh-wordpress-letter-generator-plugin
  * GitHub Plugin URI: https://github.com/docsforhealth/dfh-wordpress-letter-generator-plugin
  * Release Asset: true
- * Description: Letter generator for the Docs for Health website
+ * Description: Preview of the upcoming letter generator for the Docs for Health website
  * Version: 0.0.1
  * License: Apache-2.0
  * License URI: https://www.apache.org/licenses/LICENSE-2.0.txt
@@ -15,6 +15,8 @@
 
 // TODO repackage this plugin as an add-on for the main DFH plugin
 // TODO at a minimum, make sure that this plugin executes AFTER the main DFH plugin
+
+// TODO figure out how to integrate the Ember.js letter generator app into the "Preview" functionality
 
 defined('ABSPATH') || exit;
 

@@ -6,30 +6,37 @@ import {
   ToggleControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import _ from 'lodash';
+import { keys } from 'lodash';
 import merge from 'lodash.merge';
-import { config, Edit } from 'src/js/block/shared/data-element';
+import * as DataElement from 'src/js/block/shared/data-element';
 import AutoLabelAppender from 'src/js/component/auto-label-appender';
+import EditorLabelWrapper from 'src/js/component/editor-label-wrapper';
 import * as Constants from 'src/js/constants';
+import { markAttrHiddenInApi } from 'src/js/utils';
 
-// TODO
-// TODO React component to label InnerBlocks (and later on, RichText)
+export const TEXT_TYPE_SHORT = 'text-short';
+export const TEXT_TYPE_LONG = 'text-long';
+export const TEXT_TYPE_DATE = 'text-date';
+export const TEXT_TYPE_PHONE_NUMBER = 'text-phone-number';
 
-const ATTR_TYPE_SHORT = 'text-short';
-const ATTR_TYPE_LONG = 'text-long';
-const ATTR_TYPE_DATE = 'text-date';
-const ATTR_TYPE_PHONE_NUM = 'text-phone-number';
 const TYPE_TO_LABEL = {
-  [ATTR_TYPE_SHORT]: 'Short text',
-  [ATTR_TYPE_LONG]: 'Long text',
-  [ATTR_TYPE_DATE]: 'Date',
-  [ATTR_TYPE_PHONE_NUM]: 'Phone number',
+  [TEXT_TYPE_SHORT]: __('Short text', Constants.TEXT_DOMAIN),
+  [TEXT_TYPE_LONG]: __('Long text', Constants.TEXT_DOMAIN),
+  [TEXT_TYPE_DATE]: __('Date', Constants.TEXT_DOMAIN),
+  [TEXT_TYPE_PHONE_NUMBER]: __('Phone number', Constants.TEXT_DOMAIN),
 };
-export const ATTR_TYPE_OPTIONS = _.keys(TYPE_TO_LABEL);
+const TYPE_DEFAULT_VALUE = '';
+
+export const TEXT_TYPE_VALUES = keys(TYPE_TO_LABEL);
+
+export const ATTR_TYPE = 'textType';
+export const ATTR_PLACEHOLDER = 'placeholder';
+export const ATTR_CONTEXT_BEFORE = 'showContextBefore';
+export const ATTR_NOOP_SHOW_EXAMPLES = markAttrHiddenInApi('noopShowExamples');
 
 registerBlockType(
   Constants.BLOCK_DATA_ELEMENT_TEXT,
-  merge(config, {
+  merge({}, DataElement.config, {
     apiVersion: 2,
     title: __('Text Data Element', Constants.TEXT_DOMAIN),
     icon: 'editor-paragraph',
@@ -38,53 +45,93 @@ registerBlockType(
       Constants.TEXT_DOMAIN,
     ),
     attributes: {
-      type: { enum: ATTR_TYPE_OPTIONS },
-      placeholder: { type: 'string' },
-      showContextBefore: { type: 'boolean', default: false },
+      [ATTR_TYPE]: { type: 'string', default: TEXT_TYPE_SHORT },
+      [ATTR_PLACEHOLDER]: { type: 'string', default: '' },
+      [ATTR_CONTEXT_BEFORE]: { type: 'boolean', default: false },
+      // This is a no-op for `shouldShowControl` functionality. The actual examples are managed
+      // and saved by `InnerBlocks`
+      [ATTR_NOOP_SHOW_EXAMPLES]: { type: 'null' },
     },
-    edit(props) {
-      const { attributes, setAttributes } = props;
+    edit({ clientId, context, attributes, setAttributes }) {
       return (
-        <Edit {...props} {...useBlockProps()}>
-          <SelectControl
-            label={__('Text element type', Constants.TEXT_DOMAIN)}
-            value={attributes.type}
-            onChange={(type) => setAttributes({ type })}
-            options={[
-              {
-                label: __('Select a type...', Constants.TEXT_DOMAIN),
-                value: '',
-                disabled: true,
-              },
-              ..._.map(TYPE_TO_LABEL, (type, label) => ({
-                label,
-                value: type,
-              })),
-            ]}
-          />
-          <TextControl
-            label={__('Placeholder', Constants.TEXT_DOMAIN)}
-            value={attributes.placeholder}
-            onChange={(placeholder) => setAttributes({ placeholder })}
-          />
-          <ToggleControl
-            label={__('Show context?', Constants.TEXT_DOMAIN)}
-            checked={attributes.showContextBefore}
-            onChange={(showContextBefore) =>
-              setAttributes({ showContextBefore })
-            }
-          />
-          <InnerBlocks
-            allowedBlocks={[Constants.DFH_BLOCK_TEXT]}
-            renderAppender={() => (
-              <AutoLabelAppender
-                deemphasized={true}
-                label={__('Add example', Constants.TEXT_DOMAIN)}
+        <div {...useBlockProps()}>
+          <DataElement.Edit
+            clientId={clientId}
+            context={context}
+            attributes={attributes}
+            setAttributes={setAttributes}
+          >
+            {DataElement.shouldShowControl(
+              { context, attributes },
+              ATTR_TYPE,
+            ) && (
+              <SelectControl
+                label={__('Text element type', Constants.TEXT_DOMAIN)}
+                value={attributes[ATTR_TYPE]}
+                onChange={(type) => setAttributes({ [ATTR_TYPE]: type })}
+                options={[
+                  {
+                    label: __('Select a type...', Constants.TEXT_DOMAIN),
+                    value: TYPE_DEFAULT_VALUE,
+                    disabled: true,
+                  },
+                  ..._.map(TYPE_TO_LABEL, (label, type) => ({
+                    label,
+                    value: type,
+                  })),
+                ]}
               />
             )}
-          />
-        </Edit>
+            {DataElement.shouldShowControl(
+              { context, attributes },
+              ATTR_PLACEHOLDER,
+            ) && (
+              <TextControl
+                label={__('Placeholder', Constants.TEXT_DOMAIN)}
+                value={attributes[ATTR_PLACEHOLDER]}
+                onChange={(placeholder) =>
+                  setAttributes({ [ATTR_PLACEHOLDER]: placeholder })
+                }
+              />
+            )}
+            {DataElement.shouldShowControl(
+              { context, attributes },
+              ATTR_CONTEXT_BEFORE,
+            ) && (
+              <ToggleControl
+                label={__('Show context?', Constants.TEXT_DOMAIN)}
+                checked={attributes[ATTR_CONTEXT_BEFORE]}
+                onChange={(showContextBefore) =>
+                  setAttributes({ [ATTR_CONTEXT_BEFORE]: showContextBefore })
+                }
+              />
+            )}
+            {DataElement.shouldShowControl(
+              { context, attributes },
+              ATTR_NOOP_SHOW_EXAMPLES,
+            ) && (
+              <EditorLabelWrapper
+                label={__('Example responses', Constants.TEXT_DOMAIN)}
+              >
+                <div tabIndex="-1">
+                  <InnerBlocks
+                    allowedBlocks={[Constants.DFH_BLOCK_TEXT]}
+                    renderAppender={() => (
+                      <AutoLabelAppender
+                        deemphasized={true}
+                        label={__('Add example', Constants.TEXT_DOMAIN)}
+                      />
+                    )}
+                  />
+                </div>
+              </EditorLabelWrapper>
+            )}
+          </DataElement.Edit>
+        </div>
       );
+    },
+    save() {
+      return <InnerBlocks.Content />;
     },
   }),
 );
