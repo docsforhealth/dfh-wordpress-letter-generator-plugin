@@ -20,7 +20,7 @@ module.exports = merge({}, defaultConfig, {
       {
         test: /\.(png|jpg|svg)$/,
         exclude: /node_modules/,
-        use: ['url-loader'],
+        type: 'asset',
       },
     ],
   },

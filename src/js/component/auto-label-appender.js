@@ -20,16 +20,16 @@ export default function AutoLabelAppender({ className, label, deemphasized }) {
       // Because React hooks are global by nature, no easy way to scope to only this block
       $('[data-dlg-auto-label-appender=true]').each(function () {
         const {
-            autoLabelAppenderSourceSelector,
-            autoLabelAppenderSourceAttribute,
-            autoLabelAppenderTargetSelector,
+            dlgAutoLabelAppenderSourceSelector,
+            dlgAutoLabelAppenderSourceAttribute,
+            dlgAutoLabelAppenderTargetSelector,
           } = this.dataset,
           $el = $(this),
           label = $el
-            .find(autoLabelAppenderSourceSelector)
-            .attr(autoLabelAppenderSourceAttribute);
+            .find(dlgAutoLabelAppenderSourceSelector)
+            .attr(dlgAutoLabelAppenderSourceAttribute);
         if (label) {
-          $el.find(autoLabelAppenderTargetSelector).text(label);
+          $el.find(dlgAutoLabelAppenderTargetSelector).text(label);
         }
       });
     });

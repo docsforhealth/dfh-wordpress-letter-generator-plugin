@@ -6,6 +6,7 @@ import {
   ToggleControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { paragraph } from '@wordpress/icons';
 import { keys } from 'lodash';
 import merge from 'lodash.merge';
 import * as DataElement from 'src/js/block/shared/data-element';
@@ -29,6 +30,8 @@ const TYPE_DEFAULT_VALUE = '';
 
 export const TEXT_TYPE_VALUES = keys(TYPE_TO_LABEL);
 
+export const ICON = paragraph;
+
 export const ATTR_TYPE = 'textType';
 export const ATTR_PLACEHOLDER = 'placeholder';
 export const ATTR_CONTEXT_BEFORE = 'showContextBefore';
@@ -39,7 +42,7 @@ registerBlockType(
   merge({}, DataElement.config, {
     apiVersion: 2,
     title: __('Text Data Element', Constants.TEXT_DOMAIN),
-    icon: 'editor-paragraph',
+    icon: ICON,
     description: __(
       'Customize a text-based data element',
       Constants.TEXT_DOMAIN,

@@ -4,7 +4,7 @@
  * Formats
  */
 
-import 'src/js/format/data-element'; // TODO
+import 'src/js/format/data-element';
 
 /**
  * Blocks

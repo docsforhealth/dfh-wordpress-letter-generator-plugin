@@ -17,6 +17,7 @@
     "start": "Starts up development server to concurrently compile JS, SCSS, and run tests"
   },
   "devDependencies": {
+    "@wordpress/icons": "^8.3.0",
     "@wordpress/scripts": "~19.2.2",
     "concurrently": "~6.4.0",
     "lodash.merge": "^4.6.2",
@@ -26,7 +27,6 @@
     "sass": "^1.43.5",
     "scut": "^2.0.0",
     "typescript": "^4.5.2",
-    "url-loader": "~4.1.1",
     "webpack-merge": "^5.8.0"
   }
 }

@@ -33,13 +33,16 @@ $path-base-styles: '../src/scss/base';
 @import 'scss/base/structure';
 @import 'scss/base/typography';
 
+// Blocks
+// ------
+
 // Formats
 // -------
 
-// Blocks
-// ------
+@import 'scss/format/data-element';
 
 // React components
 // ----------------
 @import 'scss/component/auto-label-appender';
+@import 'scss/component/data-element-option';
 @import 'scss/component/editor-label-wrapper';

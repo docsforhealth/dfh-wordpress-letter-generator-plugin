@@ -4,12 +4,16 @@ import { ToggleControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { list } from '@wordpress/icons';
 import { debounce, find, isEqual, map } from 'lodash';
 import merge from 'lodash.merge';
 import * as Option from 'src/js/block/helper/data-element-options-option';
 import * as DataElement from 'src/js/block/shared/data-element';
 import * as Constants from 'src/js/constants';
 import { markAttrHiddenInApi } from 'src/js/utils';
+
+// TODO blockMeta icon in @wordpress/icons has invalid fill-rule property in v8.3.0
+//    check to see if has released patched version
 
 const ATTR_SHAPE_VALUE = markAttrHiddenInApi('shapeOfValue');
 const ATTR_SHAPE_VISIBLE_CONTROLS = markAttrHiddenInApi('shapeVisibleControls');
@@ -19,15 +23,18 @@ const tryUpdateShape = debounce((oldShape, newShape, updateShape) => {
   }
 }, 250);
 
+export const ICON = list;
 export const ATTR_OTHER_OPTION = 'hasOtherOption';
 export const ATTR_NOOP_SHOW_OPTIONS = markAttrHiddenInApi('noopShowOptions');
+
+// TODO add pronouns block variation?
 
 registerBlockType(
   Constants.BLOCK_DATA_ELEMENT_OPTIONS,
   merge({}, DataElement.config, {
     apiVersion: 2,
     title: __('Options Data Element', Constants.TEXT_DOMAIN),
-    icon: 'list-view',
+    icon: ICON,
     description: __(
       'Customize an options-based data element',
       Constants.TEXT_DOMAIN,

@@ -13,11 +13,6 @@
  * Text Domain: dlg
  */
 
-// TODO repackage this plugin as an add-on for the main DFH plugin
-// TODO at a minimum, make sure that this plugin executes AFTER the main DFH plugin
-
-// TODO figure out how to integrate the Ember.js letter generator app into the "Preview" functionality
-
 defined('ABSPATH') || exit;
 
 if (!defined('DLG_PLUGIN_ROOT')) {

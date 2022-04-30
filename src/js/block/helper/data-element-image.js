@@ -2,9 +2,12 @@ import { useBlockProps } from '@wordpress/block-editor';
 import { registerBlockType } from '@wordpress/blocks';
 import { TextControl, ToggleControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { image } from '@wordpress/icons';
 import merge from 'lodash.merge';
 import * as DataElement from 'src/js/block/shared/data-element';
 import * as Constants from 'src/js/constants';
+
+export const ICON = image;
 
 export const ATTR_UPLOAD_LABEL = 'uploadLabel';
 export const ATTR_CAN_DRAW = 'canDraw';
@@ -15,7 +18,7 @@ registerBlockType(
   merge({}, DataElement.config, {
     apiVersion: 2,
     title: __('Image Data Element', Constants.TEXT_DOMAIN),
-    icon: 'format-image',
+    icon: ICON,
     description: __(
       'Customize an image-based data element',
       Constants.TEXT_DOMAIN,
@@ -34,7 +37,10 @@ registerBlockType(
             attributes={attributes}
             setAttributes={setAttributes}
           >
-            {shouldShowControl({ context, attributes }, ATTR_UPLOAD_LABEL) && (
+            {DataElement.shouldShowControl(
+              { context, attributes },
+              ATTR_UPLOAD_LABEL,
+            ) && (
               <TextControl
                 label={__('Upload image label', Constants.TEXT_DOMAIN)}
                 value={attributes[ATTR_UPLOAD_LABEL]}
@@ -43,7 +49,7 @@ registerBlockType(
                 }
               />
             )}
-            {shouldShowControl(
+            {DataElement.shouldShowControl(
               { context, attributes },
               ATTR_CAN_DRAW,
               ATTR_DRAW_LABEL,

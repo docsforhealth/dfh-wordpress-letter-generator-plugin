@@ -3,7 +3,9 @@ import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import * as Constants from 'src/js/constants';
 
-// TODO
+// TODO handle initial case where no data elements are specified
+// TODO how to disable "publish" button until certain criteria are met
+// TODO figure out how to integrate the Ember.js letter generator app into the "Preview" functionality
 
 registerBlockType(`${Constants.NAMESPACE}/letter-template`, {
   apiVersion: 2,

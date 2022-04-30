@@ -1,0 +1,90 @@
+.data-element-option {
+    position: relative;
+    display: inline-block;
+    color: $color-seafoam-dark-4;
+    margin-bottom: 1px; // avoid overlapping badges on different lines
+    border: 1px solid $color-seafoam-dark-3;
+    font-weight: $font-weight-bold;
+
+    // ensure a consistent border-radius
+    &,
+    &[data-rich-text-format-boundary] {
+        border-radius: $border-radius;
+    }
+    // visually indicated shared status with a different color palette
+    &[data-letter-element-is-shared='true'] {
+        border-color: $color-navy-light-1;
+        color: $color-navy;
+    }
+    // display data type icon if present
+    &[data-letter-element-has-icon='true'] {
+        $icon-width: $baseunit * 1.2;
+        $icon-border-radius: $border-radius * 3;
+
+        padding-left: $icon-width;
+
+        &,
+        &[data-rich-text-format-boundary] {
+            border-top-left-radius: $icon-border-radius;
+            border-bottom-left-radius: $icon-border-radius;
+        }
+
+        &:before,
+        &:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: $icon-width;
+        }
+        &:before {
+            background-color: $color-seafoam-dark-1;
+            border-right: 1px solid $color-seafoam-dark-3;
+            border-top-left-radius: $icon-border-radius;
+            border-bottom-left-radius: $icon-border-radius;
+        }
+        &[data-letter-element-is-shared='true']:before {
+            background-color: $color-navy-light-2;
+            border-color: $color-navy-light-1;
+        }
+        &:after {
+            // set the desired color of the svg as the background color
+            background-color: $color-seafoam-dark-4;
+            // 1. use css masks to change background svg color
+            // see https://stackoverflow.com/a/46904983
+            // 2. Chromium-based browsers require `-webkit-` prefix
+            // 3. the shorthand `mask` syntax parallels the `background` shorthand syntax
+            // see https://css-tricks.com/almanac/properties/b/background/
+            mask: var(--dfh-data-element-option-icon) center /
+                ($baseunit * 0.75) no-repeat;
+            -webkit-mask: var(--dfh-data-element-option-icon) center /
+                ($baseunit * 0.75) no-repeat;
+        }
+        &[data-letter-element-is-shared='true']:after {
+            background-color: $color-navy;
+        }
+    }
+}
+
+.data-element-option-menu-item {
+    display: flex;
+    align-items: center;
+
+    &__icon {
+        height: $baseunit;
+    }
+    &__label {
+        @include scut-truncate;
+
+        flex-grow: 1;
+        padding-right: $baseunit * 0.5;
+        padding-left: $baseunit * 0.25;
+    }
+    &__badge {
+        padding: ($baseunit * 0.15) ($baseunit * 0.25);
+        border: 1px solid $color-navy-light-1;
+        border-radius: $border-radius;
+        color: $color-navy;
+    }
+}

@@ -1,0 +1,16 @@
+.data-element-option-popover {
+    & &__button-group {
+        display: flex;
+        align-items: center;
+        gap: $baseunit * 0.25;
+        padding: $baseunit * 0.25;
+    }
+    & &__button {
+        @extend %default-text;
+
+        height: $height-control-small;
+        color: $color-navy;
+        box-shadow: none;
+        white-space: nowrap;
+    }
+}
