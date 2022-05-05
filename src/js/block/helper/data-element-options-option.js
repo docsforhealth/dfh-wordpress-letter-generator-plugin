@@ -1,11 +1,11 @@
 import { useBlockProps } from '@wordpress/block-editor';
-import { registerBlockType } from '@wordpress/blocks';
 import { TextControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import * as TextDataElement from 'src/js/block/helper/data-element-text';
 import * as DataElement from 'src/js/block/shared/data-element';
 import OptionChoiceValue from 'src/js/component/option-choice-value';
 import * as Constants from 'src/js/constants';
+import { tryRegisterBlockType } from 'src/js/utils/block';
 
 // Expected: shape is the an array of the attributes of the TEXT DATA ELEMENTS
 export const CONTEXT_SHAPE_KEY = `${Constants.BLOCK_DATA_ELEMENT_OPTIONS_OPTION}/shape`;
@@ -18,7 +18,7 @@ export const EXPECTED_VISIBLE_ATTRS = [
   DataElement.ATTR_HELP_TEXT,
 ];
 
-registerBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_OPTION, {
+tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_OPTION, {
   apiVersion: 2,
   title: __('Option for Options Data Element', Constants.TEXT_DOMAIN),
   category: Constants.CATEGORY_LETTER_TEMPLATE,

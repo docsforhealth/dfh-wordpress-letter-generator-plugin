@@ -13,6 +13,8 @@
  * Text Domain: dlg
  */
 
+// TODO factor out to new shared base OR use Yarn Workspaces (https://yarnpkg.com/features/workspaces)
+
 defined('ABSPATH') || exit;
 
 if (!defined('DLG_PLUGIN_ROOT')) {

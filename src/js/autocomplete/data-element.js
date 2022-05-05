@@ -25,6 +25,7 @@ const dataElementCompleter = {
   isDebounced: true,
   // TODO selecting local and shared data elements
   // TODO convert to function
+  // see https://github.com/WordPress/gutenberg/blob/trunk/packages/editor/src/components/autocompleters/user.js
   options: [
     {
       [OPTION_KEY]: 'test1',

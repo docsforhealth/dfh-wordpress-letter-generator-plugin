@@ -8,10 +8,14 @@ import { __ } from '@wordpress/i18n';
 import { every } from 'lodash';
 import PropTypes from 'prop-types';
 import * as Constants from 'src/js/constants';
-import { markAttrHiddenInApi } from 'src/js/utils';
+import { markAttrHiddenInApi } from 'src/js/utils/api';
+import { getTitleFromBlockName } from 'src/js/utils/block';
+
+// TODO inline error styling for controls that are required but empty!!!
 
 // TODO add: this element is used in ## places?
 // TODO some kind of portal system for nested inner blocks to add to?
+//      https://github.com/WordPress/gutenberg/tree/trunk/packages/element#createportal
 
 // TODO editor display styling!!!
 // TODO array order in visible controls determines layout order??
@@ -28,7 +32,7 @@ export const ATTR_REQUIRED = 'required';
 export const CONTEXT_VISIBLE_CONTROLS_KEY = `${Constants.NAMESPACE}/data-element/${ATTR_VISIBLE_CONTROLS}`;
 export const CONTEXT_VISIBLE_CONTROLS_DEFINITION = { type: 'array' };
 
-export const config = {
+export const SHARED_CONFIG = {
   category: Constants.CATEGORY_LETTER_TEMPLATE,
   // parent: [Constants.BLOCK_DATA_ELEMENTS], // TODO
   attributes: {
@@ -60,7 +64,7 @@ export function Edit({
     if (!attributes[ATTR_KEY]) {
       setAttributes({ [ATTR_KEY]: clientId });
     }
-  });
+  }, []);
   return (
     <div {...otherProps} className={`data-element ${className ?? ''}`}>
       {shouldShowControl({ context, attributes }, ATTR_LABEL) && (
@@ -92,7 +96,7 @@ export function Edit({
         <ToggleControl
           label={__('Allow saving locally?', Constants.TEXT_DOMAIN)}
           help={__(
-            "Saving to the user's device is NOT secure. Make sure that this field will not have protected health information.",
+            "Saving locally to the user's device is NOT secure. Make sure that this field will not have protected health information.",
             Constants.TEXT_DOMAIN,
           )}
           checked={attributes[ATTR_SAVEABLE]}
@@ -111,6 +115,7 @@ Edit.propTypes = {
   className: PropTypes.string,
 };
 
+// Allows programmatically controlling which controls are displayed in the editor
 export function shouldShowControl({ attributes, context }, ...attrsToCheck) {
   // visible controls specified via attributes overrides those provided by context
   const visibleControls =
@@ -120,4 +125,24 @@ export function shouldShowControl({ attributes, context }, ...attrsToCheck) {
     !visibleControls ||
     every(attrsToCheck, (attr) => visibleControls.includes(attr))
   );
+}
+
+// Given the block type obtained from the `core/block-editor` store, determines if this block is valid
+// This is the default implementation that blocks can leverage if desired.
+export function validateBlockInfo(blockInfo) {
+  const blockTitle = getTitleFromBlockName(blockInfo?.name);
+  const errors = [];
+  if (!blockInfo?.attributes?.[ATTR_LABEL]) {
+    errors.push(
+      __('Please specify a label for', Constants.TEXT_DOMAIN) +
+        ' ' +
+        blockTitle,
+    );
+  }
+  if (!blockInfo?.attributes?.[ATTR_KEY]) {
+    errors.push(
+      __('Missing a unique key for', Constants.TEXT_DOMAIN) + ' ' + blockTitle,
+    );
+  }
+  return errors;
 }

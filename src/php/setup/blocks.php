@@ -14,7 +14,17 @@ function dlg_register_editor_assets() {
     wp_enqueue_script(
         'dlg-editor-script', // label
         plugins_url('/build/editor.js', DLG_PLUGIN_ROOT), // URL to script file
-        array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-block-editor', 'wp-data', 'wp-hooks', 'wp-api-fetch'), // dependencies
+        // WP package dependencies
+        array(
+            'wp-block-editor',
+            'wp-blocks',
+            'wp-data',
+            'wp-edit-post',
+            'wp-element',
+            'wp-hooks',
+            'wp-i18n',
+            'wp-plugins',
+        ),
         filemtime(DLG_PLUGIN_DIR . '/build/editor.js') // is a file path, set version as file last modified time
     );
 }

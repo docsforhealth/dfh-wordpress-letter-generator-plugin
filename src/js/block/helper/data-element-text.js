@@ -1,5 +1,4 @@
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
-import { registerBlockType } from '@wordpress/blocks';
 import {
   SelectControl,
   TextControl,
@@ -13,40 +12,42 @@ import * as DataElement from 'src/js/block/shared/data-element';
 import AutoLabelAppender from 'src/js/component/auto-label-appender';
 import EditorLabelWrapper from 'src/js/component/editor-label-wrapper';
 import * as Constants from 'src/js/constants';
-import { markAttrHiddenInApi } from 'src/js/utils';
+import { markAttrHiddenInApi } from 'src/js/utils/api';
+import { tryRegisterBlockType } from 'src/js/utils/block';
 
-export const TEXT_TYPE_SHORT = 'text-short';
-export const TEXT_TYPE_LONG = 'text-long';
-export const TEXT_TYPE_DATE = 'text-date';
-export const TEXT_TYPE_PHONE_NUMBER = 'text-phone-number';
-
-const TYPE_TO_LABEL = {
-  [TEXT_TYPE_SHORT]: __('Short text', Constants.TEXT_DOMAIN),
-  [TEXT_TYPE_LONG]: __('Long text', Constants.TEXT_DOMAIN),
-  [TEXT_TYPE_DATE]: __('Date', Constants.TEXT_DOMAIN),
-  [TEXT_TYPE_PHONE_NUMBER]: __('Phone number', Constants.TEXT_DOMAIN),
+export const INFO = {
+  type: Constants.BLOCK_DATA_ELEMENT_TEXT,
+  icon: paragraph,
+  title: __('Text Element', Constants.TEXT_DOMAIN),
+  description: __('Allows entry of text-based values', Constants.TEXT_DOMAIN),
 };
-const TYPE_DEFAULT_VALUE = '';
-
-export const TEXT_TYPE_VALUES = keys(TYPE_TO_LABEL);
-
-export const ICON = paragraph;
 
 export const ATTR_TYPE = 'textType';
 export const ATTR_PLACEHOLDER = 'placeholder';
 export const ATTR_CONTEXT_BEFORE = 'showContextBefore';
 export const ATTR_NOOP_SHOW_EXAMPLES = markAttrHiddenInApi('noopShowExamples');
 
-registerBlockType(
-  Constants.BLOCK_DATA_ELEMENT_TEXT,
-  merge({}, DataElement.config, {
+// re-export default `validateBlockInfo` implementation
+export { validateBlockInfo } from 'src/js/block/shared/data-element';
+
+export const TEXT_TYPE_SHORT = 'text-short';
+export const TEXT_TYPE_LONG = 'text-long';
+export const TEXT_TYPE_DATE = 'text-date';
+export const TEXT_TYPE_PHONE_NUMBER = 'text-phone-number';
+
+const TYPE_DEFAULT_VALUE = '';
+const TYPE_TO_LABEL = {
+  [TEXT_TYPE_SHORT]: __('Short text', Constants.TEXT_DOMAIN),
+  [TEXT_TYPE_LONG]: __('Long text', Constants.TEXT_DOMAIN),
+  [TEXT_TYPE_DATE]: __('Date', Constants.TEXT_DOMAIN),
+  [TEXT_TYPE_PHONE_NUMBER]: __('Phone number', Constants.TEXT_DOMAIN),
+};
+export const TEXT_TYPE_VALUES = keys(TYPE_TO_LABEL);
+
+tryRegisterBlockType(
+  INFO.type,
+  merge({}, DataElement.SHARED_CONFIG, INFO, {
     apiVersion: 2,
-    title: __('Text Data Element', Constants.TEXT_DOMAIN),
-    icon: ICON,
-    description: __(
-      'Customize a text-based data element',
-      Constants.TEXT_DOMAIN,
-    ),
     attributes: {
       [ATTR_TYPE]: { type: 'string', default: TEXT_TYPE_SHORT },
       [ATTR_PLACEHOLDER]: { type: 'string', default: '' },
@@ -116,17 +117,19 @@ registerBlockType(
               <EditorLabelWrapper
                 label={__('Example responses', Constants.TEXT_DOMAIN)}
               >
-                <div tabIndex="-1">
-                  <InnerBlocks
-                    allowedBlocks={[Constants.DFH_BLOCK_TEXT]}
-                    renderAppender={() => (
-                      <AutoLabelAppender
-                        deemphasized={true}
-                        label={__('Add example', Constants.TEXT_DOMAIN)}
-                      />
-                    )}
-                  />
-                </div>
+                {(id) => (
+                  <div id={id} tabIndex="0">
+                    <InnerBlocks
+                      allowedBlocks={[Constants.DFH_BLOCK_TEXT]}
+                      renderAppender={() => (
+                        <AutoLabelAppender
+                          label={__('Add example', Constants.TEXT_DOMAIN)}
+                          deemphasized
+                        />
+                      )}
+                    />
+                  </div>
+                )}
               </EditorLabelWrapper>
             )}
           </DataElement.Edit>
@@ -134,7 +137,11 @@ registerBlockType(
       );
     },
     save() {
-      return <InnerBlocks.Content />;
+      return (
+        <div {...useBlockProps.save()}>
+          <InnerBlocks.Content />
+        </div>
+      );
     },
   }),
 );

@@ -1,28 +1,33 @@
 import { useBlockProps } from '@wordpress/block-editor';
-import { registerBlockType } from '@wordpress/blocks';
 import { TextControl, ToggleControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { image } from '@wordpress/icons';
 import merge from 'lodash.merge';
 import * as DataElement from 'src/js/block/shared/data-element';
 import * as Constants from 'src/js/constants';
+import { tryRegisterBlockType } from 'src/js/utils/block';
 
-export const ICON = image;
+export const INFO = {
+  type: Constants.BLOCK_DATA_ELEMENT_IMAGE,
+  icon: image,
+  title: __('Image Element', Constants.TEXT_DOMAIN),
+  description: __(
+    'Allows uploading images and user drawings',
+    Constants.TEXT_DOMAIN,
+  ),
+};
 
 export const ATTR_UPLOAD_LABEL = 'uploadLabel';
 export const ATTR_CAN_DRAW = 'canDraw';
 export const ATTR_DRAW_LABEL = 'drawLabel';
 
-registerBlockType(
-  Constants.BLOCK_DATA_ELEMENT_IMAGE,
-  merge({}, DataElement.config, {
+// re-export default `validateBlockInfo` implementation
+export { validateBlockInfo } from 'src/js/block/shared/data-element';
+
+tryRegisterBlockType(
+  INFO.type,
+  merge({}, DataElement.SHARED_CONFIG, INFO, {
     apiVersion: 2,
-    title: __('Image Data Element', Constants.TEXT_DOMAIN),
-    icon: ICON,
-    description: __(
-      'Customize an image-based data element',
-      Constants.TEXT_DOMAIN,
-    ),
     attributes: {
       [ATTR_UPLOAD_LABEL]: { type: 'string', default: '' },
       [ATTR_CAN_DRAW]: { type: 'boolean', default: false },

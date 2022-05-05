@@ -33,7 +33,7 @@ function dlg_register_content_type_letter_template() {
         'can_export'          => true,
         'rewrite'             => array('slug' => 'dlg-letter-template', 'with_front' => false),
         'menu_icon'           => 'dashicons-welcome-write-blog',
-        // 'template'            => array(array('')), // TODO
+        'template'            => array(array('dlg/letter-template')),
         // 'template_lock'       => 'insert', // TODO
         'labels'              => array(
             'add_new'                  => __('Add New', DLG_TEXT_DOMAIN),
@@ -95,7 +95,7 @@ function dlg_register_content_type_global_data_element() {
         'can_export'          => true,
         'rewrite'             => array('slug' => 'dlg-data-element', 'with_front' => false),
         'menu_icon'           => 'dashicons-forms',
-        // 'template'            => array(array('')), // TODO
+        'template'            => array(array('dlg/shared-data-element')),
         // 'template_lock'       => 'insert', // TODO
         'labels'              => array(
             'add_new'                  => __('Add New', DLG_TEXT_DOMAIN),
@@ -134,4 +134,44 @@ function dlg_register_content_type_global_data_element() {
             'view_items'               => __('View Shared Data Elements', DLG_TEXT_DOMAIN),
         ),
     ));
+}
+
+// Enqueue a custom JS setup script each custom content type
+// see https://wordpress.stackexchange.com/a/310229
+add_action('enqueue_block_editor_assets', 'dlg_register_custom_content_type_scripts');
+function dlg_register_custom_content_type_scripts() {
+    if (get_post_type() == 'dlg_data_element') {
+        wp_enqueue_script(
+            'dlg-shared-data-element-editor-script', // label
+            plugins_url('/build/shared-data-element.js', DLG_PLUGIN_ROOT), // URL to script file
+            // WP package dependencies
+            array(
+                'wp-block-editor',
+                'wp-blocks',
+                'wp-data',
+                'wp-dom-ready',
+                'wp-element',
+                'wp-hooks',
+                'wp-i18n',
+            ),
+            filemtime(DLG_PLUGIN_DIR . '/build/shared-data-element.js') // is a file path, set version as file last modified time
+        );
+    }
+    if (get_post_type() == 'dlg_letter_template') {
+        wp_enqueue_script(
+            'dlg-letter-template-editor-script', // label
+            plugins_url('/build/letter-template.js', DLG_PLUGIN_ROOT), // URL to script file
+            // WP package dependencies
+            array(
+                'wp-block-editor',
+                'wp-blocks',
+                'wp-data',
+                'wp-dom-ready',
+                'wp-element',
+                'wp-hooks',
+                'wp-i18n',
+            ),
+            filemtime(DLG_PLUGIN_DIR . '/build/letter-template.js') // is a file path, set version as file last modified time
+        );
+    }
 }

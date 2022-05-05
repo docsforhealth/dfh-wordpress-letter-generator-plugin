@@ -3,6 +3,8 @@ import { useEffect } from '@wordpress/element';
 import $ from 'jquery';
 import PropTypes from 'prop-types';
 
+// DO we need this?? can we just make bespoke appenders for each of the few cases we need?
+
 /**
  * Custom appender for InnerBlocks
  *
@@ -33,7 +35,7 @@ export default function AutoLabelAppender({ className, label, deemphasized }) {
         }
       });
     });
-  });
+  }, []);
 
   return (
     <div

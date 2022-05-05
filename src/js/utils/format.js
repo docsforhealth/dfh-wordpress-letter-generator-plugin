@@ -1,51 +1,11 @@
-import { renderToString } from '@wordpress/element';
 import { insert, remove } from '@wordpress/rich-text';
-import { fill, find, startsWith } from 'lodash';
+import { fill, find } from 'lodash';
 import * as Constants from 'src/js/constants';
-
-/**
- * Mark attribute as hidden in the REST API
- *
- * @param  {String} attrName Name of the attribute to mark
- * @return {String}          Marked name of the attribute
- */
-export function markAttrHiddenInApi(attrName) {
-  return `${Constants.ATTR_HIDE_API_PREFIX}${attrName}`;
-}
-
-/**
- * Checks to see if attribute should be shown in the REST API
- *
- * @param  {String} attrNameToCheck Name of the attribute to check
- * @return {boolean}                Whether or not the attribute should be shown
- */
-export function shouldShowAttrInApi(attrNameToCheck) {
-  return startsWith(attrNameToCheck, Constants.ATTR_HIDE_API_PREFIX);
-}
-
-/**
- * Builds a non-base64 encoded data URI for the provided SVG element
- *
- * @param  {SVG element} svgElement SVG element to encode
- * @return {string}                 Non-based64 encoded data URI
- */
-export function buildSVGDataURI(svgElement) {
-  if (!svgElement) {
-    return '';
-  }
-  // from https://medium.com/@ians/rendering-svgs-as-images-directly-in-react-a26615c45770
-  // we use `renderToString` instead of `renderToStaticMarkup` which are broadly similar
-  // for the difference between the two, see https://stackoverflow.com/a/67778035
-  const svgString = encodeURIComponent(renderToString(svgElement));
-  // Don't need to encode in base64, see https://css-tricks.com/probably-dont-base64-svg/
-  return `url("data:image/svg+xml,${svgString}")`;
-}
 
 /**
  * Find boundaries of the selected format
  * Directly borrowed from the WordPress RichText `removeFormat` method
  * source: https://github.com/WordPress/gutenberg/blob/trunk/packages/rich-text/src/remove-format.js
- *
  * @param  {WPRichTextValue} value WordPress RichTextValue object
  *                                 see https://github.com/WordPress/gutenberg/tree/trunk/packages/rich-text#the-richtextvalue-object
  * @param  {String} type           Registered name of the custom format to look for
@@ -100,7 +60,6 @@ function filterFormats(formats, index, formatType) {
  * Ensures that the text content of the specific format matches the provided origial text
  * Does not make any changes if the specified custom format type is not found
  * NOTE assumes that no other formats or format objects (called replacements) are present!
- *
  * @param  {function} onChange     Function provided by custom format for making changes
  * @param  {WPRichTextValue} value Internal WordPress RichTextValue object
  * @param  {String} type           String type for registered custom format
@@ -134,7 +93,6 @@ export function tryEnsureFormatText(onChange, value, type, originalText) {
  * Attempts to remove the specified format from the text, if found. Note that this function does
  * not account for other inserted formats or format objects and will remove all content within the
  * bounds of the specified format, if found.
- *
  * @param  {function} onChange     Function provided by custom format for making changes
  * @param  {WPRichTextValue} value Internal WordPress RichTextValue object
  * @param  {String} type           String type for registered custom format

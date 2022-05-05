@@ -1,7 +1,82 @@
-// TODO finish styling
-
 .editor-label-wrapper {
     border: 1px solid $color-seafoam-dark-2;
     border-radius: $border-radius;
-    padding: $baseunit;
+    transition: border-color 0.3s, background-color 0.5s;
+
+    &--open {
+        border-color: $color-seafoam-dark-3;
+    }
+    &--open &__controls {
+        position: sticky;
+        top: 0;
+        border-color: $color-seafoam-dark-2;
+        z-index: $z-index-front-1;
+    }
+    &--open &__toggle[type='button']:after {
+        background-image: url('../assets/images/icon-minus.svg');
+    }
+    &--open &__content {
+        max-height: none;
+        padding: $baseunit;
+    }
+    // only limit height if has toggle
+    &--open.editor-label-wrapper--has-toggle &__content {
+        max-height: 70vh;
+    }
+    // add right padding to label if has toggle
+    &--has-toggle &__controls {
+        &__label {
+            padding-right: $baseunit;
+        }
+    }
+
+    &__controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: $baseunit;
+        background-color: $color-seafoam;
+        border-bottom: 1px solid transparent;
+        transition: padding 0.3s, border-color 0.3s;
+
+        &__label {
+            flex-grow: 1;
+            font-size: $baseunit;
+        }
+    }
+    & &__toggle {
+        &[type='button'] {
+            flex-grow: 0;
+            flex-shrink: 0;
+
+            position: relative;
+            height: $baseunit * 1.5;
+            width: $baseunit * 1.5;
+            border: 0;
+        }
+
+        &__label {
+            @include scut-hide-visually;
+        }
+
+        &:after {
+            @include scut-center-transform;
+
+            content: '';
+            display: block;
+            width: 100%;
+            height: 100%;
+            background-image: url('../assets/images/icon-plus.svg');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    }
+    &__content {
+        @include scroll-vertical;
+
+        max-height: 0;
+        padding: 0 $baseunit;
+        transition: max-height 0.3s, padding 0.3s;
+    }
 }

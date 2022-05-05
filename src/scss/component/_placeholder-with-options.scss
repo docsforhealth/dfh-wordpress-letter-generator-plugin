@@ -1,0 +1,69 @@
+.placeholder-with-options {
+    &.components-placeholder {
+        min-height: auto;
+        box-shadow: inset 0 0 0 1px $color-gray-light-2;
+        padding: $baseunit $baseunit ($baseunit * 0.5);
+
+        .components-placeholder__label {
+            font-size: 18px;
+            margin-bottom: $baseunit * 0.5;
+        }
+    }
+
+    &--small.components-placeholder {
+        padding: ($baseunit * 0.75) ($baseunit * 0.75) ($baseunit * 0.5);
+
+        .components-placeholder__label {
+            font-size: 16px;
+            margin-bottom: $baseunit * 0.25;
+        }
+    }
+
+    &__list {
+        @include scut-list-unstyled;
+
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: $baseunit * 0.5;
+        justify-items: stretch;
+        margin-top: $baseunit * 0.5;
+    }
+    & &__option {
+        &[type='button'] {
+            height: 100%;
+            width: 100%;
+            padding: ($baseunit * 0.75) !important;
+            border-radius: $border-radius;
+            border: 1px solid $color-gray-light-1 !important;
+            transition: background-color 0.1s;
+        }
+
+        // see https://css-tricks.com/snippets/css/link-pseudo-classes-in-order/
+        &:link,
+        &:hover,
+        &:active,
+        &:focus {
+            background-color: $color-gray-light-3 !important;
+        }
+
+        &,
+        &__title {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        &__icon {
+            margin-bottom: $baseunit * 0.5;
+        }
+        &__title,
+        &__description {
+            @extend %default-text;
+        }
+        &__title {
+            margin-bottom: $baseunit * 0.5;
+            font-weight: $font-weight-bold;
+        }
+    }
+}

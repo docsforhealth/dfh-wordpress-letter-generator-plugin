@@ -14,6 +14,20 @@ module.exports = merge({}, defaultConfig, {
   },
   entry: {
     editor: path.resolve(process.cwd(), 'src', 'editor.js'),
+    'shared-data-element': path.resolve(
+      process.cwd(),
+      'src',
+      'js',
+      'setup',
+      'shared-data-element.js',
+    ),
+    'letter-template': path.resolve(
+      process.cwd(),
+      'src',
+      'js',
+      'setup',
+      'letter-template.js',
+    ),
   },
   module: {
     rules: [

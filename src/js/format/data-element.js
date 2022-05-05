@@ -8,10 +8,11 @@ import {
 import { useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { close, symbolFilled } from '@wordpress/icons';
+import { closeSmall } from '@wordpress/icons';
 import { insert, registerFormatType, useAnchorRef } from '@wordpress/rich-text';
 import { startsWith, trim } from 'lodash';
 import { TRIGGER_PREFIX } from 'src/js/autocomplete/data-element';
+import { ICON as DATA_ELEMENTS_ICON } from 'src/js/block/helper/data-elements';
 import {
   ELEMENT_ATTR_IS_SHARED,
   ELEMENT_ATTR_KEY,
@@ -26,7 +27,7 @@ import {
   getFormatBounds,
   tryEnsureFormatText,
   tryRemoveFormat,
-} from 'src/js/utils';
+} from 'src/js/utils/format';
 
 const title = __('Data Element', Constants.TEXT_DOMAIN);
 const settings = {
@@ -60,52 +61,58 @@ const settings = {
     // enters this format and the returned function is run each time the user leaves
     // 2. Allow only directional key navigation within the badge to prevent users from modifying
     // the tag. Instead, users will use the provided interface elements to modify the data element
-    useEffect(() => {
-      // short circuit if not within this custom format
-      if (!isActive) {
-        return;
-      }
-      // EDGE case where a user is able to backspace at the ending border of the badge in order to
-      // progressively delete characters within the badge. We can't prevent this edge case since
-      // the cursor is technically outside of the bounds of the badge. However, we can attempt to
-      // address this edge case by checking that the text contents of the badge matches the original
-      // value. If the text contents of the badge do not match, then we restore the original text.
-      tryEnsureFormatText(
-        onChange,
-        value,
-        Constants.FORMAT_DATA_ELEMENT,
-        activeAttributes.originalLabel,
-      );
-      // Prevents most modifications to the label EXCEPT for the edge case noted above
-      const onKeyDown = function (event) {
-        // 1. most future-proof to use `key` instead of `which` or `keyCode`
-        // see https://caniuse.com/?search=event.key
-        // see https://stackoverflow.com/a/41656511
-        // 2. `key` values are strings NOT numerical codes
-        // see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
-        const { key, metaKey } = event;
-        // 1. We can assume that event handler is only bound when the user is within this format
-        // 2. prevent default on all keys except for directional arrow keys and keyboard shortcuts that
-        // involve the meta key. Backspace and Enter are always prevented to prevent text modification
-        if (
-          key === 'Backspace' ||
-          key === 'Enter' ||
-          (!metaKey && !startsWith(key, 'Arrow'))
-        ) {
-          event.preventDefault();
+    useEffect(
+      () => {
+        // short circuit if not within this custom format
+        if (!isActive) {
+          return;
         }
-      };
-      // 1. Must apply keyboard events to `contenteditable` parent instead of child element
-      // see https://stackoverflow.com/a/18665486
-      // 2. We need to ensure that our handler is run BEFORE the `use-enter` keydown handler.
-      // Therefore, we bind our handler to the capture phase which happens before the bubbling phase
-      // `use-enter` source: https://github.com/WordPress/gutenberg/blob/trunk/packages/block-editor/src/components/rich-text/use-enter.js
-      // `useCapture` tip: https://stackoverflow.com/a/39180761
-      contentRef.current.addEventListener('keydown', onKeyDown, true);
-      // when removing event handler must have EXACT SAME ARGUMENTS, including `useContext`
-      return () =>
-        contentRef.current.removeEventListener('keydown', onKeyDown, true);
-    }, [contentRef, activeAttributes, value, isActive]);
+        // EDGE case where a user is able to backspace at the ending border of the badge in order to
+        // progressively delete characters within the badge. We can't prevent this edge case since
+        // the cursor is technically outside of the bounds of the badge. However, we can attempt to
+        // address this edge case by checking that the text contents of the badge matches the original
+        // value. If the text contents of the badge do not match, then we restore the original text.
+        tryEnsureFormatText(
+          onChange,
+          value,
+          Constants.FORMAT_DATA_ELEMENT,
+          activeAttributes.originalLabel,
+        );
+        // Prevents most modifications to the label EXCEPT for the edge case noted above
+        const onKeyDown = function (event) {
+          // 1. most future-proof to use `key` instead of `which` or `keyCode`
+          // see https://caniuse.com/?search=event.key
+          // see https://stackoverflow.com/a/41656511
+          // 2. `key` values are strings NOT numerical codes
+          // see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
+          const { key, metaKey } = event;
+          // 1. We can assume that event handler is only bound when the user is within this format
+          // 2. prevent default on all keys except for directional arrow keys and keyboard shortcuts that
+          // involve the meta key. Backspace and Enter are always prevented to prevent text modification
+          if (
+            key === 'Backspace' ||
+            key === 'Enter' ||
+            (!metaKey && !startsWith(key, 'Arrow'))
+          ) {
+            event.preventDefault();
+          }
+        };
+        // 1. Must apply keyboard events to `contenteditable` parent instead of child element
+        // see https://stackoverflow.com/a/18665486
+        // 2. We need to ensure that our handler is run BEFORE the `use-enter` keydown handler.
+        // Therefore, we bind our handler to the capture phase which happens before the bubbling phase
+        // `use-enter` source: https://github.com/WordPress/gutenberg/blob/trunk/packages/block-editor/src/components/rich-text/use-enter.js
+        // `useCapture` tip: https://stackoverflow.com/a/39180761
+        contentRef.current.addEventListener('keydown', onKeyDown, true);
+        // when removing event handler must have EXACT SAME ARGUMENTS, including `useContext`
+        return () =>
+          contentRef.current.removeEventListener('keydown', onKeyDown, true);
+      },
+      // React compares objects BY REFERENCE, which may result in some unnecessary renders here
+      // We can't guarantee that `value` is the identical object since we don't manage it
+      // see https://dev.to/ms_yogii/useeffect-dependency-array-and-object-comparison-45el
+      [contentRef.current, activeAttributes.originalLabel, value, isActive],
+    );
     // NOTE: Because `useAnchorRef` also called the `useMemo` hook, we need to call it here so that
     // adding a `Popover` doesn't change the hook order and trigger a React exception
     const anchorRef = useAnchorRef({ ref: contentRef, value, settings });
@@ -113,7 +120,7 @@ const settings = {
       <>
         <BlockControls>
           <ToolbarButton
-            icon={symbolFilled}
+            icon={DATA_ELEMENTS_ICON}
             title={
               isActive
                 ? __('Remove Data Element', Constants.TEXT_DOMAIN)
@@ -169,7 +176,7 @@ const settings = {
                   '"'}
               </Button>
               <Button
-                icon={close}
+                icon={closeSmall}
                 label={
                   __('Remove', Constants.TEXT_DOMAIN) +
                   ' "' +

@@ -1,44 +1,59 @@
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
-import { registerBlockType } from '@wordpress/blocks';
 import { ToggleControl } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
+import { select } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { list } from '@wordpress/icons';
-import { debounce, find, isEqual, map } from 'lodash';
+import { find, isEqual, map, throttle } from 'lodash';
 import merge from 'lodash.merge';
 import * as Option from 'src/js/block/helper/data-element-options-option';
+import { validateBlockInfo as validateTextBlockInfo } from 'src/js/block/helper/data-element-text';
 import * as DataElement from 'src/js/block/shared/data-element';
 import * as Constants from 'src/js/constants';
-import { markAttrHiddenInApi } from 'src/js/utils';
+import { markAttrHiddenInApi } from 'src/js/utils/api';
+import { tryRegisterBlockType } from 'src/js/utils/block';
 
-// TODO blockMeta icon in @wordpress/icons has invalid fill-rule property in v8.3.0
-//    check to see if has released patched version
+export const INFO = {
+  type: Constants.BLOCK_DATA_ELEMENT_OPTIONS,
+  icon: list,
+  title: __('Options Element', Constants.TEXT_DOMAIN),
+  description: __(
+    'Allows selection of predefined options or user-specified option',
+    Constants.TEXT_DOMAIN,
+  ),
+};
+export const ATTR_OTHER_OPTION = 'hasOtherOption';
+export const ATTR_NOOP_SHOW_OPTIONS = markAttrHiddenInApi('noopShowOptions');
 
 const ATTR_SHAPE_VALUE = markAttrHiddenInApi('shapeOfValue');
 const ATTR_SHAPE_VISIBLE_CONTROLS = markAttrHiddenInApi('shapeVisibleControls');
-const tryUpdateShape = debounce((oldShape, newShape, updateShape) => {
+const tryUpdateShape = throttle((oldShape, newShape, updateShape) => {
   if (!isEqual(oldShape, newShape)) {
     updateShape(newShape);
   }
 }, 250);
 
-export const ICON = list;
-export const ATTR_OTHER_OPTION = 'hasOtherOption';
-export const ATTR_NOOP_SHOW_OPTIONS = markAttrHiddenInApi('noopShowOptions');
+// Extend the default `validateBlockInfo` implementation
+export function validateBlockInfo(blockInfo) {
+  const errors = [...DataElement.validateBlockInfo(blockInfo)],
+    shapeBlockInfo = getShapeBlockInfoFromClientId(blockInfo?.clientId);
+  if (shapeBlockInfo.length) {
+    // If FIRST ELEMENT within inner blocks array exists, then check its validity
+    // For this options data element to be valid, we only need at least one shape block to be valid
+    // Assume that all inner blocks are `BLOCK_DATA_ELEMENT_TEXT`
+    errors.push(...validateTextBlockInfo(shapeBlockInfo[0]));
+  } else {
+    errors.push(
+      __('Please specify the data each option contains', Constants.TEXT_DOMAIN),
+    );
+  }
+  return errors;
+}
 
-// TODO add pronouns block variation?
-
-registerBlockType(
-  Constants.BLOCK_DATA_ELEMENT_OPTIONS,
-  merge({}, DataElement.config, {
+tryRegisterBlockType(
+  INFO.type,
+  merge({}, DataElement.SHARED_CONFIG, INFO, {
     apiVersion: 2,
-    title: __('Options Data Element', Constants.TEXT_DOMAIN),
-    icon: ICON,
-    description: __(
-      'Customize an options-based data element',
-      Constants.TEXT_DOMAIN,
-    ),
     attributes: {
       [ATTR_OTHER_OPTION]: { type: 'boolean', default: false },
       [ATTR_SHAPE_VALUE]: Option.CONTEXT_SHAPE_DEFINITION,
@@ -55,22 +70,22 @@ registerBlockType(
       [DataElement.CONTEXT_VISIBLE_CONTROLS_KEY]: ATTR_SHAPE_VISIBLE_CONTROLS,
     },
     edit({ clientId, context, attributes, setAttributes }) {
-      const currentShape = useSelect(
-        (select) =>
-          map(
-            find(
-              select(Constants.STORE_BLOCK_EDITOR).getBlock(clientId)
-                ?.innerBlocks,
-              ['name', Constants.BLOCK_DATA_ELEMENTS],
-            )?.innerBlocks,
-            'attributes',
-          ) ?? [],
+      const currentShape = map(
+        getShapeBlockInfoFromClientId(clientId),
+        'attributes',
       );
-      // debounced, update `ATTR_SHAPE_VALUE` from InnerBlocks within `BLOCK_DATA_ELEMENTS`
-      useEffect(() =>
-        tryUpdateShape(attributes[ATTR_SHAPE_VALUE], currentShape, (newShape) =>
-          setAttributes({ [ATTR_SHAPE_VALUE]: newShape }),
-        ),
+      // rate limited, update `ATTR_SHAPE_VALUE` from InnerBlocks within `BLOCK_DATA_ELEMENTS`
+      useEffect(
+        () => {
+          tryUpdateShape(
+            attributes[ATTR_SHAPE_VALUE],
+            currentShape,
+            (newShape) => setAttributes({ [ATTR_SHAPE_VALUE]: newShape }),
+          );
+          return tryUpdateShape.cancel;
+        },
+        // comparing object dependencies not always reliable so still throttle just in case
+        [attributes[ATTR_SHAPE_VALUE], currentShape],
       );
       return (
         <div {...useBlockProps()}>
@@ -111,7 +126,8 @@ registerBlockType(
                         Constants.TEXT_DOMAIN,
                       ),
                       deemphasizeAppender: true,
-                      // `BLOCK_DATA_ELEMENT_OPTIONS_OPTION` only supports text
+                      useButtonAppender: true,
+                      // `BLOCK_DATA_ELEMENT_OPTIONS_OPTION` only supports `BLOCK_DATA_ELEMENT_TEXT`
                       allowText: true,
                       allowImages: false,
                       allowOptions: false,
@@ -126,7 +142,21 @@ registerBlockType(
       );
     },
     save() {
-      return <InnerBlocks.Content />;
+      return (
+        <div {...useBlockProps.save()}>
+          <InnerBlocks.Content />
+        </div>
+      );
     },
   }),
 );
+
+function getShapeBlockInfoFromClientId(clientId) {
+  return clientId
+    ? find(
+        select(Constants.STORE_BLOCK_EDITOR)?.getBlock(clientId)?.innerBlocks ??
+          [],
+        ['name', Constants.BLOCK_DATA_ELEMENTS],
+      )?.innerBlocks ?? []
+    : [];
+}

@@ -2,11 +2,11 @@ import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/icons';
 import { endsWith, startsWith } from 'lodash';
 import PropTypes from 'prop-types';
-import { ICON as IMAGE_ICON } from 'src/js/block/helper/data-element-image';
-import { ICON as OPTIONS_ICON } from 'src/js/block/helper/data-element-options';
-import { ICON as TEXT_ICON } from 'src/js/block/helper/data-element-text';
+import { INFO as IMAGE_INFO } from 'src/js/block/helper/data-element-image';
+import { INFO as OPTIONS_INFO } from 'src/js/block/helper/data-element-options';
+import { INFO as TEXT_INFO } from 'src/js/block/helper/data-element-text';
 import * as Constants from 'src/js/constants';
-import { buildSVGDataURI } from 'src/js/utils';
+import { buildSVGDataURI } from 'src/js/utils/attributes';
 
 const OPTION_TEXT_SPACER = ' ';
 
@@ -115,11 +115,11 @@ DataElementOption.MenuItem.propTypes = {
 function getIconFromType(type) {
   switch (type) {
     case Constants.BLOCK_DATA_ELEMENT_TEXT:
-      return TEXT_ICON;
+      return TEXT_INFO.icon;
     case Constants.BLOCK_DATA_ELEMENT_IMAGE:
-      return IMAGE_ICON;
+      return IMAGE_INFO.icon;
     case Constants.BLOCK_DATA_ELEMENT_OPTIONS:
-      return OPTIONS_ICON;
+      return OPTIONS_INFO.icon;
     default:
       return null;
   }
