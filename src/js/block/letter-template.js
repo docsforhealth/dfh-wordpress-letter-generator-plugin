@@ -26,6 +26,7 @@ tryRegisterBlockType(Constants.BLOCK_LETTER_TEMPLATE, {
     [ATTR_ERROR_MESSAGES]: { type: 'array', default: [] },
   },
   edit({ attributes, setAttributes, clientId }) {
+    // will fire on every render because no clear dependency
     const numDataElementsUsed = useSelect(
       (select) =>
         find(

@@ -21,7 +21,7 @@ export const OPTION_OPTIONS_SHAPE_KEY = 'optionsShapeKey';
 export const OPTION_OPTIONS_SHAPE_LABEL = 'optionsShapeLabel';
 
 export const ELEMENT_TAG_NAME = 'span';
-export const ELEMENT_CLASS_NAME = 'data-element-option';
+export const ELEMENT_CLASS_NAME = 'data-element-option-completion';
 
 export const ELEMENT_ATTR_KEY = 'data-letter-element-key';
 export const ELEMENT_ATTR_OPTIONS_SHAPE_KEY =
@@ -30,7 +30,7 @@ export const ELEMENT_ATTR_TYPE = 'data-letter-element-type';
 export const ELEMENT_ATTR_IS_SHARED = 'data-letter-element-is-shared';
 export const ELEMENT_ATTR_ORIGINAL_LABEL = 'data-letter-element-original-label';
 
-export default function DataElementOption(props) {
+export default function DataElementOptionCompletion(props) {
   const { className } = props,
     label = ensureSpaceAround(
       buildOptionText(props[OPTION_LABEL], props[OPTION_OPTIONS_SHAPE_LABEL]),
@@ -59,19 +59,19 @@ export default function DataElementOption(props) {
     <ELEMENT_TAG_NAME
       {...elementAttrs}
       className={`${ELEMENT_CLASS_NAME} ${className ?? ''}`}
-      // See `_data-element-option.scss` file for adding to badges via `background-image`
+      // See `_data-element-option-completion.scss` file for adding to badges via `background-image`
       // 1. We use `background-image` instead of an SVG icon to avoid adding a potentially editable
       // value that needs to be accounted for when ensuring the original text label
       // 2. We need to add a separate `data-letter-element-has-icon` AND a CSS variable because
       // CSS selectors can only use attributes and CSS non-string properties can only use CSS variables
       data-letter-element-has-icon={!!iconDataURI}
-      style={`--dfh-data-element-option-icon: ${iconDataURI}`}
+      style={`--dfh-data-element-option-completion-icon: ${iconDataURI}`}
     >
       {label}
     </ELEMENT_TAG_NAME>
   );
 }
-DataElementOption.propTypes = {
+DataElementOptionCompletion.propTypes = {
   [OPTION_KEY]: PropTypes.string.isRequired,
   [OPTION_LABEL]: PropTypes.string.isRequired,
   [OPTION_IS_SHARED]: PropTypes.bool.isRequired,
@@ -81,15 +81,15 @@ DataElementOption.propTypes = {
   className: PropTypes.string,
 };
 
-// WP autocomplete will wrap the return value from `getOptionLabel` in a `button`
-DataElementOption.MenuItem = function (props) {
+// WP autocomplete will wrap the value of the `label` property in a `button`
+DataElementOptionCompletion.MenuItem = function (props) {
   const icon = getIconFromType(props[OPTION_TYPE]);
   return (
     <>
       {icon && (
-        <Icon icon={icon} className="data-element-option-menu-item__icon" />
+        <Icon icon={icon} className="data-element-option-completion-menu-item__icon" />
       )}
-      <span className="data-element-option-menu-item__label">
+      <span className="data-element-option-completion-menu-item__label">
         {ensureSpaceAround(
           buildOptionText(
             props[OPTION_LABEL],
@@ -98,14 +98,14 @@ DataElementOption.MenuItem = function (props) {
         )}
       </span>
       {props[OPTION_IS_SHARED] && (
-        <span className="data-element-option-menu-item__badge">
+        <span className="data-element-option-completion-menu-item__badge">
           {LABEL_SHARED}
         </span>
       )}
     </>
   );
 };
-DataElementOption.MenuItem.propTypes = {
+DataElementOptionCompletion.MenuItem.propTypes = {
   [OPTION_LABEL]: PropTypes.string.isRequired,
   [OPTION_IS_SHARED]: PropTypes.bool.isRequired,
   [OPTION_TYPE]: PropTypes.string.isRequired,

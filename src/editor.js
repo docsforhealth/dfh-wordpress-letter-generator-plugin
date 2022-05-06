@@ -19,4 +19,5 @@ import 'src/js/block/helper/data-element-options-choices';
 import 'src/js/block/helper/data-element-options-option';
 import 'src/js/block/helper/data-element-text';
 import 'src/js/block/helper/data-elements';
+import 'src/js/block/helper/data-elements-section';
 import 'src/js/block/helper/letter-content';

@@ -1,5 +1,6 @@
 import { getBlockType, registerBlockType } from '@wordpress/blocks';
 import { select } from '@wordpress/data';
+import { filter } from 'lodash';
 import * as Constants from 'src/js/constants';
 
 /**
@@ -46,11 +47,16 @@ export function getTitleFromBlockName(blockName) {
 
 /**
  * Conducts a breadth-first search through blocks for the first occurrence of the block name
- * @param  {String} blockName Name of the block to look for
- * @return {Object}           Found block's editor object
+ * @param  {String} blockName       Name of the block to look for
+ * @param  {?String} parentClientId Optional, client id to start the search from. If absent will
+ *                                  start search at the root of the block tree
+ * @return {Object}                 Found block's editor object
  */
-export function tryFindBlockInfoFromName(blockName) {
-  const blocks = [...(select(Constants.STORE_BLOCK_EDITOR)?.getBlocks() ?? [])];
+export function tryFindBlockInfoFromName(blockName, parentClientId = null) {
+  const { getBlock, getBlocks } = select(Constants.STORE_BLOCK_EDITOR),
+    blocks = filter([
+      ...(parentClientId ? getBlock(parentClientId) : getBlocks() ?? []),
+    ]);
   let foundBlock = null;
   while (blocks.length) {
     const currentBlock = blocks.shift();

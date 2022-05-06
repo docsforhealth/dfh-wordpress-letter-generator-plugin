@@ -2,10 +2,11 @@ import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { createBlock } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import { symbolFilled } from '@wordpress/icons';
-import { filter } from 'lodash';
+import { filter, includes } from 'lodash';
 import { INFO as IMAGE_INFO } from 'src/js/block/helper/data-element-image';
 import { INFO as OPTIONS_INFO } from 'src/js/block/helper/data-element-options';
 import { INFO as TEXT_INFO } from 'src/js/block/helper/data-element-text';
+import { INFO as SECTION_INFO } from 'src/js/block/helper/data-elements-section';
 import AutoLabelAppender from 'src/js/component/auto-label-appender';
 import EditorLabelWrapper from 'src/js/component/editor-label-wrapper';
 import PlaceholderWithOptions from 'src/js/component/placeholder-with-options';
@@ -14,6 +15,29 @@ import useInsertBlock from 'src/js/hook/use-insert-block';
 import { tryRegisterBlockType } from 'src/js/utils/block';
 
 export const ICON = symbolFilled;
+
+/**
+ * Returns only the data elements from `BLOCK_DATA_ELEMENTS`, filtering out any section blocks
+ * @param  {String} clientId Either the clientId of the `BLOCK_DATA_ELEMENTS` block or a parent block
+ * @return {Array}           Array of blockInfo objects for the found data elements
+ */
+export function getOnlyDataElementsFromClientId(clientId) {
+  const dataElementBlocks = [];
+  if (clientId) {
+    // Will start the breadth-first search for `BLOCK_DATA_ELEMENTS` from the provided clientId
+    const blockInfo = tryFindBlockInfoFromName(
+        Constants.BLOCK_DATA_ELEMENTS,
+        clientId,
+      ),
+      dataElementNames = [IMAGE_INFO.name, OPTIONS_INFO.name, TEXT_INFO.name];
+    dataElementBlocks.push(
+      ...filter(blockInfo?.innerBlocks, (block) =>
+        includes(dataElementNames, block.name),
+      ),
+    );
+  }
+  return dataElementBlocks;
+}
 
 tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENTS, {
   apiVersion: 2,
@@ -36,13 +60,14 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENTS, {
     deemphasizeAppender: { type: 'boolean', default: false },
     useButtonAppender: { type: 'boolean', default: false },
     isLocked: { type: 'boolean', default: false },
+    hasSections: { type: 'boolean', default: true },
     allowImages: { type: 'boolean', default: true },
     allowOptions: { type: 'boolean', default: true },
     allowText: { type: 'boolean', default: true },
   },
   edit({ attributes, setAttributes, clientId }) {
     const insertBlock = useInsertBlock(clientId),
-      onSelect = ({ type }) => insertBlock(createBlock(type));
+      onSelect = ({ name }) => insertBlock(createBlock(name));
     return (
       <div {...useBlockProps()}>
         <EditorLabelWrapper label={attributes.label}>
@@ -55,9 +80,10 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENTS, {
                     : Constants.INNER_BLOCKS_UNLOCKED
                 }
                 allowedBlocks={filter([
-                  attributes.allowImages && IMAGE_INFO.type,
-                  attributes.allowOptions && OPTIONS_INFO.type,
-                  attributes.allowText && TEXT_INFO.type,
+                  attributes.hasSections && SECTION_INFO.name,
+                  attributes.allowImages && IMAGE_INFO.name,
+                  attributes.allowOptions && OPTIONS_INFO.name,
+                  attributes.allowText && TEXT_INFO.name,
                 ])}
                 renderAppender={() =>
                   attributes.useButtonAppender ? (
@@ -88,6 +114,11 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENTS, {
                         attributes.allowText && {
                           ...TEXT_INFO,
                           label: TEXT_INFO.title,
+                          onSelect,
+                        },
+                        attributes.hasSections && {
+                          ...SECTION_INFO,
+                          label: SECTION_INFO.title,
                           onSelect,
                         },
                       ])}

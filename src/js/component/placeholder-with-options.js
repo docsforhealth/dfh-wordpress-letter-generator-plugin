@@ -18,10 +18,10 @@ export default function PlaceholderWithOptions({
     >
       <ul className="placeholder-with-options__list">
         {options?.map((option, index) => (
-          <li key={index}>
+          <li key={index} className="placeholder-with-options__option">
             <button
               type="button"
-              className="placeholder-with-options__option"
+              className="placeholder-with-options__option__container"
               onClick={() => option.onSelect?.call(null, option)}
             >
               <span className="placeholder-with-options__option__title">

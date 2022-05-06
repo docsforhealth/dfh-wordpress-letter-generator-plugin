@@ -16,7 +16,7 @@ import { markAttrHiddenInApi } from 'src/js/utils/api';
 import { tryRegisterBlockType } from 'src/js/utils/block';
 
 export const INFO = {
-  type: Constants.BLOCK_DATA_ELEMENT_TEXT,
+  name: Constants.BLOCK_DATA_ELEMENT_TEXT,
   icon: paragraph,
   title: __('Text Element', Constants.TEXT_DOMAIN),
   description: __('Allows entry of text-based values', Constants.TEXT_DOMAIN),
@@ -45,7 +45,7 @@ const TYPE_TO_LABEL = {
 export const TEXT_TYPE_VALUES = keys(TYPE_TO_LABEL);
 
 tryRegisterBlockType(
-  INFO.type,
+  INFO.name,
   merge({}, DataElement.SHARED_CONFIG, INFO, {
     apiVersion: 2,
     attributes: {

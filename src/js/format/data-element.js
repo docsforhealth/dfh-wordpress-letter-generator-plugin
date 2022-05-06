@@ -21,7 +21,7 @@ import {
   ELEMENT_ATTR_TYPE,
   ELEMENT_CLASS_NAME,
   ELEMENT_TAG_NAME,
-} from 'src/js/component/data-element-option';
+} from 'src/js/component/data-element-option-completion';
 import * as Constants from 'src/js/constants';
 import {
   getFormatBounds,
@@ -37,7 +37,7 @@ const settings = {
   object: false,
   // Besides the `type`, the `tagName` and `className` provided must uniquely identify each format type
   // We sync these with the `data-element-option` component so that `rich-text` will identify that
-  // any inserted DataElementOptions are in fact this custom format
+  // any inserted DataElementOptionCompletions are in fact this custom format
   tagName: ELEMENT_TAG_NAME,
   className: ELEMENT_CLASS_NAME,
   // see https://github.com/WordPress/gutenberg/blob/trunk/packages/format-library/src/link/index.js
@@ -51,6 +51,7 @@ const settings = {
   },
   edit({ isActive, activeAttributes, value, onChange, onFocus, contentRef }) {
     // This custom format is only available within `BLOCK_LETTER_CONTENT`
+    // will fire on every render because no clear dependency
     const selectedBlockName = useSelect(
       (select) => select(Constants.STORE_BLOCK_EDITOR).getSelectedBlock()?.name,
     );
@@ -137,8 +138,8 @@ const settings = {
                 // `create` source: https://github.com/WordPress/gutenberg/blob/trunk/packages/rich-text/src/create.js
                 // Instead of using `toggleFormat` (to insert format) or `insertObject` (to insert object),
                 // we are merely inserting a string which will trigger the custom autocomplete.
-                // 2. The autocomplete will insert a DataElementOption that matches the specifications
-                // of this format and will be added as a format. Since the parameters of the DataElementOption
+                // 2. The autocomplete will insert a DataElementOptionCompletion that matches the specifications
+                // of this format and will be added as a format. Since the parameters of the DataElementOptionCompletion
                 // component match this format, then RichText will associate that component with this
                 // custom component, setting the `isActive` and `activeAttributes` props appropriately
                 onChange(insert(value, TRIGGER_PREFIX));

@@ -1,0 +1,38 @@
+.data-elements-section {
+    position: relative;
+    display: flex;
+    z-index: $z-index-reset;
+
+    &:before {
+        content: '';
+        position: absolute;
+        bottom: 15px; // half of WP control height
+        left: 0;
+        transform: translateY(-50%);
+        width: 100%;
+        border-top: 1px solid $color-navy;
+        z-index: $z-index-behind-1;
+    }
+
+    &__control {
+        flex-basis: 85%;
+        padding-right: $baseunit;
+        background-color: $color-white;
+    }
+    & &__control.components-base-control {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+
+    @media (min-width: $media-width-tablet) {
+        &__control {
+            flex-basis: 70%;
+        }
+    }
+    @media (min-width: $media-width-laptop) {
+        &__control {
+            flex-basis: 50%;
+        }
+    }
+}

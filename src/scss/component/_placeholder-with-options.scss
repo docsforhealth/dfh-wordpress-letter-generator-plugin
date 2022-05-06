@@ -23,30 +23,34 @@
         @include scut-list-unstyled;
 
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(1, 1fr);
         grid-gap: $baseunit * 0.5;
         justify-items: stretch;
         margin-top: $baseunit * 0.5;
     }
     & &__option {
-        &[type='button'] {
-            height: 100%;
-            width: 100%;
-            padding: ($baseunit * 0.75) !important;
-            border-radius: $border-radius;
-            border: 1px solid $color-gray-light-1 !important;
-            transition: background-color 0.1s;
-        }
+        margin-bottom: 0; // reset WP inherited list item spacing
+    }
+    &__option {
+        & &__container {
+            &[type='button'] {
+                height: 100%;
+                width: 100%;
+                padding: ($baseunit * 0.75) !important;
+                border-radius: $border-radius;
+                border: 1px solid $color-gray-light-1 !important;
+                transition: background-color 0.1s;
+            }
 
-        // see https://css-tricks.com/snippets/css/link-pseudo-classes-in-order/
-        &:link,
-        &:hover,
-        &:active,
-        &:focus {
-            background-color: $color-gray-light-3 !important;
+            // see https://css-tricks.com/snippets/css/link-pseudo-classes-in-order/
+            &:link,
+            &:hover,
+            &:active,
+            &:focus {
+                background-color: $color-gray-light-3 !important;
+            }
         }
-
-        &,
+        &__container,
         &__title {
             display: flex;
             flex-direction: column;
@@ -64,6 +68,34 @@
         &__title {
             margin-bottom: $baseunit * 0.5;
             font-weight: $font-weight-bold;
+        }
+    }
+    @media (min-width: $media-width-tablet) {
+        &__list {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        // Remaining child spans the remaining columns
+        // see https://stackoverflow.com/a/56339098
+        &__option {
+            &:nth-child(2n-1):nth-last-of-type(1) {
+                grid-column: span 2;
+            }
+        }
+    }
+    @media (min-width: $media-width-laptop) {
+        &__list {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        // Remaining child spans the remaining columns
+        // see https://stackoverflow.com/a/56339098
+        &__option {
+            &:nth-child(3n-1):nth-last-of-type(1) {
+                grid-column: span 2;
+            }
+
+            &:nth-child(3n-2):nth-last-of-type(1) {
+                grid-column: span 3;
+            }
         }
     }
 }

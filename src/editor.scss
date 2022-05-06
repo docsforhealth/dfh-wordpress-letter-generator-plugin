@@ -36,6 +36,8 @@ $path-base-styles: '../src/scss/base';
 // Blocks
 // ------
 
+@import 'scss/block/data-elements-section';
+
 // Formats
 // -------
 
@@ -45,6 +47,6 @@ $path-base-styles: '../src/scss/base';
 // ----------------
 @import 'scss/component/auto-label-appender';
 @import 'scss/component/custom-block-status-info';
-@import 'scss/component/data-element-option';
+@import 'scss/component/data-element-option-completion';
 @import 'scss/component/editor-label-wrapper';
 @import 'scss/component/placeholder-with-options';

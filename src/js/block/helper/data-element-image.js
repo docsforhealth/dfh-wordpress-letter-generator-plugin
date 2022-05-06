@@ -8,7 +8,7 @@ import * as Constants from 'src/js/constants';
 import { tryRegisterBlockType } from 'src/js/utils/block';
 
 export const INFO = {
-  type: Constants.BLOCK_DATA_ELEMENT_IMAGE,
+  name: Constants.BLOCK_DATA_ELEMENT_IMAGE,
   icon: image,
   title: __('Image Element', Constants.TEXT_DOMAIN),
   description: __(
@@ -25,7 +25,7 @@ export const ATTR_DRAW_LABEL = 'drawLabel';
 export { validateBlockInfo } from 'src/js/block/shared/data-element';
 
 tryRegisterBlockType(
-  INFO.type,
+  INFO.name,
   merge({}, DataElement.SHARED_CONFIG, INFO, {
     apiVersion: 2,
     attributes: {

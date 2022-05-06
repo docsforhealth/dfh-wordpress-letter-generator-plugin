@@ -2,6 +2,8 @@ import { useState } from '@wordpress/element';
 import { uniqueId } from 'lodash';
 import PropTypes from 'prop-types';
 
+// TODO make the label look less like an editable field
+
 export default function EditorLabelWrapper({
   label,
   children,

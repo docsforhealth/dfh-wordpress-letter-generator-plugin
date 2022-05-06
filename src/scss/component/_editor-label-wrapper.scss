@@ -12,6 +12,10 @@
         border-color: $color-seafoam-dark-2;
         z-index: $z-index-front-1;
     }
+    // Prevent nested controls from overlapping the sticky parent controls
+    &--open &__content &__controls {
+        z-index: $z-index-reset;
+    }
     &--open &__toggle[type='button']:after {
         background-image: url('../assets/images/icon-minus.svg');
     }

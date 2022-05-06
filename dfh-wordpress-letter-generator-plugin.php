@@ -40,4 +40,5 @@ require_once DLG_PLUGIN_DIR . '/src/php/check-required-dependencies.php';
 // Plugin setup files
 require_once DLG_PLUGIN_DIR . '/src/php/setup/blocks.php';
 require_once DLG_PLUGIN_DIR . '/src/php/setup/block_categories.php';
-require_once DLG_PLUGIN_DIR . '/src/php/setup/custom_content_types.php';
+require_once DLG_PLUGIN_DIR . '/src/php/setup/content_type_letter_template.php';
+require_once DLG_PLUGIN_DIR . '/src/php/setup/content_type_shared_data_element.php';

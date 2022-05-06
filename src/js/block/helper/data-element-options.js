@@ -1,20 +1,20 @@
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { ToggleControl } from '@wordpress/components';
-import { select } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { list } from '@wordpress/icons';
-import { find, isEqual, map, throttle } from 'lodash';
+import { isEqual, map, throttle } from 'lodash';
 import merge from 'lodash.merge';
 import * as Option from 'src/js/block/helper/data-element-options-option';
 import { validateBlockInfo as validateTextBlockInfo } from 'src/js/block/helper/data-element-text';
+import { getOnlyDataElementsFromClientId } from 'src/js/block/helper/data-elements';
 import * as DataElement from 'src/js/block/shared/data-element';
 import * as Constants from 'src/js/constants';
 import { markAttrHiddenInApi } from 'src/js/utils/api';
 import { tryRegisterBlockType } from 'src/js/utils/block';
 
 export const INFO = {
-  type: Constants.BLOCK_DATA_ELEMENT_OPTIONS,
+  name: Constants.BLOCK_DATA_ELEMENT_OPTIONS,
   icon: list,
   title: __('Options Element', Constants.TEXT_DOMAIN),
   description: __(
@@ -24,8 +24,8 @@ export const INFO = {
 };
 export const ATTR_OTHER_OPTION = 'hasOtherOption';
 export const ATTR_NOOP_SHOW_OPTIONS = markAttrHiddenInApi('noopShowOptions');
+export const ATTR_SHAPE_VALUE = markAttrHiddenInApi('shapeOfValue'); // TODO do we need to `markAttrHiddenInApi`??
 
-const ATTR_SHAPE_VALUE = markAttrHiddenInApi('shapeOfValue');
 const ATTR_SHAPE_VISIBLE_CONTROLS = markAttrHiddenInApi('shapeVisibleControls');
 const tryUpdateShape = throttle((oldShape, newShape, updateShape) => {
   if (!isEqual(oldShape, newShape)) {
@@ -36,7 +36,7 @@ const tryUpdateShape = throttle((oldShape, newShape, updateShape) => {
 // Extend the default `validateBlockInfo` implementation
 export function validateBlockInfo(blockInfo) {
   const errors = [...DataElement.validateBlockInfo(blockInfo)],
-    shapeBlockInfo = getShapeBlockInfoFromClientId(blockInfo?.clientId);
+    shapeBlockInfo = getOnlyDataElementsFromClientId(blockInfo?.clientId);
   if (shapeBlockInfo.length) {
     // If FIRST ELEMENT within inner blocks array exists, then check its validity
     // For this options data element to be valid, we only need at least one shape block to be valid
@@ -51,7 +51,7 @@ export function validateBlockInfo(blockInfo) {
 }
 
 tryRegisterBlockType(
-  INFO.type,
+  INFO.name,
   merge({}, DataElement.SHARED_CONFIG, INFO, {
     apiVersion: 2,
     attributes: {
@@ -71,7 +71,7 @@ tryRegisterBlockType(
     },
     edit({ clientId, context, attributes, setAttributes }) {
       const currentShape = map(
-        getShapeBlockInfoFromClientId(clientId),
+        getOnlyDataElementsFromClientId(clientId),
         'attributes',
       );
       // rate limited, update `ATTR_SHAPE_VALUE` from InnerBlocks within `BLOCK_DATA_ELEMENTS`
@@ -128,6 +128,7 @@ tryRegisterBlockType(
                       deemphasizeAppender: true,
                       useButtonAppender: true,
                       // `BLOCK_DATA_ELEMENT_OPTIONS_OPTION` only supports `BLOCK_DATA_ELEMENT_TEXT`
+                      hasSections: false,
                       allowText: true,
                       allowImages: false,
                       allowOptions: false,
@@ -150,13 +151,3 @@ tryRegisterBlockType(
     },
   }),
 );
-
-function getShapeBlockInfoFromClientId(clientId) {
-  return clientId
-    ? find(
-        select(Constants.STORE_BLOCK_EDITOR)?.getBlock(clientId)?.innerBlocks ??
-          [],
-        ['name', Constants.BLOCK_DATA_ELEMENTS],
-      )?.innerBlocks ?? []
-    : [];
-}

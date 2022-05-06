@@ -34,7 +34,7 @@ export const CONTEXT_VISIBLE_CONTROLS_DEFINITION = { type: 'array' };
 
 export const SHARED_CONFIG = {
   category: Constants.CATEGORY_LETTER_TEMPLATE,
-  // parent: [Constants.BLOCK_DATA_ELEMENTS], // TODO
+  parent: [Constants.BLOCK_DATA_ELEMENTS],
   attributes: {
     // If defined, only controls corresponding to attribute keys contained in this array will be
     // shown in the editor. If not defined, then all attribute controls will be shown.

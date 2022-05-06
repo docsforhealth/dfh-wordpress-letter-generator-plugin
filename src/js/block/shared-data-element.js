@@ -63,6 +63,7 @@ tryRegisterBlockType(Constants.BLOCK_SHARED_DATA_ELEMENT, {
     });
     // keep the post title and data element label in sync
     const label = innerBlocks[0]?.attributes?.[ATTR_LABEL],
+      // will fire on every render because no clear dependency
       postTitle = useSelect((select) =>
         select(Constants.STORE_POST_EDITOR).getEditedPostAttribute('title'),
       );
