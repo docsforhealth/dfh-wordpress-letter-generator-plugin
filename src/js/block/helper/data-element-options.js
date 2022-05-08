@@ -7,11 +7,13 @@ import { isEqual, map, throttle } from 'lodash';
 import merge from 'lodash.merge';
 import * as Option from 'src/js/block/helper/data-element-options-option';
 import { validateBlockInfo as validateTextBlockInfo } from 'src/js/block/helper/data-element-text';
-import { getOnlyDataElementsFromClientId } from 'src/js/block/helper/data-elements';
 import * as DataElement from 'src/js/block/shared/data-element';
 import * as Constants from 'src/js/constants';
 import { markAttrHiddenInApi } from 'src/js/utils/api';
-import { tryRegisterBlockType } from 'src/js/utils/block';
+import {
+  tryFindBlockInfoFromName,
+  tryRegisterBlockType,
+} from 'src/js/utils/block';
 
 export const INFO = {
   name: Constants.BLOCK_DATA_ELEMENT_OPTIONS,
@@ -36,12 +38,12 @@ const tryUpdateShape = throttle((oldShape, newShape, updateShape) => {
 // Extend the default `validateBlockInfo` implementation
 export function validateBlockInfo(blockInfo) {
   const errors = [...DataElement.validateBlockInfo(blockInfo)],
-    shapeBlockInfo = getOnlyDataElementsFromClientId(blockInfo?.clientId);
-  if (shapeBlockInfo.length) {
+    shapeDataElementBlocks = getShapeDataElementBlocks(clientId);
+  if (shapeDataElementBlocks.length) {
     // If FIRST ELEMENT within inner blocks array exists, then check its validity
     // For this options data element to be valid, we only need at least one shape block to be valid
     // Assume that all inner blocks are `BLOCK_DATA_ELEMENT_TEXT`
-    errors.push(...validateTextBlockInfo(shapeBlockInfo[0]));
+    errors.push(...validateTextBlockInfo(shapeDataElementBlocks[0]));
   } else {
     errors.push(
       __('Please specify the data each option contains', Constants.TEXT_DOMAIN),
@@ -71,7 +73,7 @@ tryRegisterBlockType(
     },
     edit({ clientId, context, attributes, setAttributes }) {
       const currentShape = map(
-        getOnlyDataElementsFromClientId(clientId),
+        getShapeDataElementBlocks(clientId),
         'attributes',
       );
       // rate limited, update `ATTR_SHAPE_VALUE` from InnerBlocks within `BLOCK_DATA_ELEMENTS`
@@ -114,26 +116,7 @@ tryRegisterBlockType(
               <InnerBlocks
                 templateLock={Constants.INNER_BLOCKS_LOCKED}
                 template={[
-                  [
-                    Constants.BLOCK_DATA_ELEMENTS,
-                    {
-                      label: __(
-                        'What data does each option contain?',
-                        Constants.TEXT_DOMAIN,
-                      ),
-                      appenderLabel: __(
-                        'Add value attribute',
-                        Constants.TEXT_DOMAIN,
-                      ),
-                      deemphasizeAppender: true,
-                      useButtonAppender: true,
-                      // `BLOCK_DATA_ELEMENT_OPTIONS_OPTION` only supports `BLOCK_DATA_ELEMENT_TEXT`
-                      hasSections: false,
-                      allowText: true,
-                      allowImages: false,
-                      allowOptions: false,
-                    },
-                  ],
+                  [Constants.BLOCK_DATA_ELEMENT_OPTIONS_SHAPE],
                   [Constants.BLOCK_DATA_ELEMENT_OPTIONS_CHOICES],
                 ]}
               />
@@ -151,3 +134,16 @@ tryRegisterBlockType(
     },
   }),
 );
+
+// ***********
+// * Helpers *
+// ***********
+
+function getShapeDataElementBlocks(clientId) {
+  return (
+    tryFindBlockInfoFromName(
+      Constants.BLOCK_DATA_ELEMENT_OPTIONS_SHAPE,
+      clientId,
+    )?.innerBlocks ?? []
+  );
+}

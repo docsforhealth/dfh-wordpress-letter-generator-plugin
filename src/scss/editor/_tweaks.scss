@@ -1,0 +1,11 @@
+// Restrict custom appender to custom blocks from this plugin
+// attribute selector: https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors
+[data-type^='dlg/'] {
+    // Ensures that custom appenders used through this plugin for inner blocks display inline
+    // instead of float above the content when positioned absolutely
+    .block-list-appender {
+        position: relative;
+        display: flex;
+        justify-content: right;
+    }
+}

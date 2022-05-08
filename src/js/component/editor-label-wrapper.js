@@ -2,8 +2,6 @@ import { useState } from '@wordpress/element';
 import { uniqueId } from 'lodash';
 import PropTypes from 'prop-types';
 
-// TODO make the label look less like an editable field
-
 export default function EditorLabelWrapper({
   label,
   children,
@@ -17,7 +15,7 @@ export default function EditorLabelWrapper({
     <div
       className={`editor-label-wrapper ${
         collapsible ? 'editor-label-wrapper--has-toggle' : ''
-      } ${isOpen ? 'editor-label-wrapper--open' : ''} ${className ?? ''}`}
+      } ${isOpen ? '' : 'editor-label-wrapper--closed'} ${className ?? ''}`}
     >
       <div className="editor-label-wrapper__controls">
         <label className="editor-label-wrapper__controls__label" htmlFor={id}>

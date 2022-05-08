@@ -45,8 +45,14 @@ $path-base-styles: '../src/scss/base';
 
 // React components
 // ----------------
-@import 'scss/component/auto-label-appender';
+
 @import 'scss/component/custom-block-status-info';
 @import 'scss/component/data-element-option-completion';
 @import 'scss/component/editor-label-wrapper';
 @import 'scss/component/placeholder-with-options';
+@import 'scss/component/single-block-appender';
+
+// Tweaks
+// ------
+
+@import 'scss/editor/tweaks';

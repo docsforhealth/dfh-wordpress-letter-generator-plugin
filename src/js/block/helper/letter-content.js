@@ -19,7 +19,7 @@ tryRegisterBlockType(Constants.BLOCK_LETTER_CONTENT, {
     'Specify letter content with embedded data elements for a letter template',
     Constants.TEXT_DOMAIN,
   ),
-  // supports: { inserter: false }, // TODO
+  supports: { inserter: false },
   attributes: {
     content: { type: 'string', default: '' },
     [ATTR_NUM_BADGES]: { type: 'number', default: 0 },

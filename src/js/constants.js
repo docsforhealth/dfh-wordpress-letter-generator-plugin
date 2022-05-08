@@ -43,6 +43,7 @@ export const BLOCK_DATA_ELEMENT_IMAGE = `${NAMESPACE}/data-image`;
 export const BLOCK_DATA_ELEMENT_OPTIONS = `${NAMESPACE}/data-options`;
 export const BLOCK_DATA_ELEMENT_OPTIONS_CHOICES = `${NAMESPACE}/data-options-choices`;
 export const BLOCK_DATA_ELEMENT_OPTIONS_OPTION = `${NAMESPACE}/data-options-option`;
+export const BLOCK_DATA_ELEMENT_OPTIONS_SHAPE = `${NAMESPACE}/data-options-shape`;
 export const BLOCK_DATA_ELEMENT_TEXT = `${NAMESPACE}/data-text`;
 export const BLOCK_DATA_ELEMENTS = `${NAMESPACE}/data-elements`;
 export const BLOCK_DATA_ELEMENTS_SECTION = `${NAMESPACE}/data-elements-section`;

@@ -7,12 +7,14 @@ import { INFO as IMAGE_INFO } from 'src/js/block/helper/data-element-image';
 import { INFO as OPTIONS_INFO } from 'src/js/block/helper/data-element-options';
 import { INFO as TEXT_INFO } from 'src/js/block/helper/data-element-text';
 import { INFO as SECTION_INFO } from 'src/js/block/helper/data-elements-section';
-import AutoLabelAppender from 'src/js/component/auto-label-appender';
 import EditorLabelWrapper from 'src/js/component/editor-label-wrapper';
 import PlaceholderWithOptions from 'src/js/component/placeholder-with-options';
 import * as Constants from 'src/js/constants';
 import useInsertBlock from 'src/js/hook/use-insert-block';
-import { tryRegisterBlockType } from 'src/js/utils/block';
+import {
+  tryFindBlockInfoFromName,
+  tryRegisterBlockType,
+} from 'src/js/utils/block';
 
 export const ICON = symbolFilled;
 
@@ -57,20 +59,20 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENTS, {
       type: 'string',
       default: __('Add data element', Constants.TEXT_DOMAIN),
     },
-    deemphasizeAppender: { type: 'boolean', default: false },
-    useButtonAppender: { type: 'boolean', default: false },
+    collapsible: { type: 'boolean', default: false },
+    startOpen: { type: 'boolean', default: false },
     isLocked: { type: 'boolean', default: false },
-    hasSections: { type: 'boolean', default: true },
-    allowImages: { type: 'boolean', default: true },
-    allowOptions: { type: 'boolean', default: true },
-    allowText: { type: 'boolean', default: true },
   },
   edit({ attributes, setAttributes, clientId }) {
     const insertBlock = useInsertBlock(clientId),
       onSelect = ({ name }) => insertBlock(createBlock(name));
     return (
       <div {...useBlockProps()}>
-        <EditorLabelWrapper label={attributes.label}>
+        <EditorLabelWrapper
+          label={attributes.label}
+          collapsible={attributes.collapsible}
+          startOpen={attributes.startOpen}
+        >
           {(id) => (
             <div id={id} tabIndex="0">
               <InnerBlocks
@@ -79,52 +81,43 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENTS, {
                     ? Constants.INNER_BLOCKS_LOCKED
                     : Constants.INNER_BLOCKS_UNLOCKED
                 }
-                allowedBlocks={filter([
-                  attributes.hasSections && SECTION_INFO.name,
-                  attributes.allowImages && IMAGE_INFO.name,
-                  attributes.allowOptions && OPTIONS_INFO.name,
-                  attributes.allowText && TEXT_INFO.name,
-                ])}
-                renderAppender={() =>
-                  attributes.useButtonAppender ? (
-                    <AutoLabelAppender
-                      deemphasized={attributes.deemphasizeAppender}
-                      label={attributes.appenderLabel}
-                    />
-                  ) : (
-                    <PlaceholderWithOptions
-                      className={
-                        attributes.deemphasizeAppender
-                          ? 'placeholder-with-options--small'
-                          : ''
-                      }
-                      icon={ICON}
-                      label={attributes.appenderLabel}
-                      options={filter([
-                        attributes.allowImages && {
-                          ...IMAGE_INFO,
-                          label: IMAGE_INFO.title,
-                          onSelect,
-                        },
-                        attributes.allowOptions && {
-                          ...OPTIONS_INFO,
-                          label: OPTIONS_INFO.title,
-                          onSelect,
-                        },
-                        attributes.allowText && {
-                          ...TEXT_INFO,
-                          label: TEXT_INFO.title,
-                          onSelect,
-                        },
-                        attributes.hasSections && {
-                          ...SECTION_INFO,
-                          label: SECTION_INFO.title,
-                          onSelect,
-                        },
-                      ])}
-                    />
-                  )
-                }
+                // NOTE we can't actually prevent any of these four block types from showing up
+                // since all four have `BLOCK_DATA_ELEMENTS` in their `parents` property, which
+                // `allowedBlocks` CANNOT override, see https://github.com/WordPress/gutenberg/issues/32436
+                allowedBlocks={[
+                  SECTION_INFO.name,
+                  IMAGE_INFO.name,
+                  OPTIONS_INFO.name,
+                  TEXT_INFO.name,
+                ]}
+                renderAppender={() => (
+                  <PlaceholderWithOptions
+                    icon={ICON}
+                    label={attributes.appenderLabel}
+                    options={[
+                      {
+                        ...IMAGE_INFO,
+                        label: IMAGE_INFO.title,
+                        onSelect,
+                      },
+                      {
+                        ...OPTIONS_INFO,
+                        label: OPTIONS_INFO.title,
+                        onSelect,
+                      },
+                      {
+                        ...TEXT_INFO,
+                        label: TEXT_INFO.title,
+                        onSelect,
+                      },
+                      {
+                        ...SECTION_INFO,
+                        label: SECTION_INFO.title,
+                        onSelect,
+                      },
+                    ]}
+                  />
+                )}
               />
             </div>
           )}

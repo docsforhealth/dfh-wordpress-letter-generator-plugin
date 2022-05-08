@@ -1,7 +1,9 @@
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
-import AutoLabelAppender from 'src/js/component/auto-label-appender';
+import { CONTEXT_SHAPE_KEY } from 'src/js/block/helper/data-element-options-option';
+import CustomBlockStatusInfo from 'src/js/component/custom-block-status-info';
 import EditorLabelWrapper from 'src/js/component/editor-label-wrapper';
+import SingleBlockAppender from 'src/js/component/single-block-appender';
 import * as Constants from 'src/js/constants';
 import { tryRegisterBlockType } from 'src/js/utils/block';
 
@@ -15,25 +17,41 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_CHOICES, {
     Constants.TEXT_DOMAIN,
   ),
   supports: { inserter: false },
-  edit({ attributes, setAttributes }) {
+  usesContext: [CONTEXT_SHAPE_KEY],
+  edit({ clientId, context, attributes, setAttributes }) {
     return (
       <div {...useBlockProps()}>
-        <EditorLabelWrapper label={__('Option choices', Constants.TEXT_DOMAIN)}>
-          {(id) => (
-            <div id={id} tabIndex="0">
-              <InnerBlocks
-                templateLock={Constants.INNER_BLOCKS_UNLOCKED}
-                allowedBlocks={[Constants.BLOCK_DATA_ELEMENT_OPTIONS_OPTION]}
-                renderAppender={() => (
-                  <AutoLabelAppender
-                    label={__('Add option choice', Constants.TEXT_DOMAIN)}
-                    deemphasized
-                  />
-                )}
-              />
-            </div>
-          )}
-        </EditorLabelWrapper>
+        {context[CONTEXT_SHAPE_KEY]?.length ? (
+          <EditorLabelWrapper
+            label={__('Option choices', Constants.TEXT_DOMAIN)}
+          >
+            {(id) => (
+              <div id={id} tabIndex="0">
+                <InnerBlocks
+                  templateLock={Constants.INNER_BLOCKS_UNLOCKED}
+                  allowedBlocks={[Constants.BLOCK_DATA_ELEMENT_OPTIONS_OPTION]}
+                  renderAppender={() => (
+                    <SingleBlockAppender
+                      label={__('Add choice', Constants.TEXT_DOMAIN)}
+                      blockName={Constants.BLOCK_DATA_ELEMENT_OPTIONS_OPTION}
+                      clientId={clientId}
+                      deemphasized
+                    />
+                  )}
+                />
+              </div>
+            )}
+          </EditorLabelWrapper>
+        ) : (
+          <CustomBlockStatusInfo
+            errors={[
+              __(
+                'Please specify data that each option contains first',
+                Constants.TEXT_DOMAIN,
+              ),
+            ]}
+          />
+        )}
       </div>
     );
   },

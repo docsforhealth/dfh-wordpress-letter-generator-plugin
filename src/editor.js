@@ -17,6 +17,7 @@ import 'src/js/block/helper/data-element-image';
 import 'src/js/block/helper/data-element-options';
 import 'src/js/block/helper/data-element-options-choices';
 import 'src/js/block/helper/data-element-options-option';
+import 'src/js/block/helper/data-element-options-shape';
 import 'src/js/block/helper/data-element-text';
 import 'src/js/block/helper/data-elements';
 import 'src/js/block/helper/data-elements-section';

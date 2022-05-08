@@ -51,7 +51,8 @@ tryRegisterBlockType(Constants.BLOCK_SHARED_DATA_ELEMENT, {
     [ATTR_ERROR_MESSAGES]: { type: 'array', default: [] },
   },
   edit({ attributes, setAttributes, clientId }) {
-    const innerBlocks = getInnerBlocks(clientId);
+    // will fire on every render because no clear dependency
+    const innerBlocks = useSelect((select) => getInnerBlocks(clientId, select));
     // This effect hook will run every time since dependencies are not provided but
     // is rate limited  for better performance
     useEffect(() => {

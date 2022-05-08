@@ -9,7 +9,7 @@ import { paragraph } from '@wordpress/icons';
 import { keys } from 'lodash';
 import merge from 'lodash.merge';
 import * as DataElement from 'src/js/block/shared/data-element';
-import AutoLabelAppender from 'src/js/component/auto-label-appender';
+import SingleBlockAppender from 'src/js/component/single-block-appender';
 import EditorLabelWrapper from 'src/js/component/editor-label-wrapper';
 import * as Constants from 'src/js/constants';
 import { markAttrHiddenInApi } from 'src/js/utils/api';
@@ -48,6 +48,7 @@ tryRegisterBlockType(
   INFO.name,
   merge({}, DataElement.SHARED_CONFIG, INFO, {
     apiVersion: 2,
+    parent: [Constants.BLOCK_DATA_ELEMENT_OPTIONS_SHAPE], // merged with shared array
     attributes: {
       [ATTR_TYPE]: { type: 'string', default: TEXT_TYPE_SHORT },
       [ATTR_PLACEHOLDER]: { type: 'string', default: '' },
@@ -116,14 +117,17 @@ tryRegisterBlockType(
             ) && (
               <EditorLabelWrapper
                 label={__('Example responses', Constants.TEXT_DOMAIN)}
+                collapsible
               >
                 {(id) => (
                   <div id={id} tabIndex="0">
                     <InnerBlocks
                       allowedBlocks={[Constants.DFH_BLOCK_TEXT]}
                       renderAppender={() => (
-                        <AutoLabelAppender
+                        <SingleBlockAppender
                           label={__('Add example', Constants.TEXT_DOMAIN)}
+                          blockName={Constants.DFH_BLOCK_TEXT}
+                          clientId={clientId}
                           deemphasized
                         />
                       )}

@@ -1,0 +1,37 @@
+button[type='button'].single-block-appender {
+    max-width: 75%;
+    padding: ($baseunit * 0.5) $baseunit;
+    background-color: $color-seafoam;
+    border: 1px solid $color-seafoam-dark-2;
+    border-radius: $border-radius;
+    transition: background-color 0.2s, border-color 0.2s;
+
+    // see https://css-tricks.com/snippets/css/link-pseudo-classes-in-order/
+    &:link,
+    &visited,
+    &:hover,
+    &:focus,
+    &:active {
+        background-color: $color-seafoam-dark-1;
+        border-color: $color-seafoam-dark-3;
+    }
+
+    &--deemphasized {
+        background-color: transparent;
+
+        &:link,
+        &visited,
+        &:hover,
+        &:focus,
+        &:active {
+            background-color: $color-seafoam;
+        }
+    }
+}
+
+.single-block-appender {
+    &__label {
+        @extend %default-text;
+        @include scut-truncate;
+    }
+}
