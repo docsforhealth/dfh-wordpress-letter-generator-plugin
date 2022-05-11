@@ -59,8 +59,6 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENTS, {
       type: 'string',
       default: __('Add data element', Constants.TEXT_DOMAIN),
     },
-    collapsible: { type: 'boolean', default: false },
-    startOpen: { type: 'boolean', default: false },
     isLocked: { type: 'boolean', default: false },
   },
   edit({ attributes, setAttributes, clientId }) {
@@ -68,11 +66,7 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENTS, {
       onSelect = ({ name }) => insertBlock(createBlock(name));
     return (
       <div {...useBlockProps()}>
-        <EditorLabelWrapper
-          label={attributes.label}
-          collapsible={attributes.collapsible}
-          startOpen={attributes.startOpen}
-        >
+        <EditorLabelWrapper label={attributes.label}>
           {(id) => (
             <div id={id} tabIndex="0">
               <InnerBlocks

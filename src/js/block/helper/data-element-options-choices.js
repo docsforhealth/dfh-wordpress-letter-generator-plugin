@@ -1,9 +1,9 @@
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import { CONTEXT_SHAPE_KEY } from 'src/js/block/helper/data-element-options-option';
-import CustomBlockStatusInfo from 'src/js/component/custom-block-status-info';
 import EditorLabelWrapper from 'src/js/component/editor-label-wrapper';
 import SingleBlockAppender from 'src/js/component/single-block-appender';
+import StatusInfoDisplay from 'src/js/component/status-info-display';
 import * as Constants from 'src/js/constants';
 import { tryRegisterBlockType } from 'src/js/utils/block';
 
@@ -23,7 +23,7 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_CHOICES, {
       <div {...useBlockProps()}>
         {context[CONTEXT_SHAPE_KEY]?.length ? (
           <EditorLabelWrapper
-            label={__('Option choices', Constants.TEXT_DOMAIN)}
+            label={__('Choices', Constants.TEXT_DOMAIN)}
           >
             {(id) => (
               <div id={id} tabIndex="0">
@@ -43,7 +43,7 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_CHOICES, {
             )}
           </EditorLabelWrapper>
         ) : (
-          <CustomBlockStatusInfo
+          <StatusInfoDisplay
             errors={[
               __(
                 'Please specify data that each option contains first',

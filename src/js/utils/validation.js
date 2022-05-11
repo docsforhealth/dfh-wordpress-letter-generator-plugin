@@ -1,15 +1,6 @@
-import {
-  INFO as IMAGE_INFO,
-  validateBlockInfo as validateImageBlockInfo,
-} from 'src/js/block/helper/data-element-image';
-import {
-  INFO as OPTIONS_INFO,
-  validateBlockInfo as validateOptionsBlockInfo,
-} from 'src/js/block/helper/data-element-options';
-import {
-  INFO as TEXT_INFO,
-  validateBlockInfo as validateTextBlockInfo,
-} from 'src/js/block/helper/data-element-text';
+import { validateBlockInfo as validateOptionsBlockInfo } from 'src/js/block/helper/data-element-options';
+import { validateBlockInfo } from 'src/js/block/shared/data-element';
+import * as Constants from 'src/js/constants';
 
 /**
  * Determines if a given data element block info is valid
@@ -19,14 +10,12 @@ import {
 export function validateDataElement(blockInfo) {
   let errors = [];
   switch (blockInfo?.name) {
-    case IMAGE_INFO.type:
-      errors = validateImageBlockInfo(blockInfo);
+    case Constants.BLOCK_DATA_ELEMENT_IMAGE:
+    case Constants.BLOCK_DATA_ELEMENT_TEXT:
+      errors = validateBlockInfo(blockInfo);
       break;
-    case OPTIONS_INFO.type:
+    case Constants.BLOCK_DATA_ELEMENT_OPTIONS:
       errors = validateOptionsBlockInfo(blockInfo);
-      break;
-    case TEXT_INFO.type:
-      errors = validateTextBlockInfo(blockInfo);
       break;
   }
   return errors;

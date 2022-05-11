@@ -1,0 +1,11 @@
+.custom-block-status-watcher {
+    &--loading {
+        display: flex;
+        align-items: center;
+        gap: $baseunit;
+
+        & .components-spinner {
+            margin: 0;
+        }
+    }
+}

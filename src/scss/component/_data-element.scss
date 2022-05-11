@@ -1,0 +1,46 @@
+// TODO
+
+.data-element {
+    &__header {
+        &__more {
+        }
+    }
+    &__controls, &__contents {
+        &--hidden {
+            display: none;
+        }
+    }
+    &__controls {
+        &__toggles {
+            &__more {
+            }
+        }
+        &__secondary {
+            &__more {
+            }
+        }
+    }
+    &__contents {
+    }
+    &__button {
+    }
+}
+
+.data-element-overlay {
+    &__header {
+        &__title {
+
+        }
+        &__close {
+
+        }
+    }
+    &__contents {
+
+    }
+}
+
+// TODO for data-text
+.help-text-overlay {
+
+}

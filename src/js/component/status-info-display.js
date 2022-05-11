@@ -4,8 +4,8 @@ import * as Constants from 'src/js/constants';
 
 export default function CustomBlockStatusInfo({ validMessage, errors }) {
   return errors?.length ? (
-    <div className="custom-block-status-info custom-block-status-info--invalid">
-      <h3 className="custom-block-status-info__title">
+    <div className="status-info-display status-info-display--invalid">
+      <h3 className="status-info-display__title">
         {__('Errors', Constants.TEXT_DOMAIN)}
       </h3>
       {errors.length ? (
@@ -20,7 +20,7 @@ export default function CustomBlockStatusInfo({ validMessage, errors }) {
       )}
     </div>
   ) : (
-    <div className="custom-block-status-info">{validMessage}</div>
+    <div className="status-info-display">{validMessage}</div>
   );
 }
 CustomBlockStatusInfo.propTypes = {

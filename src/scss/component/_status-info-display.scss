@@ -1,14 +1,4 @@
-.custom-block-status-loading {
-    display: flex;
-    align-items: center;
-    gap: $baseunit;
-
-    & .components-spinner {
-        margin: 0;
-    }
-}
-
-.custom-block-status-info {
+.status-info-display {
     &--invalid {
         margin: $baseunit * -0.5;
         padding: $baseunit * 0.5;

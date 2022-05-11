@@ -19,19 +19,21 @@ import { tryFindBlockInfoFromName } from 'src/js/utils/block';
 
 function LetterTemplateStatus({ wrapperType: StatusWrapper }) {
   const blockInfo = tryFindBlockInfoFromName(Constants.BLOCK_LETTER_TEMPLATE);
-  return blockInfo ? (
-    <StatusWrapper title={TITLE} initialOpen>
-      <CustomBlockStatusWatcher
-        clientId={blockInfo.clientId}
-        validMessage={__(
-          'This letter template is all set!',
-          Constants.TEXT_DOMAIN,
-        )}
-        errorsAttrName={ATTR_ERROR_MESSAGES}
-        lockSavingIfInvalid
-      />
-    </StatusWrapper>
-  ) : null;
+  return (
+    !!blockInfo && (
+      <StatusWrapper title={TITLE} initialOpen>
+        <CustomBlockStatusWatcher
+          clientId={blockInfo.clientId}
+          validMessage={__(
+            'This letter template is all set!',
+            Constants.TEXT_DOMAIN,
+          )}
+          errorsAttrName={ATTR_ERROR_MESSAGES}
+          lockSavingIfInvalid
+        />
+      </StatusWrapper>
+    )
+  );
 }
 LetterTemplateStatus.propTypes = {
   wrapperType: PropTypes.elementType.isRequired,

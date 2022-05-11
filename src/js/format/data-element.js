@@ -21,7 +21,7 @@ import {
   ELEMENT_ATTR_TYPE,
   ELEMENT_CLASS_NAME,
   ELEMENT_TAG_NAME,
-} from 'src/js/component/data-element-option-completion';
+} from 'src/js/component/data-element-completion';
 import * as Constants from 'src/js/constants';
 import {
   getFormatBounds,
@@ -37,7 +37,7 @@ const settings = {
   object: false,
   // Besides the `type`, the `tagName` and `className` provided must uniquely identify each format type
   // We sync these with the `data-element-option` component so that `rich-text` will identify that
-  // any inserted DataElementOptionCompletions are in fact this custom format
+  // any inserted DataElementCompletions are in fact this custom format
   tagName: ELEMENT_TAG_NAME,
   className: ELEMENT_CLASS_NAME,
   // see https://github.com/WordPress/gutenberg/blob/trunk/packages/format-library/src/link/index.js
@@ -138,8 +138,8 @@ const settings = {
                 // `create` source: https://github.com/WordPress/gutenberg/blob/trunk/packages/rich-text/src/create.js
                 // Instead of using `toggleFormat` (to insert format) or `insertObject` (to insert object),
                 // we are merely inserting a string which will trigger the custom autocomplete.
-                // 2. The autocomplete will insert a DataElementOptionCompletion that matches the specifications
-                // of this format and will be added as a format. Since the parameters of the DataElementOptionCompletion
+                // 2. The autocomplete will insert a DataElementCompletion that matches the specifications
+                // of this format and will be added as a format. Since the parameters of the DataElementCompletion
                 // component match this format, then RichText will associate that component with this
                 // custom component, setting the `isActive` and `activeAttributes` props appropriately
                 onChange(insert(value, TRIGGER_PREFIX));

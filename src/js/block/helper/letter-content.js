@@ -52,12 +52,12 @@ tryRegisterBlockType(Constants.BLOCK_LETTER_CONTENT, {
       </div>
     );
   },
-  save() {
+  save({ attributes }) {
     // Should be used within the `save` hook to properly save `content`
     // see https://github.com/WordPress/gutenberg/tree/trunk/packages/block-editor/src/components/rich-text#richtextcontent
     return (
       <div {...useBlockProps.save()}>
-        <RichText.Content />
+        <RichText.Content value={attributes.content} />
       </div>
     );
   },

@@ -1,0 +1,40 @@
+.collapsible {
+    &__contents {
+        @include scroll-vertical;
+
+        max-height: 0;
+        transition: max-height 0.3s;
+    }
+    &--open &__contents {
+        max-height: 70vh;
+    }
+}
+
+button.collapsible-toggle {
+    &[type='button'] {
+        flex-grow: 0;
+        flex-shrink: 0;
+
+        position: relative;
+        height: $baseunit * 1.5;
+        width: $baseunit * 1.5;
+        border: 0;
+        padding: $baseunit * 0.5;
+    }
+    &:after {
+        @include scut-center-transform;
+
+        content: '';
+        display: block;
+        width: 100%;
+        height: 100%;
+        background-image: url('../assets/images/icon-plus.svg');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    &--open[type='button']:after {
+        background-image: url('../assets/images/icon-minus.svg');
+    }
+}

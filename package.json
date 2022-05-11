@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "license": "Apache-2.0",
   "scripts": {
+    "git:pull": "git pull && git submodule foreach git pull origin master",
     "build:sass": "npx sass --quiet-deps --load-path=node_modules src:build",
     "build:wp": "npx wp-scripts build",
     "watch:sass": "npx concurrently \"npm:build:sass\" \"npm:build:sass -- --watch\"",

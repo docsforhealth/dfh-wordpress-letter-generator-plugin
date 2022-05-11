@@ -1,21 +1,28 @@
 import { useBlockProps } from '@wordpress/block-editor';
-import { TextControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import * as TextDataElement from 'src/js/block/helper/data-element-text';
-import * as DataElement from 'src/js/block/shared/data-element';
-import OptionChoiceValue from 'src/js/component/option-choice-value';
+import {
+  ATTR_PLACEHOLDER,
+  ATTR_TYPE,
+} from 'src/js/block/helper/data-element-text';
+import {
+  ATTR_HELP_TEXT,
+  ATTR_KEY,
+  ATTR_LABEL,
+} from 'src/js/block/shared/data-element';
+import DataElementOption from 'src/js/component/data-element-option';
 import * as Constants from 'src/js/constants';
 import { tryRegisterBlockType } from 'src/js/utils/block';
 
-// Expected: shape is the an array of the attributes of the TEXT DATA ELEMENTS
+// IMPORTANT: shape is the an array of the ATTRIBUTES of the TEXT DATA ELEMENTS
 export const CONTEXT_SHAPE_KEY = `${Constants.BLOCK_DATA_ELEMENT_OPTIONS_OPTION}/shape`;
 export const CONTEXT_SHAPE_DEFINITION = { type: 'array' };
+
 export const EXPECTED_VISIBLE_ATTRS = [
-  DataElement.ATTR_KEY,
-  TextDataElement.ATTR_TYPE,
-  DataElement.ATTR_LABEL,
-  TextDataElement.ATTR_PLACEHOLDER,
-  DataElement.ATTR_HELP_TEXT,
+  ATTR_KEY,
+  ATTR_TYPE,
+  ATTR_LABEL,
+  ATTR_PLACEHOLDER,
+  ATTR_HELP_TEXT,
 ];
 
 tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_OPTION, {
@@ -39,27 +46,17 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_OPTION, {
   edit({ attributes, context, setAttributes }) {
     return (
       <div {...useBlockProps()}>
-        <TextControl
-          label={__('Option Label', Constants.TEXT_DOMAIN)}
-          value={attributes.label}
-          onChange={(label) => setAttributes({ label })}
+        <DataElementOption
+          label={attributes.label}
+          thisValue={attributes.value}
+          shapeValues={context[CONTEXT_SHAPE_KEY]}
+          updateLabel={(label) => setAttributes({ label })}
+          updateThisValue={(dataKey, newValue) =>
+            setAttributes({
+              value: { ...attributes.value, [dataKey]: newValue },
+            })
+          }
         />
-        {context[CONTEXT_SHAPE_KEY]?.map((singleValueAttrs) => {
-          const dataKey = singleValueAttrs[DataElement.ATTR_KEY];
-          return (
-            <OptionChoiceValue
-              {...singleValueAttrs}
-              key={dataKey}
-              // Set default as empty string to prevent uncontrolled-->controlled errors
-              value={attributes.value?.[dataKey] ?? ''}
-              onChange={(dataKey, newValue) =>
-                setAttributes({
-                  value: { ...attributes.value, [dataKey]: newValue },
-                })
-              }
-            />
-          );
-        })}
       </div>
     );
   },

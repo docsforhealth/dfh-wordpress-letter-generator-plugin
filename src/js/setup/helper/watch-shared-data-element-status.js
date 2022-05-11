@@ -21,19 +21,21 @@ function SharedDataElementStatus({ wrapperType: StatusWrapper }) {
   const blockInfo = tryFindBlockInfoFromName(
     Constants.BLOCK_SHARED_DATA_ELEMENT,
   );
-  return blockInfo ? (
-    <StatusWrapper title={TITLE} initialOpen>
-      <CustomBlockStatusWatcher
-        clientId={blockInfo.clientId}
-        validMessage={__(
-          'This shared data element is all set!',
-          Constants.TEXT_DOMAIN,
-        )}
-        errorsAttrName={ATTR_ERROR_MESSAGES}
-        lockSavingIfInvalid
-      />
-    </StatusWrapper>
-  ) : null;
+  return (
+    !!blockInfo && (
+      <StatusWrapper title={TITLE} initialOpen>
+        <CustomBlockStatusWatcher
+          clientId={blockInfo.clientId}
+          validMessage={__(
+            'This shared data element is all set!',
+            Constants.TEXT_DOMAIN,
+          )}
+          errorsAttrName={ATTR_ERROR_MESSAGES}
+          lockSavingIfInvalid
+        />
+      </StatusWrapper>
+    )
+  );
 }
 SharedDataElementStatus.propTypes = {
   wrapperType: PropTypes.elementType.isRequired,

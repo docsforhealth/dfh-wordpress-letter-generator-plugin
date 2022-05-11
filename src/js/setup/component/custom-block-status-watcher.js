@@ -4,7 +4,7 @@ import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { isEqual, throttle } from 'lodash';
 import PropTypes from 'prop-types';
-import CustomBlockStatusInfo from 'src/js/component/custom-block-status-info';
+import StatusInfoDisplay from 'src/js/component/status-info-display';
 import * as Constants from 'src/js/constants';
 import useMountedStatus from 'src/js/hook/use-mounted-status';
 import LockPostSavingIfInvalid from 'src/js/setup/component/lock-post-saving-if-invalid';
@@ -64,13 +64,13 @@ export default function CustomBlockStatusWatcher({
   );
   // `errors` is null prior to the `useEffect` hook running so this component is still initializing
   return errors === null ? (
-    <div className="custom-block-status-loading">
+    <div className="custom-block-status-watcher custom-block-status-watcher--loading">
       <Spinner />
       {__('Validating...', Constants.TEXT_DOMAIN)}
     </div>
   ) : (
     <>
-      <CustomBlockStatusInfo validMessage={validMessage} errors={errors} />
+      <StatusInfoDisplay validMessage={validMessage} errors={errors} />
       {lockSavingIfInvalid && (
         <LockPostSavingIfInvalid isValid={!errors?.length} />
       )}

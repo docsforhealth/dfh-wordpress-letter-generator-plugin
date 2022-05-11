@@ -13,7 +13,7 @@ import {
 import { ATTR_SHAPE_VALUE } from 'src/js/block/helper/data-element-options';
 import { getOnlyDataElementsFromClientId } from 'src/js/block/helper/data-elements';
 import { ATTR_KEY, ATTR_LABEL } from 'src/js/block/shared/data-element';
-import DataElementOptionCompletion, {
+import DataElementCompletion, {
   LABEL_SHARED,
   OPTION_IS_SHARED,
   OPTION_KEY,
@@ -21,7 +21,7 @@ import DataElementOptionCompletion, {
   OPTION_OPTIONS_SHAPE_KEY,
   OPTION_OPTIONS_SHAPE_LABEL,
   OPTION_TYPE,
-} from 'src/js/component/data-element-option-completion';
+} from 'src/js/component/data-element-completion';
 import * as Constants from 'src/js/constants';
 import { tryFindBlockInfoFromName } from 'src/js/utils/block';
 
@@ -35,7 +35,7 @@ const dataElementCompleter = {
   triggerPrefix: TRIGGER_PREFIX,
   // This class is applied to the `button` used in the popover autocomplete menu that wraps the
   // React element in the `label` property of the completer options returned by `useItems`
-  className: 'data-element-option-menu-item',
+  className: 'data-element-completion-menu-item',
   // Need to use the undocumented `useItems` property instead of the documented `options` property
   // in order to be able to use hooks. We cannot use hooks inside of `options` even if it is a function
   // because this will be called within `useLayoutEffect` hook, which violates the Rules of Hooks
@@ -134,7 +134,7 @@ const dataElementCompleter = {
   },
   // Inserting completion into text should replace trigger text with the specified `value`
   getOptionCompletion(option, filteredVal) {
-    return <DataElementOptionCompletion {...option} />;
+    return <DataElementCompletion {...option} />;
   },
 };
 
@@ -235,7 +235,7 @@ function optionsToCompleterItem(option) {
  * @return {Element}       React element that is wrapped in a `button` with the `className` specified above
  */
 function getOptionLabel(option) {
-  return <DataElementOptionCompletion.MenuItem {...option} />;
+  return <DataElementCompletion.MenuItem {...option} />;
 }
 
 /**

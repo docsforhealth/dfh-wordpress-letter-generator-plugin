@@ -1,4 +1,4 @@
-.data-element-option-completion {
+.data-element-completion {
     position: relative;
     display: inline-block;
     color: $color-seafoam-dark-4;
@@ -56,9 +56,9 @@
             // 2. Chromium-based browsers require `-webkit-` prefix
             // 3. the shorthand `mask` syntax parallels the `background` shorthand syntax
             // see https://css-tricks.com/almanac/properties/b/background/
-            mask: var(--dfh-data-element-option-completion-icon) center /
+            mask: var(--dfh-data-element-completion-icon) center /
                 ($baseunit * 0.75) no-repeat;
-            -webkit-mask: var(--dfh-data-element-option-completion-icon) center /
+            -webkit-mask: var(--dfh-data-element-completion-icon) center /
                 ($baseunit * 0.75) no-repeat;
         }
         &[data-letter-element-is-shared='true']:after {
@@ -67,7 +67,7 @@
     }
 }
 
-.data-element-option-completion-menu-item {
+.data-element-completion-menu-item {
     display: flex;
     align-items: center;
 
