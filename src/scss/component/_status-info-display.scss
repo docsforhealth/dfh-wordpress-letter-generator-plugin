@@ -1,14 +1,6 @@
 .status-info-display {
-    &--invalid {
-        margin: $baseunit * -0.5;
-        padding: $baseunit * 0.5;
-        border: 1px solid $color-red;
-        border-radius: $border-radius;
-        background-color: $color-red-light-1;
-    }
-    &--invalid &__title {
-        color: $color-red-dark-1;
-    }
+    animation: fade-in 0.2s;
+
     & &__title {
         position: relative;
         margin: ($baseunit * 0.5) 0 $baseunit;
@@ -29,5 +21,20 @@
             background-repeat: no-repeat;
             background-size: contain;
         }
+    }
+    & &__message {
+        padding-left: $baseunit * 2;
+        margin-bottom: $baseunit * 0.5;
+    }
+
+    &--invalid {
+        margin: $baseunit * -0.5;
+        padding: $baseunit * 0.5;
+        border: 1px solid $color-red;
+        border-radius: $border-radius;
+        background-color: $color-red-light-1;
+    }
+    &--invalid &__title {
+        color: $color-red-dark-1;
     }
 }

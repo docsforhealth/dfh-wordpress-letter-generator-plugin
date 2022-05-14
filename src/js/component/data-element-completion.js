@@ -6,7 +6,7 @@ import { INFO as IMAGE_INFO } from 'src/js/block/helper/data-element-image';
 import { INFO as OPTIONS_INFO } from 'src/js/block/helper/data-element-options';
 import { INFO as TEXT_INFO } from 'src/js/block/helper/data-element-text';
 import * as Constants from 'src/js/constants';
-import { buildSVGDataURI } from 'src/js/utils/attribute';
+import { buildSVGDataURI } from 'src/js/utils/component';
 
 const OPTION_TEXT_SPACER = ' ';
 

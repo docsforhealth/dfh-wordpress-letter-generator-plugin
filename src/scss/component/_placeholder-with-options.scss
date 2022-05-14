@@ -83,9 +83,12 @@
             &:nth-child(3n-1):nth-last-of-type(1) {
                 grid-column: span 2;
             }
-
             &:nth-child(3n-2):nth-last-of-type(1) {
                 grid-column: span 3;
+            }
+            // New addition needed for odd-numbered columns
+            &:nth-child(3n):nth-last-of-type(1) {
+                grid-column: span 1;
             }
         }
     }

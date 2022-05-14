@@ -6,10 +6,6 @@ button[type='button'].single-block-appender {
     border-radius: $border-radius;
     transition: background-color 0.2s, border-color 0.2s;
 
-    @media (min-width: $media-width-landscape-medium-mobile) {
-        max-width: 75%;
-    }
-
     // see https://css-tricks.com/snippets/css/link-pseudo-classes-in-order/
     &:link,
     &visited,

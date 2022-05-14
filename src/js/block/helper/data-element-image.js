@@ -1,7 +1,6 @@
 import { useBlockProps } from '@wordpress/block-editor';
-import { Fill } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { Icon, image } from '@wordpress/icons';
+import { image } from '@wordpress/icons';
 import merge from 'lodash.merge';
 import {
   ATTR_VISIBLE_CONTROLS,
@@ -11,7 +10,6 @@ import {
   SHARED_CONFIG,
 } from 'src/js/block/shared/data-element';
 import DataElementImage from 'src/js/component/data-element-image';
-import HelpLabel from 'src/js/component/help-label';
 import * as Constants from 'src/js/constants';
 import { tryRegisterBlockType } from 'src/js/utils/block';
 import {
@@ -55,45 +53,26 @@ tryRegisterBlockType(
           attributes={attributes}
           setAttributes={setAttributes}
         >
-          {({ headerSlotName }) => (
-            <>
-              <Fill name={headerSlotName}>
-                <HelpLabel
-                  wrapperElementType="div"
-                  wrapperProps={{ className: 'data-element__header__icon' }}
-                  text={INFO.title}
-                >
-                  <Icon icon={INFO.icon} />
-                </HelpLabel>
-              </Fill>
-              <DataElementImage
-                uploadLabel={{
-                  shouldShow: shouldShowControl(
-                    visibleControls,
-                    ATTR_UPLOAD_LABEL,
-                  ),
-                  value: attributes[ATTR_UPLOAD_LABEL],
-                  onChange: (uploadLabel) =>
-                    setAttributes({ [ATTR_UPLOAD_LABEL]: uploadLabel }),
-                }}
-                canDraw={{
-                  shouldShow: shouldShowControl(visibleControls, ATTR_CAN_DRAW),
-                  value: attributes[ATTR_CAN_DRAW],
-                  onChange: (canDraw) =>
-                    setAttributes({ [ATTR_CAN_DRAW]: canDraw }),
-                }}
-                drawLabel={{
-                  shouldShow: shouldShowControl(
-                    visibleControls,
-                    ATTR_DRAW_LABEL,
-                  ),
-                  value: attributes[ATTR_DRAW_LABEL],
-                  onChange: (drawLabel) =>
-                    setAttributes({ [ATTR_DRAW_LABEL]: drawLabel }),
-                }}
-              />
-            </>
-          )}
+          <DataElementImage
+            uploadLabel={{
+              shouldShow: shouldShowControl(visibleControls, ATTR_UPLOAD_LABEL),
+              value: attributes[ATTR_UPLOAD_LABEL],
+              onChange: (uploadLabel) =>
+                setAttributes({ [ATTR_UPLOAD_LABEL]: uploadLabel }),
+            }}
+            canDraw={{
+              shouldShow: shouldShowControl(visibleControls, ATTR_CAN_DRAW),
+              value: attributes[ATTR_CAN_DRAW],
+              onChange: (canDraw) =>
+                setAttributes({ [ATTR_CAN_DRAW]: canDraw }),
+            }}
+            drawLabel={{
+              shouldShow: shouldShowControl(visibleControls, ATTR_DRAW_LABEL),
+              value: attributes[ATTR_DRAW_LABEL],
+              onChange: (drawLabel) =>
+                setAttributes({ [ATTR_DRAW_LABEL]: drawLabel }),
+            }}
+          />
         </Edit>
       );
     },

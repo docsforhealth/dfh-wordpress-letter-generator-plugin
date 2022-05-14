@@ -1,0 +1,32 @@
+.data-element-overlay {
+    animation: fade-in 0.1s;
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: $baseunit;
+        height: $height-control;
+        border-bottom: 1px solid $color-seafoam-dark-2;
+        background-color: $color-seafoam;
+
+        &__title {
+            flex-grow: 1;
+
+            padding-left: $baseunit;
+        }
+        &__close[type='button'] {
+            flex-grow: 0;
+            flex-shrink: 0;
+            height: $height-control;
+        }
+    }
+    &__contents {
+        padding: $baseunit;
+    }
+}
+.editor-styles-wrapper
+    .data-element-overlay
+    .data-element-overlay__header__close {
+    padding: 0 $baseunit;
+}

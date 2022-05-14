@@ -1,24 +1,27 @@
-import { forwardRef, useEffect } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { useSelect } from '@wordpress/data';
+import { forwardRef, useEffect, useState } from '@wordpress/element';
+import { isEqual, throttle } from 'lodash';
 import PropTypes from 'prop-types';
 import DataElement from 'src/js/component/data-element';
 import * as Constants from 'src/js/constants';
 import { markAttrHiddenInApi } from 'src/js/utils/api';
-import { getTitleFromBlockName } from 'src/js/utils/block';
 import {
   reconcileVisibleAttrsAndContext,
   shouldShowControl,
 } from 'src/js/utils/data-element';
-
-// TODO inline error styling for controls that are required but empty!!!
+import {
+  ATTR_KEY,
+  ATTR_LABEL,
+  validateDataElement,
+  validateDataElementDependencies,
+} from 'src/js/utils/validation';
 
 // **************
 // * Attributes *
 // **************
 
+export { ATTR_KEY, ATTR_LABEL } from 'src/js/utils/validation';
 export const ATTR_VISIBLE_CONTROLS = markAttrHiddenInApi('controlsToShow');
-export const ATTR_KEY = 'dataKey';
-export const ATTR_LABEL = 'label';
 export const ATTR_HELP_TEXT = 'helpText';
 export const ATTR_SAVEABLE = 'saveable';
 export const ATTR_REQUIRED = 'required';
@@ -26,30 +29,6 @@ export const ATTR_REQUIRED = 'required';
 // Can specify visible controls via Context if needed instead of via directly-passed attribute
 export const CONTEXT_VISIBLE_CONTROLS_KEY = `${Constants.NAMESPACE}/data-element/${ATTR_VISIBLE_CONTROLS}`;
 export const CONTEXT_VISIBLE_CONTROLS_DEFINITION = { type: 'array' };
-
-// **************
-// * Validation *
-// **************
-
-// Given the block type obtained from the `core/block-editor` store, determines if this block is valid
-// This is the default implementation that blocks can leverage if desired.
-export function validateBlockInfo(blockInfo) {
-  const blockTitle = getTitleFromBlockName(blockInfo?.name);
-  const errors = [];
-  if (!blockInfo?.attributes?.[ATTR_LABEL]) {
-    errors.push(
-      __('Please specify a label for', Constants.TEXT_DOMAIN) +
-        ' ' +
-        blockTitle,
-    );
-  }
-  if (!blockInfo?.attributes?.[ATTR_KEY]) {
-    errors.push(
-      __('Missing a unique key for', Constants.TEXT_DOMAIN) + ' ' + blockTitle,
-    );
-  }
-  return errors;
-}
 
 // **********
 // * Config *
@@ -77,11 +56,27 @@ export const SHARED_CONFIG = {
 // * Edit *
 // ********
 
+const tryValidateSelf = throttle((blockInfo, oldErrors, updateErrors) => {
+  const newErrors = validateDataElement(blockInfo);
+  if (!isEqual(oldErrors, newErrors)) {
+    updateErrors(newErrors);
+  }
+}, 200);
+
 export const Edit = forwardRef(
   (
     { clientId, context, attributes, setAttributes, children, ...otherProps },
     ref,
   ) => {
+    // Validate self, watch own dependencies via `validateDataElementDependencies`
+    const [errors, setErrors] = useState(null),
+      thisBlockInfo = useSelect((select) =>
+        select(Constants.STORE_BLOCK_EDITOR).getBlock(clientId),
+      );
+    useEffect(() => {
+      tryValidateSelf(thisBlockInfo, errors, setErrors);
+      return tryValidateSelf.cancel;
+    }, validateDataElementDependencies(thisBlockInfo));
     // if key is null on initial insertion, set unique key programmatically ONCE
     useEffect(() => {
       if (!attributes[ATTR_KEY]) {
@@ -99,6 +94,7 @@ export const Edit = forwardRef(
         className={`${otherProps.className} ${
           attributes[ATTR_REQUIRED] ? 'data-element--required' : ''
         }`}
+        errors={errors}
         clientId={clientId}
         label={{
           value: attributes[ATTR_LABEL],

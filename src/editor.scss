@@ -40,6 +40,7 @@ $path-base-styles: '../src/scss/base';
 @import 'scss/block/data-element-options-choices';
 @import 'scss/block/data-element-options-shape';
 @import 'scss/block/data-element-text';
+@import 'scss/block/data-elements';
 @import 'scss/block/data-elements-section';
 
 // Formats
@@ -56,6 +57,7 @@ $path-base-styles: '../src/scss/base';
 @import 'scss/component/data-element-completion';
 @import 'scss/component/data-element-image';
 @import 'scss/component/data-element-option';
+@import 'scss/component/data-element-overlay';
 @import 'scss/component/editor-label-wrapper';
 @import 'scss/component/placeholder-with-options';
 @import 'scss/component/single-block-appender';

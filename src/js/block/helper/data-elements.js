@@ -68,7 +68,7 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENTS, {
       <div {...useBlockProps()}>
         <EditorLabelWrapper label={attributes.label}>
           {(id) => (
-            <div id={id} tabIndex="0">
+            <div id={id} tabIndex="0" className="data-elements-container">
               <InnerBlocks
                 templateLock={
                   attributes.isLocked

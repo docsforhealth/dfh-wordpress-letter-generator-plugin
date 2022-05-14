@@ -49,6 +49,11 @@
                 font-style: italic;
                 margin-right: $baseunit * 0.25;
             }
+
+            &--missing {
+                color: $color-red-dark-1;
+                font-weight: $font-weight-bold;
+            }
         }
     }
 }

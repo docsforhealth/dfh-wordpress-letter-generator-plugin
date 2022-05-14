@@ -2,7 +2,7 @@ import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { Fill, ToggleControl } from '@wordpress/components';
 import { createContext, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { Icon, list } from '@wordpress/icons';
+import { list } from '@wordpress/icons';
 import { isEqual, map, throttle } from 'lodash';
 import merge from 'lodash.merge';
 import {
@@ -17,16 +17,13 @@ import {
   Edit,
   Save,
   SHARED_CONFIG,
-  validateBlockInfo as validateBaseBlockInfo,
 } from 'src/js/block/shared/data-element';
 import HelpLabel from 'src/js/component/help-label';
 import * as Constants from 'src/js/constants';
 import { markAttrHiddenInApi } from 'src/js/utils/api';
+import { tryRegisterBlockType } from 'src/js/utils/block';
 import {
-  tryFindBlockInfoFromName,
-  tryRegisterBlockType,
-} from 'src/js/utils/block';
-import {
+  getShapeDataElementBlocks,
   reconcileVisibleAttrsAndContext,
   shouldShowControl,
 } from 'src/js/utils/data-element';
@@ -54,23 +51,6 @@ const tryUpdateShape = throttle((oldShape, newShape, updateShape) => {
 // Create a React Context so that `BLOCK_DATA_ELEMENT_OPTIONS_SHAPE` can access
 // its slot name without needing to persist an attribute if using WP's Context implementation
 export const SlotNameContext = createContext();
-
-// Extend the default `validateBlockInfo` implementation
-export function validateBlockInfo(blockInfo) {
-  const errors = [...validateBaseBlockInfo(blockInfo)],
-    shapeDataElementBlocks = getShapeDataElementBlocks(clientId);
-  if (shapeDataElementBlocks.length) {
-    // If FIRST ELEMENT within inner blocks array exists, then check its validity
-    // For this options data element to be valid, we only need at least one shape block to be valid
-    // Assume that all inner blocks are `BLOCK_DATA_ELEMENT_TEXT`, which uses the base block validation
-    errors.push(...validateBaseBlockInfo(shapeDataElementBlocks[0]));
-  } else {
-    errors.push(
-      __('Please specify the data each option contains', Constants.TEXT_DOMAIN),
-    );
-  }
-  return errors;
-}
 
 tryRegisterBlockType(
   INFO.name,
@@ -123,7 +103,6 @@ tryRegisterBlockType(
           setAttributes={setAttributes}
         >
           {({
-            headerSlotName,
             togglesSlotName,
             secondaryControlsSlotName,
             overlaySlotName,
@@ -131,15 +110,6 @@ tryRegisterBlockType(
             <SlotNameContext.Provider
               value={{ secondaryControlsSlotName, overlaySlotName }}
             >
-              <Fill name={headerSlotName}>
-                <HelpLabel
-                  wrapperElementType="div"
-                  wrapperProps={{ className: 'data-element__header__icon' }}
-                  text={INFO.title}
-                >
-                  <Icon icon={INFO.icon} />
-                </HelpLabel>
-              </Fill>
               <Fill name={togglesSlotName}>
                 {shouldShowControl(visibleControls, ATTR_OTHER_OPTION) && (
                   <HelpLabel
@@ -185,16 +155,3 @@ tryRegisterBlockType(
     },
   }),
 );
-
-// ***********
-// * Helpers *
-// ***********
-
-function getShapeDataElementBlocks(clientId) {
-  return (
-    tryFindBlockInfoFromName(
-      Constants.BLOCK_DATA_ELEMENT_OPTIONS_SHAPE,
-      clientId,
-    )?.innerBlocks ?? []
-  );
-}

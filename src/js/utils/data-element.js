@@ -1,5 +1,7 @@
 import { every } from 'lodash';
 import PropTypes from 'prop-types';
+import * as Constants from 'src/js/constants';
+import { tryFindBlockInfoFromName } from 'src/js/utils/block';
 
 /**
  * Reconciles which controls should be visible when specified in both attribute and via context.
@@ -53,4 +55,18 @@ export function buildAttrPropType(valuePropType, isRequired) {
  */
 export function slotName(root, clientId) {
   return `${root}-${clientId}`;
+}
+
+/**
+ * Find the `BLOCK_DATA_ELEMENT_OPTIONS_SHAPE` and retrieve its inner block
+ * @param  {String} clientId Block client id to start the search from
+ * @return {Array}           Array of inner block infos within the found shape block
+ */
+export function getShapeDataElementBlocks(clientId) {
+  return (
+    tryFindBlockInfoFromName(
+      Constants.BLOCK_DATA_ELEMENT_OPTIONS_SHAPE,
+      clientId,
+    )?.innerBlocks ?? []
+  );
 }

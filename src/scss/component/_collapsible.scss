@@ -3,7 +3,7 @@
         @include scroll-vertical;
 
         max-height: 0;
-        transition: max-height 0.3s;
+        transition: max-height 0.2s;
     }
     &--open &__contents {
         max-height: 70vh;

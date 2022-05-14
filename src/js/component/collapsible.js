@@ -40,7 +40,7 @@ export function ToggleButton({ isOpen, setIsOpen }) {
       }`}
       onClick={() => setIsOpen(!isOpen)}
     >
-      <VisuallyHidden as="span">Toggle visibility for content</VisuallyHidden>
+      <VisuallyHidden as="span">Toggle visibility</VisuallyHidden>
     </button>
   );
 }

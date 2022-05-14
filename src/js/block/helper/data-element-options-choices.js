@@ -6,7 +6,6 @@ import EditorLabelWrapper, {
   STYLE_FORM_LABEL,
 } from 'src/js/component/editor-label-wrapper';
 import SingleBlockAppender from 'src/js/component/single-block-appender';
-import StatusInfoDisplay from 'src/js/component/status-info-display';
 import * as Constants from 'src/js/constants';
 import { countInnerBlocks, tryRegisterBlockType } from 'src/js/utils/block';
 
@@ -27,7 +26,7 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_CHOICES, {
     );
     return (
       <div {...useBlockProps({ className: 'data-element-options-choices' })}>
-        {context[CONTEXT_SHAPE_KEY]?.length ? (
+        {!!context[CONTEXT_SHAPE_KEY]?.length && (
           <EditorLabelWrapper
             label={__('Choices', Constants.TEXT_DOMAIN)}
             style={STYLE_FORM_LABEL}
@@ -60,16 +59,6 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_CHOICES, {
               </div>
             )}
           </EditorLabelWrapper>
-        ) : (
-          // TODO remove because not actually used here
-          <StatusInfoDisplay
-            errors={[
-              __(
-                'Please specify data that each option contains first',
-                Constants.TEXT_DOMAIN,
-              ),
-            ]}
-          />
         )}
       </div>
     );

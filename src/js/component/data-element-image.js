@@ -12,6 +12,7 @@ export default function DataElementImage({ uploadLabel, canDraw, drawLabel }) {
         <div className="data-element-image__method">
           <TextControl
             label={__('Upload label', Constants.TEXT_DOMAIN)}
+            placeholder={__('Enter upload label...', Constants.TEXT_DOMAIN)}
             value={uploadLabel.value}
             onChange={uploadLabel.onChange}
           />
@@ -48,6 +49,7 @@ function DrawingMethod({ canDraw, drawLabel }) {
         </Button>
         <TextControl
           label={__('Drawing label', Constants.TEXT_DOMAIN)}
+          placeholder={__('Enter drawing input label...', Constants.TEXT_DOMAIN)}
           value={drawLabel.value}
           onChange={drawLabel.onChange}
         />

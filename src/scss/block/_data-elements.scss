@@ -1,0 +1,19 @@
+.data-elements-container {
+    counter-reset: info-messages;
+
+    & &__info {
+        position: relative;
+        counter-increment: info-messages;
+        padding-left: $baseunit * 2.5;
+
+        &:before {
+            @include scut-truncate;
+
+            content: counter(info-messages) '.';
+            position: absolute;
+            left: $baseunit * 1;
+            max-width: $baseunit * 1.5;
+            text-align: center;
+        }
+    }
+}

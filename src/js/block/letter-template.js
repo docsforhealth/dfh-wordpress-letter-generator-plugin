@@ -9,6 +9,7 @@ import { markAttrHiddenInApi } from 'src/js/utils/api';
 import { tryRegisterBlockType } from 'src/js/utils/block';
 
 // TODO handle initial case where no data elements are specified
+// TODO options for where to display used global data elements??
 
 export const TITLE = __('Letter Template', Constants.TEXT_DOMAIN);
 export const ATTR_ERROR_MESSAGES = markAttrHiddenInApi('errorMessages');

@@ -1,6 +1,7 @@
 import { useState } from '@wordpress/element';
 import { uniqueId } from 'lodash';
 import PropTypes from 'prop-types';
+import { tryChildrenAsFunction } from 'src/js/utils/component';
 
 export const STYLE_SR_ONLY = 'screenReaderOnly';
 export const STYLE_FORM_LABEL = 'formLabel';
@@ -9,7 +10,7 @@ export const STYLE_CONTAINER = 'container';
 const styleToClass = {
   [STYLE_SR_ONLY]: 'editor-label-wrapper--style-sr-only',
   [STYLE_FORM_LABEL]: 'editor-label-wrapper--style-form-label',
-  [STYLE_CONTAINER]: 'editor-label-wrapper--style-container',
+  [STYLE_CONTAINER]: 'editor-label-wrapper--style-container', // TODO is anyone using this?? remove?
 };
 
 export default function EditorLabelWrapper({
@@ -38,7 +39,7 @@ export default function EditorLabelWrapper({
       <div
         className={`editor-label-wrapper__content ${contentClassName ?? ''}`}
       >
-        {children(id)}
+        {tryChildrenAsFunction(children, id)}
       </div>
     </div>
   );

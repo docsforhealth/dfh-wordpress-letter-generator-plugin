@@ -1,4 +1,5 @@
 import { renderToString } from '@wordpress/element';
+import { isFunction } from 'lodash';
 
 /**
  * Builds a non-base64 encoded data URI for the provided SVG element
@@ -15,4 +16,14 @@ export function buildSVGDataURI(svgElement) {
   const svgString = encodeURIComponent(renderToString(svgElement));
   // Don't need to encode in base64, see https://css-tricks.com/probably-dont-base64-svg/
   return `url("data:image/svg+xml,${svgString}")`;
+}
+
+/**
+ * If a function, passes `props` to the `children` function per the "render props" pattern
+ * @param  {Array|Function} children Either function or array of React element children
+ * @param  {Object} props            Props to pass if `children` is a function
+ * @return {Node}                    Renderable output
+ */
+export function tryChildrenAsFunction(children, props) {
+  return isFunction(children) ? children(props) : children;
 }

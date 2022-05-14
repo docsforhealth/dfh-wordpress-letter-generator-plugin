@@ -7,7 +7,7 @@ import {
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { Icon, paragraph } from '@wordpress/icons';
+import { paragraph } from '@wordpress/icons';
 import { keys } from 'lodash';
 import merge from 'lodash.merge';
 import {
@@ -93,13 +93,6 @@ tryRegisterBlockType(
           }) => (
             <>
               <Fill name={headerSlotName}>
-                <HelpLabel
-                  wrapperElementType="div"
-                  wrapperProps={{ className: 'data-element__header__icon' }}
-                  text={INFO.title}
-                >
-                  <Icon icon={INFO.icon} />
-                </HelpLabel>
                 {shouldShowControl(visibleControls, ATTR_TYPE) && (
                   <div className="data-element__control data-element-text__type">
                     <SelectControl
@@ -147,12 +140,12 @@ tryRegisterBlockType(
                   </HelpLabel>
                 )}
               </Fill>
-              {numExamples ? (
+              {!!numExamples && (
                 // Show number of example responses, if present, in the help button
                 <Fill name={helpTriggerSlotName}>
                   {' (' + numExamples + ')'}
                 </Fill>
-              ) : null}
+              )}
               {shouldShowControl(visibleControls, ATTR_NOOP_SHOW_EXAMPLES) && (
                 <Fill name={helpOverlaySlotName}>
                   <EditorLabelWrapper

@@ -50,10 +50,13 @@ const DataElementOption = forwardRef(
               <div className="data-element-option__values">
                 {hasValueAttrs && shapeValues
                   ? shapeValues.map((valueAttrs) => (
-                      // TODO red text color for blank values
                       <span
                         key={valueAttrs[ATTR_KEY]}
-                        className="data-element-option__values__value"
+                        className={`data-element-option__values__value ${
+                          thisValue?.[valueAttrs[ATTR_KEY]]
+                            ? ''
+                            : 'data-element-option__values__value--missing'
+                        }`}
                       >
                         <span className="data-element-option__values__value__label">
                           {valueAttrs[ATTR_LABEL]}
