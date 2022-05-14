@@ -1,10 +1,55 @@
-// TODO
-
 .data-element-image {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    border: 1px solid $color-seafoam-dark-2;
+    border-radius: $border-radius;
+
     &__method {
-        &__button {
+        flex-grow: 1;
+
+        position: relative;
+        padding: $baseunit $baseunit ($baseunit * 2);
+
+        &:not(:last-child) {
+            border-bottom: 1px dashed $color-seafoam-dark-2;
+        }
+
+        & &__button[type='button'] {
+            position: absolute;
+            top: $baseunit * 0.25;
+            right: $baseunit * 0.25;
+            display: flex;
+            justify-content: center;
+            height: $height-control-small;
+            width: $height-control-small;
         }
     }
-    &__add-drawing {
+    & button#{&}__add-drawing {
+        flex-grow: 0.5;
+        height: auto;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: $baseunit;
+        transition: background-color 0.2s;
+
+        &:link,
+        &:visited,
+        &:hover,
+        &:focus,
+        &:active {
+            background-color: $color-seafoam;
+        }
+    }
+
+    @media (min-width: $media-width-landscape-small-mobile) {
+        flex-direction: row;
+
+        &__method:not(:last-child) {
+            border-bottom: 0;
+            border-right: 1px dashed $color-seafoam-dark-2;
+        }
     }
 }

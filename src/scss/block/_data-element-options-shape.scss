@@ -1,0 +1,7 @@
+.data-element-options-shape {
+    .data-element {
+        &:first-child {
+            margin-top: $baseunit * 0.5;
+        }
+    }
+}

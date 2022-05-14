@@ -6,10 +6,15 @@ import { __ } from '@wordpress/i18n';
 import { SlotNameContext } from 'src/js/block/helper/data-element-options';
 import Overlay from 'src/js/component/data-element/overlay';
 import EditorLabelWrapper from 'src/js/component/editor-label-wrapper';
-import HelpIcon from 'src/js/component/help-icon';
+import HelpLabel from 'src/js/component/help-label';
 import SingleBlockAppender from 'src/js/component/single-block-appender';
 import * as Constants from 'src/js/constants';
 import { countInnerBlocks, tryRegisterBlockType } from 'src/js/utils/block';
+
+const shapeLabel = __(
+  'What kind of data does each option contain?',
+  Constants.TEXT_DOMAIN,
+);
 
 tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_SHAPE, {
   apiVersion: 2,
@@ -34,45 +39,57 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_SHAPE, {
     return (
       <>
         <Fill name={secondaryControlsSlotName}>
-          <div {...useBlockProps()}>
+          <HelpLabel
+            text={__(
+              'Specify what sort of data each option contains',
+              Constants.TEXT_DOMAIN,
+            )}
+          >
             <Button
-              className="data-element__button"
+              {...useBlockProps({ className: 'data-element__control' })}
               onClick={() => setIsOverlayOpen(true)}
             >
-              {__('Edit shape', Constants.TEXT_DOMAIN)}
-              <HelpIcon
-                text={__(
-                  'The shape determines what sort of data each option contains',
-                  Constants.TEXT_DOMAIN,
-                )}
-              />
+              {__('Edit option data', Constants.TEXT_DOMAIN) +
+                ' (' +
+                numInnerBlocks +
+                ')'}
             </Button>
-          </div>
+          </HelpLabel>
         </Fill>
         {(forceOverlayOpen || isOverlayOpen) && (
           <Fill name={overlaySlotName}>
             <Overlay
-              title={__('Editing option shape', Constants.TEXT_DOMAIN)}
+              title={
+                forceOverlayOpen
+                  ? shapeLabel
+                  : __('Editing data for each option', Constants.TEXT_DOMAIN)
+              }
               onClose={() => setIsOverlayOpen(false)}
               showClose={!forceOverlayOpen}
             >
-              <EditorLabelWrapper
-                label={__(
-                  'What data does each option contain?',
-                  Constants.TEXT_DOMAIN,
-                )}
-              >
+              <EditorLabelWrapper label={shapeLabel}>
                 {(id) => (
-                  <div id={id} tabIndex="0">
+                  <div
+                    id={id}
+                    tabIndex="0"
+                    className="data-element-options-shape"
+                  >
                     <InnerBlocks
                       templateLock={Constants.INNER_BLOCKS_UNLOCKED}
                       allowedBlocks={[Constants.BLOCK_DATA_ELEMENT_TEXT]}
                       renderAppender={() => (
                         <SingleBlockAppender
-                          label={__(
-                            'Add shape attribute',
-                            Constants.TEXT_DOMAIN,
-                          )}
+                          label={
+                            forceOverlayOpen
+                              ? __(
+                                  'Start by adding a option data attribute',
+                                  Constants.TEXT_DOMAIN,
+                                )
+                              : __(
+                                  'Add another option data attribute',
+                                  Constants.TEXT_DOMAIN,
+                                )
+                          }
                           blockName={Constants.BLOCK_DATA_ELEMENT_TEXT}
                           clientId={clientId}
                           deemphasized

@@ -59,10 +59,8 @@ function DrawingMethod({ canDraw, drawLabel }) {
         className="data-element-image__add-drawing"
         onClick={() => canDraw.onChange(true)}
       >
-        <VisuallyHidden>
-          {__('Allow drawing input', Constants.TEXT_DOMAIN)}
-        </VisuallyHidden>
         <Icon icon={brush} />
+        {__('Add drawing input', Constants.TEXT_DOMAIN)}
       </Button>
     );
   }

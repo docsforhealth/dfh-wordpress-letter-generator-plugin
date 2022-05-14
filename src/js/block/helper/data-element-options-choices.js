@@ -1,15 +1,18 @@
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
+import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { CONTEXT_SHAPE_KEY } from 'src/js/block/helper/data-element-options-option';
-import EditorLabelWrapper from 'src/js/component/editor-label-wrapper';
+import EditorLabelWrapper, {
+  STYLE_FORM_LABEL,
+} from 'src/js/component/editor-label-wrapper';
 import SingleBlockAppender from 'src/js/component/single-block-appender';
 import StatusInfoDisplay from 'src/js/component/status-info-display';
 import * as Constants from 'src/js/constants';
-import { tryRegisterBlockType } from 'src/js/utils/block';
+import { countInnerBlocks, tryRegisterBlockType } from 'src/js/utils/block';
 
 tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_CHOICES, {
   apiVersion: 2,
-  title: __('Choices for Options Data Element', Constants.TEXT_DOMAIN),
+  title: __('Options Data Element Choices', Constants.TEXT_DOMAIN),
   category: Constants.CATEGORY_LETTER_TEMPLATE,
   icon: 'feedback',
   description: __(
@@ -19,11 +22,18 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_CHOICES, {
   supports: { inserter: false },
   usesContext: [CONTEXT_SHAPE_KEY],
   edit({ clientId, context, attributes, setAttributes }) {
+    const numChoices = useSelect((select) =>
+      countInnerBlocks(clientId, select),
+    );
     return (
-      <div {...useBlockProps()}>
+      <div {...useBlockProps({ className: 'data-element-options-choices' })}>
         {context[CONTEXT_SHAPE_KEY]?.length ? (
           <EditorLabelWrapper
             label={__('Choices', Constants.TEXT_DOMAIN)}
+            style={STYLE_FORM_LABEL}
+            controlsClassName="data-element-options-choices__label-container"
+            contentClassName="data-element-options-choices__content-container"
+            contentSpacing={false}
           >
             {(id) => (
               <div id={id} tabIndex="0">
@@ -32,7 +42,15 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_CHOICES, {
                   allowedBlocks={[Constants.BLOCK_DATA_ELEMENT_OPTIONS_OPTION]}
                   renderAppender={() => (
                     <SingleBlockAppender
-                      label={__('Add choice', Constants.TEXT_DOMAIN)}
+                      className="data-element-options-choices__appender"
+                      label={
+                        numChoices
+                          ? __('Add another choice', Constants.TEXT_DOMAIN)
+                          : __(
+                              'Start by adding a choice',
+                              Constants.TEXT_DOMAIN,
+                            )
+                      }
                       blockName={Constants.BLOCK_DATA_ELEMENT_OPTIONS_OPTION}
                       clientId={clientId}
                       deemphasized
@@ -43,6 +61,7 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_CHOICES, {
             )}
           </EditorLabelWrapper>
         ) : (
+          // TODO remove because not actually used here
           <StatusInfoDisplay
             errors={[
               __(

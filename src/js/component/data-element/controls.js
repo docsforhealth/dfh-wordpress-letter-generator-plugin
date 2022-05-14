@@ -14,13 +14,14 @@ import {
   SLOT_CONTROLS_SECONDARY,
   SLOT_CONTROLS_TOGGLES,
   SLOT_HELP_OVERLAY,
+  SLOT_HELP_TRIGGER,
   SLOT_OVERLAY,
 } from 'src/js/component/data-element/contents';
 import Overlay from 'src/js/component/data-element/overlay';
 import EditorLabelWrapper, {
   STYLE_FORM_LABEL,
 } from 'src/js/component/editor-label-wrapper';
-import HelpIcon from 'src/js/component/help-icon';
+import HelpLabel from 'src/js/component/help-label';
 import * as Constants from 'src/js/constants';
 import { buildAttrPropType, slotName } from 'src/js/utils/data-element';
 
@@ -53,49 +54,59 @@ export default function Controls({
       >
         <div className="data-element__controls__toggles">
           {required.shouldShow && (
-            <ToggleControl
-              label={__('Required', Constants.TEXT_DOMAIN)}
-              checked={required.value}
-              onChange={required.onChange}
-            />
+            <HelpLabel
+              wrapperElementType="div"
+              text={__(
+                'Require this field to be filled out before the letter is complete',
+                Constants.TEXT_DOMAIN,
+              )}
+            >
+              <ToggleControl
+                className="data-element__control"
+                label={__('Required', Constants.TEXT_DOMAIN)}
+                checked={required.value}
+                onChange={required.onChange}
+              />
+            </HelpLabel>
           )}
           {saveable.shouldShow && (
-            <>
+            <HelpLabel
+              wrapperElementType="div"
+              text={__(
+                "Allow saving locally to the user's device. This is NOT secure so make sure that this field will not contain protected health information.",
+                Constants.TEXT_DOMAIN,
+              )}
+            >
               <ToggleControl
+                className="data-element__control"
                 label={__('Save locally', Constants.TEXT_DOMAIN)}
                 checked={saveable.value}
                 onChange={saveable.onChange}
               />
-              <HelpIcon
-                text={__(
-                  "Saving locally to the user's device is NOT secure. Make sure that this field will not have protected health information.",
-                  Constants.TEXT_DOMAIN,
-                )}
-              />
-            </>
+            </HelpLabel>
           )}
-          <Slot
-            name={slotName(SLOT_CONTROLS_TOGGLES, clientId)}
-            className="data-element__controls__toggles__more"
-            bubblesVirtually
-          />
+          <Slot name={slotName(SLOT_CONTROLS_TOGGLES, clientId)} />
         </div>
         <div className="data-element__controls__secondary">
-          <Slot
-            name={slotName(SLOT_CONTROLS_SECONDARY, clientId)}
-            className="data-element__controls__secondary__more"
-            bubblesVirtually
-          />
+          <Slot name={slotName(SLOT_CONTROLS_SECONDARY, clientId)} />
           {helpText.shouldShow && (
             <>
-              <Button
-                className="data-element__button"
-                onClick={() => setIsOverlayOpen(true)}
+              <HelpLabel
+                text={__(
+                  'Add helpful tips and examples for this field',
+                  Constants.TEXT_DOMAIN,
+                )}
               >
-                {helpText.value
-                  ? __('Edit help', Constants.TEXT_DOMAIN)
-                  : __('Add help', Constants.TEXT_DOMAIN)}
-              </Button>
+                <Button
+                  className="data-element__control"
+                  onClick={() => setIsOverlayOpen(true)}
+                >
+                  {helpText.value
+                    ? __('Edit help', Constants.TEXT_DOMAIN)
+                    : __('Add help', Constants.TEXT_DOMAIN)}
+                  <Slot name={slotName(SLOT_HELP_TRIGGER, clientId)} />
+                </Button>
+              </HelpLabel>
               {isOverlayOpen && (
                 <Fill name={slotName(SLOT_OVERLAY, clientId)}>
                   <Overlay
@@ -120,10 +131,7 @@ export default function Controls({
                         />
                       )}
                     </EditorLabelWrapper>
-                    <Slot
-                      name={slotName(SLOT_HELP_OVERLAY, clientId)}
-                      bubblesVirtually
-                    />
+                    <Slot name={slotName(SLOT_HELP_OVERLAY, clientId)} />
                   </Overlay>
                 </Fill>
               )}

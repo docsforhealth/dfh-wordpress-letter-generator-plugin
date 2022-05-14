@@ -16,16 +16,15 @@ export default function Header({ clientId, label }) {
   return (
     hasContent && (
       <div className="data-element__header">
-        <Slot
-          name={slotName(SLOT_HEADER, clientId)}
-          className="data-element__header__more"
-          bubblesVirtually
-        />
+        <Slot name={slotName(SLOT_HEADER, clientId)} />
         {label.shouldShow && (
           <TextControl
+            className="data-element__control data-element__control--expand"
             label={__('Label', Constants.TEXT_DOMAIN)}
+            placeholder={__('Enter question label...', Constants.TEXT_DOMAIN)}
             value={label.value}
             onChange={label.onChange}
+            hideLabelFromVision
           />
         )}
       </div>

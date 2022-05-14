@@ -1,18 +1,54 @@
-// TODO finish
+.editor-styles-wrapper [data-block].data-element-option {
+    margin: 0;
+    margin-top: 0;
+}
 
 .data-element-option {
+    &__view,
+    &__edit {
+        padding: $baseunit;
+        border-bottom: 1px solid $color-seafoam-dark-2;
+    }
     &__view {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: $baseunit;
+        transition: background-color 0.2s, border-color 0.2s;
+
+        &--open {
+            background-color: $color-seafoam;
+            border-color: $color-seafoam-dark-1;
+        }
     }
     &__label {
-        &__title {
-        }
-        &__subtitle {
-        }
-    }
-    &__value {
-        &__label {
+        flex-grow: 1;
+
+        & &__title {
+            @extend %default-text;
+            @extend %medium-text;
         }
     }
-    &__edit {
+    &__values {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: $baseunit * 0.5;
+
+        &:not(&:empty) {
+            margin-top: $baseunit * 0.5;
+        }
+
+        &__value {
+            &:not(&:last-of-type) {
+                padding-right: $baseunit * 0.5;
+                border-right: 1px solid $color-seafoam-dark-1;
+            }
+
+            &__label {
+                font-style: italic;
+                margin-right: $baseunit * 0.25;
+            }
+        }
     }
 }

@@ -4,19 +4,36 @@
     z-index: $z-index-reset;
 
     &:before {
+        @mixin set-overhang-position($overhang) {
+            left: $overhang * -1.2;
+            width: if($overhang == 0, 100%, calc(100% + #{$overhang * 2}));
+        }
+
+        $overhang-small: 0;
+        $overhang-medium: $baseunit * 3;
+        $overhang-large: $baseunit * 5;
+
+        @include set-overhang-position($overhang-small);
+
         content: '';
         position: absolute;
         bottom: 15px; // half of WP control height
-        left: 0;
         transform: translateY(-50%);
-        width: 100%;
         border-top: 1px solid $color-seafoam-dark-3;
         z-index: $z-index-behind-1;
+
+        @media (min-width: $media-width-laptop) {
+            @include set-overhang-position($overhang-medium);
+        }
+        @media (min-width: $media-width-desktop) {
+            @include set-overhang-position($overhang-large);
+        }
     }
 
     &__control {
         flex-basis: 85%;
-        padding-right: $baseunit;
+        padding: 0 $baseunit;
+        margin-left: $baseunit * -1;
         background-color: $color-white;
     }
     & &__control.components-base-control {

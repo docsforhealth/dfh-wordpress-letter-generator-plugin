@@ -11,7 +11,6 @@ import {
 } from 'src/js/utils/data-element';
 
 // TODO inline error styling for controls that are required but empty!!!
-// TODO editor display styling!!!
 
 // **************
 // * Attributes *
@@ -94,36 +93,36 @@ export const Edit = forwardRef(
       context[CONTEXT_VISIBLE_CONTROLS_KEY],
     );
     return (
-      <div ref={ref} {...otherProps}>
-        <DataElement
-          clientId={clientId}
-          label={{
-            value: attributes[ATTR_LABEL],
-            shouldShow: shouldShowControl(visibleControls, ATTR_LABEL),
-            onChange: (label) => setAttributes({ [ATTR_LABEL]: label }),
-          }}
-          required={{
-            value: attributes[ATTR_REQUIRED],
-            shouldShow: shouldShowControl(visibleControls, ATTR_REQUIRED),
-            onChange: (required) =>
-              setAttributes({ [ATTR_REQUIRED]: required }),
-          }}
-          saveable={{
-            value: attributes[ATTR_SAVEABLE],
-            shouldShow: shouldShowControl(visibleControls, ATTR_SAVEABLE),
-            onChange: (saveable) =>
-              setAttributes({ [ATTR_SAVEABLE]: saveable }),
-          }}
-          helpText={{
-            value: attributes[ATTR_HELP_TEXT],
-            shouldShow: shouldShowControl(visibleControls, ATTR_HELP_TEXT),
-            onChange: (helpText) =>
-              setAttributes({ [ATTR_HELP_TEXT]: helpText }),
-          }}
-        >
-          {children}
-        </DataElement>
-      </div>
+      <DataElement
+        ref={ref}
+        blockProps={otherProps}
+        className={`${otherProps.className} ${
+          attributes[ATTR_REQUIRED] ? 'data-element--required' : ''
+        }`}
+        clientId={clientId}
+        label={{
+          value: attributes[ATTR_LABEL],
+          shouldShow: shouldShowControl(visibleControls, ATTR_LABEL),
+          onChange: (label) => setAttributes({ [ATTR_LABEL]: label }),
+        }}
+        required={{
+          value: attributes[ATTR_REQUIRED],
+          shouldShow: shouldShowControl(visibleControls, ATTR_REQUIRED),
+          onChange: (required) => setAttributes({ [ATTR_REQUIRED]: required }),
+        }}
+        saveable={{
+          value: attributes[ATTR_SAVEABLE],
+          shouldShow: shouldShowControl(visibleControls, ATTR_SAVEABLE),
+          onChange: (saveable) => setAttributes({ [ATTR_SAVEABLE]: saveable }),
+        }}
+        helpText={{
+          value: attributes[ATTR_HELP_TEXT],
+          shouldShow: shouldShowControl(visibleControls, ATTR_HELP_TEXT),
+          onChange: (helpText) => setAttributes({ [ATTR_HELP_TEXT]: helpText }),
+        }}
+      >
+        {children}
+      </DataElement>
     );
   },
 );

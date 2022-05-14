@@ -1,0 +1,20 @@
+[data-block].data-element-options-choices {
+    &,
+    &:first-child {
+        margin: 0;
+        margin-top: 0;
+    }
+}
+
+.data-element-options-choices {
+    &__label-container {
+        @include scut-hide-visually;
+    }
+    & .editor-label-wrapper &__content-container {
+        border-radius: 0;
+        border: 0;
+    }
+    & &__appender[type='button'] {
+        margin: $baseunit;
+    }
+}

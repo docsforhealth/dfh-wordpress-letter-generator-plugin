@@ -2,7 +2,7 @@ import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { Fill, ToggleControl } from '@wordpress/components';
 import { createContext, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { list } from '@wordpress/icons';
+import { Icon, list } from '@wordpress/icons';
 import { isEqual, map, throttle } from 'lodash';
 import merge from 'lodash.merge';
 import {
@@ -19,7 +19,7 @@ import {
   SHARED_CONFIG,
   validateBlockInfo as validateBaseBlockInfo,
 } from 'src/js/block/shared/data-element';
-import HelpIcon from 'src/js/component/help-icon';
+import HelpLabel from 'src/js/component/help-label';
 import * as Constants from 'src/js/constants';
 import { markAttrHiddenInApi } from 'src/js/utils/api';
 import {
@@ -36,7 +36,7 @@ export const INFO = {
   icon: list,
   title: __('Options Element', Constants.TEXT_DOMAIN),
   description: __(
-    'Allows selection of predefined options or user-specified option',
+    'Allow selection of predefined options or user-specified option',
     Constants.TEXT_DOMAIN,
   ),
 };
@@ -123,6 +123,7 @@ tryRegisterBlockType(
           setAttributes={setAttributes}
         >
           {({
+            headerSlotName,
             togglesSlotName,
             secondaryControlsSlotName,
             overlaySlotName,
@@ -130,23 +131,35 @@ tryRegisterBlockType(
             <SlotNameContext.Provider
               value={{ secondaryControlsSlotName, overlaySlotName }}
             >
+              <Fill name={headerSlotName}>
+                <HelpLabel
+                  wrapperElementType="div"
+                  wrapperProps={{ className: 'data-element__header__icon' }}
+                  text={INFO.title}
+                >
+                  <Icon icon={INFO.icon} />
+                </HelpLabel>
+              </Fill>
               <Fill name={togglesSlotName}>
                 {shouldShowControl(visibleControls, ATTR_OTHER_OPTION) && (
-                  <>
+                  <HelpLabel
+                    wrapperElementType="div"
+                    text={__(
+                      'Allow users to enter their own values in an "Other" option',
+                      Constants.TEXT_DOMAIN,
+                    )}
+                  >
                     <ToggleControl
-                      label={__('Other', Constants.TEXT_DOMAIN)}
+                      className="data-element__control"
+                      label={__('Allow "Other"', Constants.TEXT_DOMAIN)}
                       checked={attributes[ATTR_OTHER_OPTION]}
                       onChange={(hasOtherOption) =>
-                        setAttributes({ [ATTR_OTHER_OPTION]: hasOtherOption })
+                        setAttributes({
+                          [ATTR_OTHER_OPTION]: hasOtherOption,
+                        })
                       }
                     />
-                    <HelpIcon
-                      text={__(
-                        'Allow users to input their own values in an "Other" option',
-                        Constants.TEXT_DOMAIN,
-                      )}
-                    />
-                  </>
+                  </HelpLabel>
                 )}
               </Fill>
               {shouldShowControl(visibleControls, ATTR_NOOP_SHOW_OPTIONS) && (

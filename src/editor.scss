@@ -36,6 +36,10 @@ $path-base-styles: '../src/scss/base';
 // Blocks
 // ------
 
+@import 'scss/block/data-element-image';
+@import 'scss/block/data-element-options-choices';
+@import 'scss/block/data-element-options-shape';
+@import 'scss/block/data-element-text';
 @import 'scss/block/data-elements-section';
 
 // Formats

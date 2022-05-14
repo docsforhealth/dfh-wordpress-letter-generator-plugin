@@ -1,0 +1,62 @@
+.data-element-text,
+.editor-styles-wrapper .data-element-text {
+    .data-element__header {
+        flex-wrap: wrap;
+
+        .data-element-text__type {
+            flex-grow: 1;
+        }
+
+        @media (min-width: $media-width-landscape-small-mobile) {
+            flex-wrap: nowrap;
+
+            .data-element-text__type {
+                flex-grow: initial;
+            }
+        }
+    }
+    .help-text-overlay {
+        display: flex;
+        gap: $baseunit;
+        flex-direction: column;
+
+        @media (min-width: $media-width-tablet) {
+            flex-direction: row;
+
+            > * {
+                flex-basis: 50%;
+                min-width: 0;
+            }
+        }
+    }
+    & &__examples {
+        counter-reset: example;
+
+        [data-type='dfh/text'] {
+            position: relative;
+            padding: ($baseunit * 0.5) 0;
+            margin: 0;
+            margin-bottom: $baseunit;
+            border-bottom: 1px solid $color-seafoam-dark-1;
+
+            &:before {
+                @extend %default-text;
+                @extend %small-text;
+
+                counter-increment: example;
+                content: counter(example) '.';
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            .text {
+                @extend %default-text;
+                @extend %small-text;
+
+                padding-left: $baseunit * 1.5;
+                margin: 0;
+            }
+        }
+    }
+}

@@ -22,12 +22,11 @@ export const EXPECTED_VISIBLE_ATTRS = [
   ATTR_TYPE,
   ATTR_LABEL,
   ATTR_PLACEHOLDER,
-  ATTR_HELP_TEXT,
 ];
 
 tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_OPTION, {
   apiVersion: 2,
-  title: __('Option for Options Data Element', Constants.TEXT_DOMAIN),
+  title: __('Options Data Element Single Choice', Constants.TEXT_DOMAIN),
   category: Constants.CATEGORY_LETTER_TEMPLATE,
   icon: 'excerpt-view',
   description: __(
@@ -45,19 +44,18 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_OPTION, {
   usesContext: [CONTEXT_SHAPE_KEY],
   edit({ attributes, context, setAttributes }) {
     return (
-      <div {...useBlockProps()}>
-        <DataElementOption
-          label={attributes.label}
-          thisValue={attributes.value}
-          shapeValues={context[CONTEXT_SHAPE_KEY]}
-          updateLabel={(label) => setAttributes({ label })}
-          updateThisValue={(dataKey, newValue) =>
-            setAttributes({
-              value: { ...attributes.value, [dataKey]: newValue },
-            })
-          }
-        />
-      </div>
+      <DataElementOption
+        {...useBlockProps()}
+        label={attributes.label}
+        thisValue={attributes.value}
+        shapeValues={context[CONTEXT_SHAPE_KEY]}
+        updateLabel={(label) => setAttributes({ label })}
+        updateThisValue={(dataKey, newValue) =>
+          setAttributes({
+            value: { ...attributes.value, [dataKey]: newValue },
+          })
+        }
+      />
     );
   },
 });

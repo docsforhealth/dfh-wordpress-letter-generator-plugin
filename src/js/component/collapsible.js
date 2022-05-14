@@ -1,30 +1,31 @@
 import { VisuallyHidden } from '@wordpress/components';
-import { useState } from '@wordpress/element';
+import { forwardRef, useState } from '@wordpress/element';
 import PropTypes from 'prop-types';
 
-export default function Collapsible({
-  display,
-  startOpen = false,
-  className,
-  children,
-}) {
-  const [isOpen, setIsOpen] = useState(startOpen);
-  return (
-    <div
-      className={`collapsible ${isOpen ? 'collapsible--open' : ''} ${
-        className ?? ''
-      }`}
-    >
-      {display(isOpen, setIsOpen)}
-      <div className="collapsible__contents">{children}</div>
-    </div>
-  );
-}
+const Collapsible = forwardRef(
+  ({ display, startOpen = false, className, children, ...otherProps }, ref) => {
+    const [isOpen, setIsOpen] = useState(startOpen);
+    return (
+      <div
+        {...otherProps}
+        ref={ref}
+        className={`collapsible ${isOpen ? 'collapsible--open' : ''} ${
+          className ?? ''
+        }`}
+      >
+        {display(isOpen, setIsOpen)}
+        <div className="collapsible__contents">{children}</div>
+      </div>
+    );
+  },
+);
 Collapsible.propTypes = {
   display: PropTypes.func.isRequired,
   startOpen: PropTypes.bool,
   className: PropTypes.string,
 };
+
+export default Collapsible;
 
 // ******************
 // * Default button *

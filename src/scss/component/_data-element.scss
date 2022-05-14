@@ -1,46 +1,160 @@
-// TODO
-
 .data-element {
+    border: 1px solid $color-seafoam-dark-3;
+    border-radius: $border-radius;
+
+    &--required > &__header {
+        background-color: $color-seafoam;
+    }
     &__header {
-        &__more {
+        display: flex;
+        align-items: center;
+        gap: $baseunit;
+        padding: $baseunit;
+        transition: background-color 0.2s;
+        border-bottom: 1px solid $color-seafoam-dark-2;
+
+        &__icon {
+            display: flex;
+            align-items: center;
         }
     }
-    &__controls, &__contents {
+    & &__controls {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+
+        &__toggles,
+        &__secondary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+
+            > *,
+            > button[type='button'],
+            > div.data-element__control.components-base-control {
+                border-bottom: 1px solid $color-seafoam-dark-2;
+                padding: 0 $baseunit;
+            }
+            > :nth-child(2n-1) {
+                border-right: 1px solid $color-seafoam-dark-2;
+            }
+            // Remaining child spans the remaining columns
+            // see https://stackoverflow.com/a/56339098
+            > :nth-child(2n-1):nth-last-of-type(1) {
+                grid-column: span 2;
+                border-right: 0;
+            }
+        }
+
+        @media (min-width: $media-width-landscape-small-mobile) {
+            &__toggles,
+            &__secondary {
+                display: flex;
+                border-bottom: 1px solid $color-seafoam-dark-2;
+            }
+            &__toggles {
+                > *,
+                > :nth-child(2n-1),
+                > :nth-child(2n-1):nth-last-of-type(1) {
+                    border-bottom: 0;
+                    border-right: 1px solid $color-seafoam-dark-2;
+                }
+            }
+            &__secondary {
+                justify-content: flex-end;
+
+                > *,
+                > button[type='button'],
+                > :nth-child(2n-1),
+                > :nth-child(2n-1):nth-last-of-type(1) {
+                    border-right: 0;
+                    border-bottom: 0;
+                    border-left: 1px solid $color-seafoam-dark-2;
+                }
+            }
+        }
+        @media (min-width: $media-width-tablet) {
+            flex-direction: row;
+            align-items: center;
+
+            gap: $baseunit;
+            justify-content: space-between;
+            height: $height-control;
+            border-bottom: 1px solid $color-seafoam-dark-2;
+
+            &__toggles,
+            &__secondary {
+                border-bottom: 0;
+            }
+        }
+    }
+    & &__controls,
+    & &__contents {
         &--hidden {
             display: none;
         }
     }
-    &__controls {
-        &__toggles {
-            &__more {
-            }
-        }
-        &__secondary {
-            &__more {
-            }
-        }
-    }
     &__contents {
-    }
-    &__button {
+        &__container {
+            padding: $baseunit;
+        }
     }
 }
 
 .data-element-overlay {
+    animation: fade-in 0.1s;
+
     &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: $baseunit;
+        height: $height-control;
+        border-bottom: 1px solid $color-seafoam-dark-2;
+        background-color: $color-seafoam;
+
         &__title {
+            flex-grow: 1;
 
+            padding-left: $baseunit;
         }
-        &__close {
-
+        &__close[type='button'] {
+            flex-grow: 0;
+            flex-shrink: 0;
+            height: $height-control;
         }
     }
     &__contents {
-
+        padding: $baseunit;
     }
 }
+.editor-styles-wrapper
+    .data-element-overlay
+    .data-element-overlay__header__close {
+    padding: 0 $baseunit;
+}
 
-// TODO for data-text
-.help-text-overlay {
+// ******************************
+// * Control specific overrides *
+// ******************************
 
+[data-block].data-element .data-element__control {
+    // Some WP controls add the class to the wrapper element, others add it to the nested control
+    // so we need to create a new wrapper around the base
+    &.components-base-control,
+    & > .components-base-control {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+    &.components-toggle-control {
+        display: flex;
+        align-items: center;
+    }
+    &.components-toggle-control,
+    &[type='button'] {
+        height: $height-control;
+    }
+    &--expand {
+        flex-grow: 1;
+    }
 }
