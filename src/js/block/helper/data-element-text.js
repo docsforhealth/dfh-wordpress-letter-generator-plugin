@@ -7,11 +7,9 @@ import {
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { paragraph } from '@wordpress/icons';
 import { keys } from 'lodash';
 import merge from 'lodash.merge';
 import {
-  ATTR_VISIBLE_CONTROLS,
   CONTEXT_VISIBLE_CONTROLS_KEY,
   Edit,
   Save,
@@ -23,24 +21,19 @@ import EditorLabelWrapper, {
 import HelpLabel from 'src/js/component/help-label';
 import SingleBlockAppender from 'src/js/component/single-block-appender';
 import * as Constants from 'src/js/constants';
-import { markAttrHiddenInApi } from 'src/js/utils/api';
+import {
+  ATTR_CONTEXT_BEFORE,
+  ATTR_NOOP_SHOW_EXAMPLES,
+  ATTR_PLACEHOLDER,
+  ATTR_TYPE,
+  ATTR_VISIBLE_CONTROLS,
+  TEXT_INFO,
+} from 'src/js/constants/data-element';
 import { countInnerBlocks, tryRegisterBlockType } from 'src/js/utils/block';
 import {
   reconcileVisibleAttrsAndContext,
   shouldShowControl,
 } from 'src/js/utils/data-element';
-
-export const INFO = {
-  name: Constants.BLOCK_DATA_ELEMENT_TEXT,
-  icon: paragraph,
-  title: __('Text Element', Constants.TEXT_DOMAIN),
-  description: __('Allows entry of text-based values', Constants.TEXT_DOMAIN),
-};
-
-export const ATTR_TYPE = 'textType';
-export const ATTR_PLACEHOLDER = 'placeholder';
-export const ATTR_CONTEXT_BEFORE = 'showContextBefore';
-export const ATTR_NOOP_SHOW_EXAMPLES = markAttrHiddenInApi('noopShowExamples');
 
 export const TEXT_TYPE_SHORT = 'text-short';
 export const TEXT_TYPE_LONG = 'text-long';
@@ -57,8 +50,8 @@ const TYPE_TO_LABEL = {
 export const TEXT_TYPE_VALUES = keys(TYPE_TO_LABEL);
 
 tryRegisterBlockType(
-  INFO.name,
-  merge({}, SHARED_CONFIG, INFO, {
+  TEXT_INFO.name,
+  merge({}, SHARED_CONFIG, TEXT_INFO, {
     apiVersion: 2,
     parent: [Constants.BLOCK_DATA_ELEMENT_OPTIONS_SHAPE], // merged with shared array
     attributes: {

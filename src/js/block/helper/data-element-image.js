@@ -1,39 +1,29 @@
 import { useBlockProps } from '@wordpress/block-editor';
-import { __ } from '@wordpress/i18n';
-import { image } from '@wordpress/icons';
 import merge from 'lodash.merge';
 import {
-  ATTR_VISIBLE_CONTROLS,
   CONTEXT_VISIBLE_CONTROLS_KEY,
   Edit,
   Save,
   SHARED_CONFIG,
 } from 'src/js/block/shared/data-element';
 import DataElementImage from 'src/js/component/data-element-image';
-import * as Constants from 'src/js/constants';
+import {
+  ATTR_VISIBLE_CONTROLS,
+  IMAGE_INFO,
+} from 'src/js/constants/data-element';
 import { tryRegisterBlockType } from 'src/js/utils/block';
 import {
   reconcileVisibleAttrsAndContext,
   shouldShowControl,
 } from 'src/js/utils/data-element';
 
-export const INFO = {
-  name: Constants.BLOCK_DATA_ELEMENT_IMAGE,
-  icon: image,
-  title: __('Image Element', Constants.TEXT_DOMAIN),
-  description: __(
-    'Allows uploading images and user drawings',
-    Constants.TEXT_DOMAIN,
-  ),
-};
-
-export const ATTR_UPLOAD_LABEL = 'uploadLabel';
-export const ATTR_CAN_DRAW = 'canDraw';
-export const ATTR_DRAW_LABEL = 'drawLabel';
+const ATTR_UPLOAD_LABEL = 'uploadLabel';
+const ATTR_CAN_DRAW = 'canDraw';
+const ATTR_DRAW_LABEL = 'drawLabel';
 
 tryRegisterBlockType(
-  INFO.name,
-  merge({}, SHARED_CONFIG, INFO, {
+  IMAGE_INFO.name,
+  merge({}, SHARED_CONFIG, IMAGE_INFO, {
     apiVersion: 2,
     attributes: {
       [ATTR_UPLOAD_LABEL]: { type: 'string', default: '' },

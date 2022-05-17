@@ -1,16 +1,13 @@
 import { useBlockProps } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
-import {
-  ATTR_PLACEHOLDER,
-  ATTR_TYPE,
-} from 'src/js/block/helper/data-element-text';
-import {
-  ATTR_HELP_TEXT,
-  ATTR_KEY,
-  ATTR_LABEL,
-} from 'src/js/block/shared/data-element';
 import DataElementOption from 'src/js/component/data-element-option';
 import * as Constants from 'src/js/constants';
+import {
+  ATTR_KEY,
+  ATTR_LABEL,
+  ATTR_PLACEHOLDER,
+  ATTR_TYPE,
+} from 'src/js/constants/data-element';
 import { tryRegisterBlockType } from 'src/js/utils/block';
 
 // IMPORTANT: shape is the an array of the ATTRIBUTES of the TEXT DATA ELEMENTS

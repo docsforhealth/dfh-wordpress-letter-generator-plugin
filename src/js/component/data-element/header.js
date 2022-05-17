@@ -1,4 +1,3 @@
-import { getBlockType } from '@wordpress/blocks';
 import {
   Slot,
   TextControl,
@@ -12,6 +11,10 @@ import PropTypes from 'prop-types';
 import { SLOT_HEADER } from 'src/js/component/data-element/contents';
 import HelpLabel from 'src/js/component/help-label';
 import * as Constants from 'src/js/constants';
+import {
+  getIconFromBlockName,
+  getTitleFromBlockName,
+} from 'src/js/utils/block';
 import { buildAttrPropType, slotName } from 'src/js/utils/data-element';
 
 export default function Header({ clientId, label }) {
@@ -20,7 +23,8 @@ export default function Header({ clientId, label }) {
   const { name } = useSelect((select) =>
       select(Constants.STORE_BLOCK_EDITOR).getBlock(clientId),
     ),
-    { icon, title } = getBlockType(name);
+    icon = getIconFromBlockName(name),
+    title = getTitleFromBlockName(name);
   return (
     hasContent && (
       <div className="data-element__header">
@@ -29,7 +33,7 @@ export default function Header({ clientId, label }) {
           wrapperProps={{ className: 'data-element__header__icon' }}
           text={title}
         >
-          <Icon icon={icon.src} />
+          <Icon icon={icon} />
         </HelpLabel>
         <Slot name={slotName(SLOT_HEADER, clientId)} />
         {label.shouldShow && (

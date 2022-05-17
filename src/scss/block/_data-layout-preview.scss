@@ -1,0 +1,89 @@
+.data-layout-preview {
+    $height: $height-control;
+    $gap: $baseunit;
+
+    // Overall container
+    &-container {
+        counter-reset: data-layout-previews;
+
+        & &__preview {
+            $counter-width: $baseunit * 3;
+
+            position: relative;
+            counter-increment: data-layout-previews;
+            padding-left: calc(#{$counter-width} + #{$gap});
+
+            &:before {
+                @extend %default-text;
+                @include scut-truncate;
+                @include center-flex;
+
+                content: counter(data-layout-previews);
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: $height;
+                width: $counter-width;
+                padding: $baseunit * 0.5;
+                // Cannot use `border` shorthand with inherited properties
+                border-width: 0;
+                border-right-width: 1px;
+                border-style: solid;
+                border-color: inherit;
+            }
+        }
+    }
+
+    // Individual preview items
+    & {
+        border: 1px solid $color-seafoam-dark-3;
+        border-radius: $border-radius;
+        height: $height;
+
+        &--shared {
+            border-color: $color-navy;
+        }
+
+        &,
+        &__title {
+            display: flex;
+            gap: $gap;
+        }
+        & {
+            align-items: stretch;
+            justify-content: space-between;
+        }
+        & &__title {
+            @extend %default-text;
+            @extend %medium-text;
+
+            flex-grow: 1;
+            min-width: 0;
+
+            align-items: center;
+            justify-content: flex-start;
+
+            &__icon {
+                @include center-flex;
+            }
+            &__text {
+                @include scut-truncate;
+
+                min-width: 0;
+            }
+        }
+        &__shared-badge {
+            @extend %default-text;
+            @include center-flex;
+
+            flex-shrink: 0;
+
+            padding: 0 $baseunit;
+            // Cannot use `border` shorthand with inherited properties
+            border-width: 0;
+            border-left-width: 1px;
+            border-style: solid;
+            border-color: inherit;
+        }
+    }
+}

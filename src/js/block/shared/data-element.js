@@ -4,27 +4,26 @@ import { isEqual, throttle } from 'lodash';
 import PropTypes from 'prop-types';
 import DataElement from 'src/js/component/data-element';
 import * as Constants from 'src/js/constants';
-import { markAttrHiddenInApi } from 'src/js/utils/api';
+import {
+  ATTR_HELP_TEXT,
+  ATTR_KEY,
+  ATTR_LABEL,
+  ATTR_REQUIRED,
+  ATTR_SAVEABLE,
+  ATTR_VISIBLE_CONTROLS,
+} from 'src/js/constants/data-element';
 import {
   reconcileVisibleAttrsAndContext,
   shouldShowControl,
 } from 'src/js/utils/data-element';
 import {
-  ATTR_KEY,
-  ATTR_LABEL,
   validateDataElement,
-  validateDataElementDependencies,
+  validateDataElementDependencyString,
 } from 'src/js/utils/validation';
 
-// **************
-// * Attributes *
-// **************
-
-export { ATTR_KEY, ATTR_LABEL } from 'src/js/utils/validation';
-export const ATTR_VISIBLE_CONTROLS = markAttrHiddenInApi('controlsToShow');
-export const ATTR_HELP_TEXT = 'helpText';
-export const ATTR_SAVEABLE = 'saveable';
-export const ATTR_REQUIRED = 'required';
+// ***********
+// * Context *
+// ***********
 
 // Can specify visible controls via Context if needed instead of via directly-passed attribute
 export const CONTEXT_VISIBLE_CONTROLS_KEY = `${Constants.NAMESPACE}/data-element/${ATTR_VISIBLE_CONTROLS}`;
@@ -36,7 +35,7 @@ export const CONTEXT_VISIBLE_CONTROLS_DEFINITION = { type: 'array' };
 
 export const SHARED_CONFIG = {
   category: Constants.CATEGORY_LETTER_TEMPLATE,
-  parent: [Constants.BLOCK_DATA_ELEMENTS],
+  parent: [Constants.BLOCK_LETTER_DATA_ELEMENTS, Constants.BLOCK_SHARED_DATA_ELEMENT],
   attributes: {
     // If defined, only controls corresponding to attribute keys contained in this array will be
     // shown in the editor. If not defined, then all attribute controls will be shown.
@@ -68,7 +67,7 @@ export const Edit = forwardRef(
     { clientId, context, attributes, setAttributes, children, ...otherProps },
     ref,
   ) => {
-    // Validate self, watch own dependencies via `validateDataElementDependencies`
+    // Validate self, watch own dependencies via `validateDataElementDependencyString`
     const [errors, setErrors] = useState(null),
       thisBlockInfo = useSelect((select) =>
         select(Constants.STORE_BLOCK_EDITOR).getBlock(clientId),
@@ -76,7 +75,7 @@ export const Edit = forwardRef(
     useEffect(() => {
       tryValidateSelf(thisBlockInfo, errors, setErrors);
       return tryValidateSelf.cancel;
-    }, validateDataElementDependencies(thisBlockInfo));
+    }, [validateDataElementDependencyString(thisBlockInfo)]);
     // if key is null on initial insertion, set unique key programmatically ONCE
     useEffect(() => {
       if (!attributes[ATTR_KEY]) {

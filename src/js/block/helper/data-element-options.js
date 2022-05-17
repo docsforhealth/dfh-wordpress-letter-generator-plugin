@@ -2,7 +2,6 @@ import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { Fill, ToggleControl } from '@wordpress/components';
 import { createContext, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { list } from '@wordpress/icons';
 import { isEqual, map, throttle } from 'lodash';
 import merge from 'lodash.merge';
 import {
@@ -11,7 +10,6 @@ import {
   EXPECTED_VISIBLE_ATTRS,
 } from 'src/js/block/helper/data-element-options-option';
 import {
-  ATTR_VISIBLE_CONTROLS,
   CONTEXT_VISIBLE_CONTROLS_DEFINITION,
   CONTEXT_VISIBLE_CONTROLS_KEY,
   Edit,
@@ -20,6 +18,13 @@ import {
 } from 'src/js/block/shared/data-element';
 import HelpLabel from 'src/js/component/help-label';
 import * as Constants from 'src/js/constants';
+import {
+  ATTR_NOOP_SHOW_OPTIONS,
+  ATTR_OTHER_OPTION,
+  ATTR_SHAPE_VALUE,
+  ATTR_VISIBLE_CONTROLS,
+  OPTIONS_INFO,
+} from 'src/js/constants/data-element';
 import { markAttrHiddenInApi } from 'src/js/utils/api';
 import { tryRegisterBlockType } from 'src/js/utils/block';
 import {
@@ -27,19 +32,6 @@ import {
   reconcileVisibleAttrsAndContext,
   shouldShowControl,
 } from 'src/js/utils/data-element';
-
-export const INFO = {
-  name: Constants.BLOCK_DATA_ELEMENT_OPTIONS,
-  icon: list,
-  title: __('Options Element', Constants.TEXT_DOMAIN),
-  description: __(
-    'Allow selection of predefined options or user-specified option',
-    Constants.TEXT_DOMAIN,
-  ),
-};
-export const ATTR_OTHER_OPTION = 'hasOtherOption';
-export const ATTR_NOOP_SHOW_OPTIONS = markAttrHiddenInApi('noopShowOptions');
-export const ATTR_SHAPE_VALUE = markAttrHiddenInApi('shapeOfValue'); // TODO do we need to `markAttrHiddenInApi`??
 
 const ATTR_SHAPE_VISIBLE_CONTROLS = markAttrHiddenInApi('shapeVisibleControls');
 const tryUpdateShape = throttle((oldShape, newShape, updateShape) => {
@@ -53,8 +45,8 @@ const tryUpdateShape = throttle((oldShape, newShape, updateShape) => {
 export const SlotNameContext = createContext();
 
 tryRegisterBlockType(
-  INFO.name,
-  merge({}, SHARED_CONFIG, INFO, {
+  OPTIONS_INFO.name,
+  merge({}, SHARED_CONFIG, OPTIONS_INFO, {
     apiVersion: 2,
     attributes: {
       [ATTR_OTHER_OPTION]: { type: 'boolean', default: false },
@@ -81,7 +73,7 @@ tryRegisterBlockType(
         getShapeDataElementBlocks(clientId),
         'attributes',
       );
-      // rate limited, update `ATTR_SHAPE_VALUE` from InnerBlocks within `BLOCK_DATA_ELEMENTS`
+      // rate limited, update `ATTR_SHAPE_VALUE` from InnerBlocks within `BLOCK_LETTER_DATA_ELEMENTS`
       useEffect(
         () => {
           tryUpdateShape(

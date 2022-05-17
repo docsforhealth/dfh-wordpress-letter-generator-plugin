@@ -3,13 +3,13 @@ import { forwardRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { filter, isEmpty, values } from 'lodash';
 import PropTypes from 'prop-types';
-import { ATTR_KEY, ATTR_LABEL } from 'src/js/block/shared/data-element';
 import Collapsible, { ToggleButton } from 'src/js/component/collapsible';
 import EditorLabelWrapper, {
   STYLE_FORM_LABEL,
 } from 'src/js/component/editor-label-wrapper';
 import ShapeValueEditField from 'src/js/component/shape-value-edit-field';
 import * as Constants from 'src/js/constants';
+import { ATTR_KEY, ATTR_LABEL } from 'src/js/constants/data-element';
 
 const DataElementOption = forwardRef(
   (
@@ -49,21 +49,27 @@ const DataElementOption = forwardRef(
               </h3>
               <div className="data-element-option__values">
                 {hasValueAttrs && shapeValues
-                  ? shapeValues.map((valueAttrs) => (
-                      <span
-                        key={valueAttrs[ATTR_KEY]}
-                        className={`data-element-option__values__value ${
-                          thisValue?.[valueAttrs[ATTR_KEY]]
-                            ? ''
-                            : 'data-element-option__values__value--missing'
-                        }`}
-                      >
-                        <span className="data-element-option__values__value__label">
-                          {valueAttrs[ATTR_LABEL]}
-                        </span>{' '}
-                        {thisValue?.[valueAttrs[ATTR_KEY]]}
-                      </span>
-                    ))
+                  ? shapeValues.map(
+                      (valueAttrs) =>
+                        // We set the `ATTR_KEY` in a `useEffect` hook in
+                        // `src/js/block/shared/data-element` so when first adding a shape this key
+                        // may not be set yet. We will wait until the key is set before rendering
+                        valueAttrs[ATTR_KEY] && (
+                          <span
+                            key={valueAttrs[ATTR_KEY]}
+                            className={`data-element-option__values__value ${
+                              thisValue?.[valueAttrs[ATTR_KEY]]
+                                ? ''
+                                : 'data-element-option__values__value--missing'
+                            }`}
+                          >
+                            <span className="data-element-option__values__value__label">
+                              {valueAttrs[ATTR_LABEL]}
+                            </span>{' '}
+                            {thisValue?.[valueAttrs[ATTR_KEY]]}
+                          </span>
+                        ),
+                    )
                   : __(
                       'Please fill out values for this choice',
                       Constants.TEXT_DOMAIN,
@@ -88,14 +94,19 @@ const DataElementOption = forwardRef(
               <div id={id} tabIndex="0">
                 {shapeValues?.map((valueAttrs) => {
                   const dataKey = valueAttrs[ATTR_KEY];
+                  // We set the `ATTR_KEY` in a `useEffect` hook in
+                  // `src/js/block/shared/data-element` so when first adding a shape this key
+                  // may not be set yet. We will wait until the key is set before rendering
                   return (
-                    <ShapeValueEditField
-                      {...valueAttrs}
-                      key={dataKey}
-                      // Set default as empty string to prevent uncontrolled-->controlled errors
-                      value={thisValue?.[dataKey] ?? ''}
-                      onChange={updateThisValue}
-                    />
+                    dataKey && (
+                      <ShapeValueEditField
+                        {...valueAttrs}
+                        key={dataKey}
+                        // Set default as empty string to prevent uncontrolled-->controlled errors
+                        value={thisValue?.[dataKey] ?? ''}
+                        onChange={updateThisValue}
+                      />
+                    )
                   );
                 })}
               </div>

@@ -6,7 +6,7 @@
             margin-top: $baseunit * 0.5;
         }
 
-        .data-elements-container__info:before {
+        .letter-data-elements__info:before {
             content: counter(info-messages, lower-alpha) '.';
         }
     }

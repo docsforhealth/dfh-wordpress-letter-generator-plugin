@@ -21,6 +21,7 @@
     "@wordpress/icons": "^8.3.0",
     "@wordpress/scripts": "~19.2.2",
     "concurrently": "~6.4.0",
+    "lodash.camelcase": "^4.3.0",
     "lodash.merge": "^4.6.2",
     "prettier": "^2.5.0",
     "prettier-plugin-organize-imports": "^2.3.4",

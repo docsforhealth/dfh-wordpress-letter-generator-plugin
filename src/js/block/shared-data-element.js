@@ -4,13 +4,15 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { isEqual, throttle } from 'lodash';
-import { INFO as IMAGE_INFO } from 'src/js/block/helper/data-element-image';
-import { INFO as OPTIONS_INFO } from 'src/js/block/helper/data-element-options';
-import { INFO as TEXT_INFO } from 'src/js/block/helper/data-element-text';
-import { ICON as DATA_ELEMENTS_ICON } from 'src/js/block/helper/data-elements';
-import { ATTR_LABEL } from 'src/js/block/shared/data-element';
 import PlaceholderWithOptions from 'src/js/component/placeholder-with-options';
 import * as Constants from 'src/js/constants';
+import {
+  ATTR_LABEL,
+  IMAGE_INFO,
+  LETTER_DATA_ELEMENTS_ICON,
+  OPTIONS_INFO,
+  TEXT_INFO,
+} from 'src/js/constants/data-element';
 import useInsertBlock from 'src/js/hook/use-insert-block';
 import useSyncTwoValues from 'src/js/hook/use-sync-two-values';
 import { markAttrHiddenInApi } from 'src/js/utils/api';
@@ -45,7 +47,7 @@ tryRegisterBlockType(Constants.BLOCK_SHARED_DATA_ELEMENT, {
   apiVersion: 2,
   title: TITLE,
   category: Constants.CATEGORY_LETTER_TEMPLATE,
-  icon: DATA_ELEMENTS_ICON,
+  icon: LETTER_DATA_ELEMENTS_ICON,
   description,
   attributes: {
     [ATTR_ERROR_MESSAGES]: { type: 'array', default: [] },
@@ -87,7 +89,7 @@ tryRegisterBlockType(Constants.BLOCK_SHARED_DATA_ELEMENT, {
       <div {...useBlockProps()}>
         {!innerBlocks.length && (
           <PlaceholderWithOptions
-            icon={DATA_ELEMENTS_ICON}
+            icon={LETTER_DATA_ELEMENTS_ICON}
             label={__(
               'Create a new shared data element',
               Constants.TEXT_DOMAIN,

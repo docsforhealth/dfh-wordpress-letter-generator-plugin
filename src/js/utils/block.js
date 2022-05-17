@@ -1,6 +1,6 @@
 import { getBlockType, registerBlockType } from '@wordpress/blocks';
 import { select } from '@wordpress/data';
-import { filter } from 'lodash';
+import { filter, memoize } from 'lodash';
 import * as Constants from 'src/js/constants';
 
 /**
@@ -44,19 +44,34 @@ export function countInnerBlocks(clientId, mySelect = null) {
  * @param  {Object} blockName The block's name, for example `dfh/text`
  * @return {String}           The block's title
  */
-export function getTitleFromBlockName(blockName) {
+export const getTitleFromBlockName = memoize((blockName) => {
   return blockName ? getBlockType(blockName)?.title : '';
-}
+});
+
+/**
+ * Given the block name, return the icon
+ * @param  {Object} blockName The block's name, for example `dfh/text`
+ * @return {Object|String}    Icon source
+ */
+export const getIconFromBlockName = memoize((blockName) => {
+  return blockName ? getBlockType(blockName)?.icon?.src : null;
+});
 
 /**
  * Conducts a breadth-first search through blocks for the first occurrence of the block name
  * @param  {String} blockName       Name of the block to look for
  * @param  {?String} parentClientId Optional, client id to start the search from. If absent will
  *                                  start search at the root of the block tree
+ * @param  {?Function} mySelect     Optional, user-provided `select` function
  * @return {Object}                 Found block's editor object
  */
-export function tryFindBlockInfoFromName(blockName, parentClientId = null) {
-  const { getBlock, getBlocks } = select(Constants.STORE_BLOCK_EDITOR),
+export function tryFindBlockInfoFromName(
+  blockName,
+  parentClientId = null,
+  mySelect = null,
+) {
+  const thisSelect = mySelect ? mySelect : select;
+  const { getBlock, getBlocks } = thisSelect(Constants.STORE_BLOCK_EDITOR),
     blocks = filter(
       parentClientId ? [getBlock(parentClientId)] : [...(getBlocks() ?? [])],
     );

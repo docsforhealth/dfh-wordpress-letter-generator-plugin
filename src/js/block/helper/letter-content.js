@@ -1,14 +1,34 @@
 import { RichText, useBlockProps } from '@wordpress/block-editor';
-import { useEffect } from '@wordpress/element';
+import { renderToString, useContext, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import $ from 'jquery';
+import { debounce, isEqual } from 'lodash';
+import { TRIGGER_PREFIX } from 'src/js/autocomplete/data-element';
+import {
+  DataOptionsContext,
+  LetterContentContext,
+} from 'src/js/block/letter-template';
+import DataElementCompletion from 'src/js/component/data-element-completion';
 import EditorLabelWrapper from 'src/js/component/editor-label-wrapper';
 import * as Constants from 'src/js/constants';
-import { markAttrHiddenInApi } from 'src/js/utils/api';
+import {
+  ELEMENT_ATTR_COMBO_KEY,
+  OPTION_COMBO_KEY,
+  OPTION_DISPLAY_LABEL,
+} from 'src/js/constants/data-element';
 import { tryRegisterBlockType } from 'src/js/utils/block';
+import { completionDatasetToOption } from 'src/js/utils/data-element';
 
-export const ATTR_NUM_BADGES = markAttrHiddenInApi('numBadges');
-
-const badgeAttributeRegex = /data-letter-element-key/gm;
+const tryUpdateBadges = debounce((clientId, oldBadges, updateBadges) => {
+  const newBadges = $.uniqueSort(
+    $(`[data-block='${clientId}'] .data-element-completion`),
+  )
+    .map((index, element) => completionDatasetToOption(element.dataset))
+    .toArray();
+  if (!isEqual(oldBadges, newBadges)) {
+    updateBadges(newBadges);
+  }
+}, 200);
 
 tryRegisterBlockType(Constants.BLOCK_LETTER_CONTENT, {
   apiVersion: 2,
@@ -19,19 +39,47 @@ tryRegisterBlockType(Constants.BLOCK_LETTER_CONTENT, {
     'Specify letter content with embedded data elements for a letter template',
     Constants.TEXT_DOMAIN,
   ),
-  supports: { inserter: false },
+  parent: [Constants.BLOCK_LETTER_TEMPLATE],
   attributes: {
     content: { type: 'string', default: '' },
-    [ATTR_NUM_BADGES]: { type: 'number', default: 0 },
   },
-  edit({ attributes, setAttributes, clientId }) {
-    // Store number of badges for validation in `BLOCK_LETTER_TEMPLATE`
-    const numBadges = attributes.content?.match(badgeAttributeRegex)?.length;
+  edit({ clientId, attributes, setAttributes }) {
+    // Update badges on initail render and also whenever rich text content changes
+    const { badges, updateBadges } = useContext(LetterContentContext);
+    useEffect(
+      () => tryUpdateBadges(clientId, badges, updateBadges),
+      [attributes.content],
+    );
+    // Track local and shared data elements to see if any badges need updating or removing
+    const { comboKeyToOption } = useContext(DataOptionsContext);
     useEffect(() => {
-      if (numBadges != attributes[ATTR_NUM_BADGES]) {
-        setAttributes({ [ATTR_NUM_BADGES]: numBadges });
+      if (!badges || !comboKeyToOption || !attributes.content) {
+        return;
       }
-    }, [numBadges]);
+      let modified = false;
+      const $content = $($.parseHTML(`<div>${attributes.content}</div>`));
+      badges.forEach((badge) => {
+        const comboKey = badge[OPTION_COMBO_KEY],
+          option = comboKeyToOption[comboKey],
+          badgeSelector = `[${ELEMENT_ATTR_COMBO_KEY}='${comboKey}']`;
+        // if option is missing, then need to remove badge
+        if (!option) {
+          modified = true;
+          // replace with trigger prefix to provide a visual indicator that a badge was removed
+          // and also to allow for quick re-insertion of a new badge in its place
+          $content.find(badgeSelector).replaceWith(TRIGGER_PREFIX);
+        }
+        // if display labels don't match, then need to update badge
+        else if (badge[OPTION_DISPLAY_LABEL] !== option[OPTION_DISPLAY_LABEL]) {
+          modified = true;
+          const newBadge = <DataElementCompletion {...option} />;
+          $content.find(badgeSelector).replaceWith(renderToString(newBadge));
+        }
+      });
+      if (modified) {
+        setAttributes({ content: $content.html() });
+      }
+    }, [comboKeyToOption]);
     return (
       <div {...useBlockProps()}>
         <EditorLabelWrapper

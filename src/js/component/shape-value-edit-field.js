@@ -1,8 +1,6 @@
 import { TextareaControl, TextControl } from '@wordpress/components';
 import PropTypes from 'prop-types';
 import {
-  ATTR_PLACEHOLDER,
-  ATTR_TYPE,
   TEXT_TYPE_DATE,
   TEXT_TYPE_LONG,
   TEXT_TYPE_PHONE_NUMBER,
@@ -13,7 +11,9 @@ import {
   ATTR_HELP_TEXT,
   ATTR_KEY,
   ATTR_LABEL,
-} from 'src/js/block/shared/data-element';
+  ATTR_PLACEHOLDER,
+  ATTR_TYPE,
+} from 'src/js/constants/data-element';
 
 export default function ShapeValueEditField({
   [ATTR_KEY]: dataKey,

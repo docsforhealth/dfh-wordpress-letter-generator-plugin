@@ -12,17 +12,17 @@ import { closeSmall } from '@wordpress/icons';
 import { insert, registerFormatType, useAnchorRef } from '@wordpress/rich-text';
 import { startsWith, trim } from 'lodash';
 import { TRIGGER_PREFIX } from 'src/js/autocomplete/data-element';
-import { ICON as DATA_ELEMENTS_ICON } from 'src/js/block/helper/data-elements';
+import * as Constants from 'src/js/constants';
 import {
+  ELEMENT_ATTR_BLOCK_NAME,
   ELEMENT_ATTR_IS_SHARED,
-  ELEMENT_ATTR_KEY,
+  ELEMENT_ATTR_DATA_KEY,
   ELEMENT_ATTR_OPTIONS_SHAPE_KEY,
-  ELEMENT_ATTR_ORIGINAL_LABEL,
-  ELEMENT_ATTR_TYPE,
+  ELEMENT_ATTR_ORIGINAL_DISPLAY_LABEL,
   ELEMENT_CLASS_NAME,
   ELEMENT_TAG_NAME,
-} from 'src/js/component/data-element-completion';
-import * as Constants from 'src/js/constants';
+  LETTER_DATA_ELEMENTS_ICON,
+} from 'src/js/constants/data-element';
 import {
   getFormatBounds,
   tryEnsureFormatText,
@@ -43,11 +43,11 @@ const settings = {
   // see https://github.com/WordPress/gutenberg/blob/trunk/packages/format-library/src/link/index.js
   // example: https://wordpress.stackexchange.com/a/376740
   attributes: {
-    key: ELEMENT_ATTR_KEY,
+    key: ELEMENT_ATTR_DATA_KEY,
     shapeKey: ELEMENT_ATTR_OPTIONS_SHAPE_KEY,
-    type: ELEMENT_ATTR_TYPE,
+    type: ELEMENT_ATTR_BLOCK_NAME,
     isShared: ELEMENT_ATTR_IS_SHARED,
-    originalLabel: ELEMENT_ATTR_ORIGINAL_LABEL,
+    originalDisplayLabel: ELEMENT_ATTR_ORIGINAL_DISPLAY_LABEL,
   },
   edit({ isActive, activeAttributes, value, onChange, onFocus, contentRef }) {
     // This custom format is only available within `BLOCK_LETTER_CONTENT`
@@ -77,7 +77,7 @@ const settings = {
           onChange,
           value,
           Constants.FORMAT_DATA_ELEMENT,
-          activeAttributes.originalLabel,
+          activeAttributes.originalDisplayLabel,
         );
         // Prevents most modifications to the label EXCEPT for the edge case noted above
         const onKeyDown = function (event) {
@@ -112,7 +112,12 @@ const settings = {
       // React compares objects BY REFERENCE, which may result in some unnecessary renders here
       // We can't guarantee that `value` is the identical object since we don't manage it
       // see https://dev.to/ms_yogii/useeffect-dependency-array-and-object-comparison-45el
-      [contentRef.current, activeAttributes.originalLabel, value, isActive],
+      [
+        contentRef.current,
+        activeAttributes.originalDisplayLabel,
+        value,
+        isActive,
+      ],
     );
     // NOTE: Because `useAnchorRef` also called the `useMemo` hook, we need to call it here so that
     // adding a `Popover` doesn't change the hook order and trigger a React exception
@@ -121,7 +126,7 @@ const settings = {
       <>
         <BlockControls>
           <ToolbarButton
-            icon={DATA_ELEMENTS_ICON}
+            icon={LETTER_DATA_ELEMENTS_ICON}
             title={
               isActive
                 ? __('Remove Data Element', Constants.TEXT_DOMAIN)
@@ -173,7 +178,7 @@ const settings = {
               >
                 {__('Replace', Constants.TEXT_DOMAIN) +
                   ' "' +
-                  trim(activeAttributes.originalLabel) +
+                  trim(activeAttributes.originalDisplayLabel) +
                   '"'}
               </Button>
               <Button
@@ -181,7 +186,7 @@ const settings = {
                 label={
                   __('Remove', Constants.TEXT_DOMAIN) +
                   ' "' +
-                  trim(activeAttributes.originalLabel) +
+                  trim(activeAttributes.originalDisplayLabel) +
                   '"'
                 }
                 className="data-element-option-popover__button"

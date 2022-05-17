@@ -1,11 +1,9 @@
 import { __ } from '@wordpress/i18n';
 import { flatten, map } from 'lodash';
 import * as Constants from 'src/js/constants';
+import { ATTR_KEY, ATTR_LABEL } from 'src/js/constants/data-element';
 import { getTitleFromBlockName } from 'src/js/utils/block';
 import { getShapeDataElementBlocks } from 'src/js/utils/data-element';
-
-export const ATTR_KEY = 'dataKey';
-export const ATTR_LABEL = 'label';
 
 /**
  * Determines if a given data element block info is valid
@@ -25,12 +23,14 @@ export function validateDataElement(blockInfo) {
  * @param  {Object}  blockInfo Block info from block edior
  * @return {Array}             Array of dependency values
  */
-export function validateDataElementDependencies(blockInfo) {
+export function validateDataElementDependencyString(blockInfo) {
   const deps = depsForBaseBlockValidation(blockInfo);
   if (blockInfo?.name === Constants.BLOCK_DATA_ELEMENT_OPTIONS) {
     deps.push(...depsForOptionsShapeValidation(blockInfo));
   }
-  return deps;
+  // Join all dependencies into a single string because the size of the dependency array must remain
+  // consistent across renders!
+  return deps.join('');
 }
 
 // ***********
