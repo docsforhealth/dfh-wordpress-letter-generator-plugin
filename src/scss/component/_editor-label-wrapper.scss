@@ -20,42 +20,6 @@
         border-radius: $border-radius;
     }
 
-    // *************
-    // * Container *
-    // *************
-
-    // TODO edt to make the controls area look less editable
-    &--style-container {
-        border: 1px solid $color-seafoam-dark-2;
-        border-radius: $border-radius;
-        transition: border-color 0.3s, background-color 0.5s;
-    }
-    &--style-container > &__controls {
-        position: sticky;
-        top: 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: $baseunit;
-        background-color: $color-seafoam;
-        border-top-left-radius: $border-radius;
-        border-top-right-radius: $border-radius;
-        border-bottom: 1px solid $color-seafoam-dark-2;
-        transition: padding 0.3s, border-color 0.3s;
-        z-index: $z-index-front-1;
-    }
-    &--style-container > &__controls > &__controls__label {
-        flex-grow: 1;
-        font-size: $baseunit;
-    }
-    &--style-container > &__content {
-        padding: $baseunit;
-    }
-    // Prevent nested controls from overlapping the sticky parent controls
-    &--style-container > &__content &__controls {
-        z-index: $z-index-reset;
-    }
-
     // ****************
     // * Other styles *
     // ****************

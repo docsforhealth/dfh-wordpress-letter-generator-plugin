@@ -16,6 +16,16 @@ export function tryRegisterBlockType(blockName, settings) {
 }
 
 /**
+ * Builds a String for the name of the slot
+ * @param  {String} root     String root for the slot name
+ * @param  {String} clientId Client id of the block
+ * @return {String}          Slot name
+ */
+export function slotName(root, clientId) {
+  return `${root}-${clientId}`;
+}
+
+/**
  * Return inner blocks objects given block clientId
  * @param  {String} clientId    Block identifier to count inner blocks for
  * @param  {?Function} mySelect Optional, user-provided `select` function

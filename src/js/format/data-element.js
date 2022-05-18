@@ -21,7 +21,7 @@ import {
   ELEMENT_ATTR_ORIGINAL_DISPLAY_LABEL,
   ELEMENT_CLASS_NAME,
   ELEMENT_TAG_NAME,
-  LETTER_DATA_ELEMENTS_ICON,
+  LETTER_DATA_ELEMENTS_INFO,
 } from 'src/js/constants/data-element';
 import {
   getFormatBounds,
@@ -126,7 +126,7 @@ const settings = {
       <>
         <BlockControls>
           <ToolbarButton
-            icon={LETTER_DATA_ELEMENTS_ICON}
+            icon={LETTER_DATA_ELEMENTS_INFO.icon}
             title={
               isActive
                 ? __('Remove Data Element', Constants.TEXT_DOMAIN)

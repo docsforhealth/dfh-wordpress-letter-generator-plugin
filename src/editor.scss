@@ -33,6 +33,12 @@ $path-base-styles: '../src/scss/base';
 @import 'scss/base/structure';
 @import 'scss/base/typography';
 
+// Project styles
+// --------------
+
+@import 'scss/project/vars';
+@import 'scss/project/mixins';
+
 // Blocks
 // ------
 
@@ -43,6 +49,7 @@ $path-base-styles: '../src/scss/base';
 @import 'scss/block/data-layout-preview';
 @import 'scss/block/data-layout-section';
 @import 'scss/block/letter-data-elements';
+@import 'scss/block/letter-template';
 
 // Formats
 // -------
@@ -60,6 +67,7 @@ $path-base-styles: '../src/scss/base';
 @import 'scss/component/data-element-option';
 @import 'scss/component/data-element-overlay';
 @import 'scss/component/editor-label-wrapper';
+@import 'scss/component/message-display';
 @import 'scss/component/placeholder-with-options';
 @import 'scss/component/single-block-appender';
 @import 'scss/component/status-info-display';

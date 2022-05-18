@@ -10,7 +10,7 @@ import 'src/js/format/data-element';
  * Blocks
  */
 // import 'src/js/block/letter-template-button'; // TODO
-import 'src/js/block/letter-template'; // TODO
+import 'src/js/block/letter-template';
 import 'src/js/block/shared-data-element';
 // Helpers
 import 'src/js/block/helper/data-element-image';

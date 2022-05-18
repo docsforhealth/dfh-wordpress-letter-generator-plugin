@@ -6,7 +6,7 @@ import Contents, { SLOT_OVERLAY } from 'src/js/component/data-element/contents';
 import Controls from 'src/js/component/data-element/controls';
 import Header from 'src/js/component/data-element/header';
 import Info from 'src/js/component/data-element/info';
-import { slotName } from 'src/js/utils/data-element';
+import { slotName } from 'src/js/utils/block';
 
 // NOTE: `SlotFillProvider` already included in default WP Block Editor's root
 // see https://github.com/WordPress/gutenberg/tree/trunk/packages/components/src/slot-fill

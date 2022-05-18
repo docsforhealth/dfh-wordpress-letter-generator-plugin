@@ -1,0 +1,108 @@
+.letter-template {
+    position: relative;
+    padding-bottom: 1px; // to prevent last block's margin from collapsing
+    min-height: 50vh;
+
+    // No way to add custom class to this element so directly target WP class
+    .components-tab-panel__tabs {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: $baseunit;
+        padding-bottom: $baseunit;
+        background-color: $color-white;
+    }
+
+    &:before,
+    .components-tab-panel__tabs:before {
+        @include set-overhang-position($overhang-small);
+
+        content: '';
+        position: absolute;
+        top: 100%;
+        height: $baseunit * 0.25;
+        background-color: $color-navy-light-2;
+        border-radius: $border-radius;
+
+        @media (min-width: $media-width-laptop) {
+            @include set-overhang-position($overhang-medium);
+        }
+        @media (min-width: $media-width-desktop) {
+            @include set-overhang-position($overhang-large);
+        }
+    }
+
+    & &__tab {
+        &[type='button'] {
+            @extend %default-text;
+            @include scut-truncate;
+            @include center-flex;
+
+            min-width: 0;
+            padding: $baseunit;
+            color: $color-navy;
+            border: 1px solid $color-navy-light-2;
+            border-radius: $border-radius;
+            font-weight: $font-weight-bold;
+            transition: color 0.1s, background-color 0.1s, border-color 0.1s;
+        }
+
+        &:not(&--secondary) {
+            @extend %medium-text;
+
+            flex-grow: 1;
+        }
+        &--secondary[type='button'] {
+            flex-grow: 0;
+        }
+
+        &:link,
+        &:visited,
+        &:hover,
+        &:focus,
+        &:active,
+        &--active[type='button'] {
+            background-color: $color-navy-light-2;
+            box-shadow: none;
+        }
+        &--active[type='button'] {
+            border-color: $color-navy;
+            color: $color-navy;
+            box-shadow: 0px 0px 15px 0px $color-transparent-gray-light-1;
+        }
+
+        &__title {
+            display: flex;
+            align-items: center;
+            gap: $baseunit * 0.5;
+            min-width: 0;
+
+            &__icon {
+                @include center-flex;
+            }
+            &__label {
+                @include scut-truncate;
+
+                display: none;
+                min-width: 0;
+            }
+            &__number {
+                border: 1px solid $color-navy-light-1;
+                border-radius: 50%;
+                padding: ($baseunit * 0.25) ($baseunit * 0.5);
+            }
+
+            @media (min-width: $media-width-landscape-medium-mobile) {
+                &__label {
+                    display: block;
+                }
+            }
+        }
+    }
+
+    &__content {
+        @extend %default-text;
+        @extend %medium-text;
+    }
+}

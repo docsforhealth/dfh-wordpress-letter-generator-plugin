@@ -1,4 +1,5 @@
 import { RichText, useBlockProps } from '@wordpress/block-editor';
+import { Fill } from '@wordpress/components';
 import { renderToString, useContext, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import $ from 'jquery';
@@ -7,16 +8,18 @@ import { TRIGGER_PREFIX } from 'src/js/autocomplete/data-element';
 import {
   DataOptionsContext,
   LetterContentContext,
+  LetterTemplateContext,
 } from 'src/js/block/letter-template';
 import DataElementCompletion from 'src/js/component/data-element-completion';
 import EditorLabelWrapper from 'src/js/component/editor-label-wrapper';
 import * as Constants from 'src/js/constants';
 import {
   ELEMENT_ATTR_COMBO_KEY,
+  LETTER_CONTENT_INFO,
   OPTION_COMBO_KEY,
   OPTION_DISPLAY_LABEL,
 } from 'src/js/constants/data-element';
-import { tryRegisterBlockType } from 'src/js/utils/block';
+import { slotName, tryRegisterBlockType } from 'src/js/utils/block';
 import { completionDatasetToOption } from 'src/js/utils/data-element';
 
 const tryUpdateBadges = debounce((clientId, oldBadges, updateBadges) => {
@@ -30,20 +33,16 @@ const tryUpdateBadges = debounce((clientId, oldBadges, updateBadges) => {
   }
 }, 200);
 
-tryRegisterBlockType(Constants.BLOCK_LETTER_CONTENT, {
+tryRegisterBlockType(LETTER_CONTENT_INFO.name, {
+  ...LETTER_CONTENT_INFO,
   apiVersion: 2,
-  title: __('Letter Content', Constants.TEXT_DOMAIN),
   category: Constants.CATEGORY_LETTER_TEMPLATE,
-  icon: 'text-page',
-  description: __(
-    'Specify letter content with embedded data elements for a letter template',
-    Constants.TEXT_DOMAIN,
-  ),
   parent: [Constants.BLOCK_LETTER_TEMPLATE],
   attributes: {
     content: { type: 'string', default: '' },
   },
   edit({ clientId, attributes, setAttributes }) {
+    const { templateClientId } = useContext(LetterTemplateContext);
     // Update badges on initail render and also whenever rich text content changes
     const { badges, updateBadges } = useContext(LetterContentContext);
     useEffect(
@@ -81,23 +80,26 @@ tryRegisterBlockType(Constants.BLOCK_LETTER_CONTENT, {
       }
     }, [comboKeyToOption]);
     return (
-      <div {...useBlockProps()}>
-        <EditorLabelWrapper
-          label={__('Letter template content', Constants.TEXT_DOMAIN)}
-        >
-          {(id) => (
-            <RichText
-              id={id}
-              placeholder={__('Enter template here', Constants.TEXT_DOMAIN)}
-              value={attributes.content}
-              onChange={(content) => setAttributes({ content })}
-              allowedFormats={[Constants.FORMAT_DATA_ELEMENT]}
-              autocompleters={[Constants.AUTOCOMPLETE_DATA_ELEMENT]}
-              preserveWhiteSpace
-            />
-          )}
-        </EditorLabelWrapper>
-      </div>
+      <Fill name={slotName(LETTER_CONTENT_INFO.name, templateClientId)}>
+        <div {...useBlockProps({ className: 'letter-template__content' })}>
+          <EditorLabelWrapper label={LETTER_CONTENT_INFO.title}>
+            {(id) => (
+              <RichText
+                id={id}
+                placeholder={__(
+                  'Start entering your letter template here. Use # to insert a data element.',
+                  Constants.TEXT_DOMAIN,
+                )}
+                value={attributes.content}
+                onChange={(content) => setAttributes({ content })}
+                allowedFormats={[Constants.FORMAT_DATA_ELEMENT]}
+                autocompleters={[Constants.AUTOCOMPLETE_DATA_ELEMENT]}
+                preserveWhiteSpace
+              />
+            )}
+          </EditorLabelWrapper>
+        </div>
+      </Fill>
     );
   },
   save({ attributes }) {

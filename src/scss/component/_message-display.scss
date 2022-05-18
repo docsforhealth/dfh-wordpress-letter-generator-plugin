@@ -1,0 +1,32 @@
+.message-display {
+    @extend .container--narrow;
+
+    margin: $baseunit auto ($baseunit * 2);
+    border: 1px solid $color-navy-light-1;
+    background-color: $color-navy-light-3;
+
+    &__title {
+        @extend %default-text;
+        @extend %medium-text;
+
+        display: flex;
+        align-items: center;
+        gap: $baseunit * 0.5;
+        color: $color-navy;
+        padding: ($baseunit * 0.75) $baseunit;
+        font-weight: $font-weight-bold;
+        border-bottom: 1px solid $color-navy-light-1;
+
+        &__icon {
+            @include center-flex;
+
+            fill: $color-navy;
+        }
+    }
+    &__contents {
+        @extend %default-text;
+        @extend %small-text;
+
+        padding: $baseunit;
+    }
+}

@@ -1,5 +1,7 @@
 <?php
 
+// TODO custom REST API controller
+
 // Need to flush URL rewrite rules when plugin is re-activated in order to get custom post type
 // URL rewriting rules to work as intended
 // see https://developer.wordpress.org/reference/functions/register_post_type/#flushing-rewrite-on-activation
@@ -33,7 +35,7 @@ function dlg_register_content_type_letter_template() {
         'rewrite'             => array('slug' => 'dlg-letter-template', 'with_front' => false),
         'menu_icon'           => 'dashicons-welcome-write-blog',
         'template'            => array(array('dlg/letter-template')),
-        // 'template_lock'       => 'insert', // TODO
+        'template_lock'       => 'insert',
         'labels'              => array(
             'add_new'                  => __('Add New', DLG_TEXT_DOMAIN),
             'add_new_item'             => __('Add New Letter Template', DLG_TEXT_DOMAIN),

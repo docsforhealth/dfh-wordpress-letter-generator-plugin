@@ -37,7 +37,7 @@ function dlg_register_content_type_shared_data_element() {
         'rewrite'             => array('slug' => 'dlg-data-element', 'with_front' => false),
         'menu_icon'           => 'dashicons-forms',
         'template'            => array(array('dlg/shared-data-element')),
-        // 'template_lock'       => 'insert', // TODO
+        'template_lock'       => 'insert',
         'labels'              => array(
             'add_new'                  => __('Add New', DLG_TEXT_DOMAIN),
             'add_new_item'             => __('Add New Shared Data Element', DLG_TEXT_DOMAIN),

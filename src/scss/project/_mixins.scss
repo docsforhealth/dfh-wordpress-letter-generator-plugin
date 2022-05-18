@@ -1,0 +1,4 @@
+@mixin set-overhang-position($overhang) {
+    left: $overhang * -1;
+    width: if($overhang == 0, 100%, calc(100% + #{$overhang * 2}));
+}

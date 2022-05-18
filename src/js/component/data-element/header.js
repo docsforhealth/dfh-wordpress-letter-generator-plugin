@@ -14,8 +14,9 @@ import * as Constants from 'src/js/constants';
 import {
   getIconFromBlockName,
   getTitleFromBlockName,
+  slotName,
 } from 'src/js/utils/block';
-import { buildAttrPropType, slotName } from 'src/js/utils/data-element';
+import { buildAttrPropType } from 'src/js/utils/data-element';
 
 export default function Header({ clientId, label }) {
   const headerMore = useSlot(SLOT_HEADER),

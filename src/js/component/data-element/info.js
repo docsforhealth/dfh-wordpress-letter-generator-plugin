@@ -8,7 +8,7 @@ import Collapsible from 'src/js/component/collapsible';
 import { SLOT_INFO } from 'src/js/component/data-element/contents';
 import StatusInfoDisplay from 'src/js/component/status-info-display';
 import * as Constants from 'src/js/constants';
-import { slotName } from 'src/js/utils/data-element';
+import { slotName } from 'src/js/utils/block';
 
 export default function Info({ clientId, errors }) {
   const { name } = useSelect((select) =>

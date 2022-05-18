@@ -1,19 +1,24 @@
-import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
+import {
+  BlockControls,
+  InnerBlocks,
+  useBlockProps,
+} from '@wordpress/block-editor';
 import { createBlock } from '@wordpress/blocks';
+import { ToolbarButton } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { undo } from '@wordpress/icons';
 import { isEqual, throttle } from 'lodash';
 import PlaceholderWithOptions from 'src/js/component/placeholder-with-options';
 import * as Constants from 'src/js/constants';
 import {
   ATTR_LABEL,
   IMAGE_INFO,
-  LETTER_DATA_ELEMENTS_ICON,
+  LETTER_DATA_ELEMENTS_INFO,
   OPTIONS_INFO,
   TEXT_INFO,
 } from 'src/js/constants/data-element';
-import useInsertBlock from 'src/js/hook/use-insert-block';
 import useSyncTwoValues from 'src/js/hook/use-sync-two-values';
 import { markAttrHiddenInApi } from 'src/js/utils/api';
 import { getInnerBlocks, tryRegisterBlockType } from 'src/js/utils/block';
@@ -47,7 +52,7 @@ tryRegisterBlockType(Constants.BLOCK_SHARED_DATA_ELEMENT, {
   apiVersion: 2,
   title: TITLE,
   category: Constants.CATEGORY_LETTER_TEMPLATE,
-  icon: LETTER_DATA_ELEMENTS_ICON,
+  icon: LETTER_DATA_ELEMENTS_INFO.icon,
   description,
   attributes: {
     [ATTR_ERROR_MESSAGES]: { type: 'array', default: [] },
@@ -82,14 +87,27 @@ tryRegisterBlockType(Constants.BLOCK_SHARED_DATA_ELEMENT, {
       (title) => editPost({ title }),
     );
     // function to insert data element block, which will have label set to be the current post title
-    const insertBlock = useInsertBlock(clientId),
-      onSelect = ({ type }) =>
-        insertBlock(createBlock(type, { [ATTR_LABEL]: postTitle }));
+    // NOTE: because we have an `insert` template lock when specifying this custom content type, we
+    // can't use `insertBlock` and need to use `replaceInnerBlocks` instead
+    const { replaceInnerBlocks } = useDispatch(Constants.STORE_BLOCK_EDITOR),
+      clearDataElement = () => replaceInnerBlocks(clientId, []),
+      onSelect = ({ name }) =>
+        replaceInnerBlocks(clientId, [
+          createBlock(name, { [ATTR_LABEL]: postTitle }),
+        ]);
     return (
       <div {...useBlockProps()}>
-        {!innerBlocks.length && (
+        {innerBlocks.length ? (
+          <BlockControls>
+            <ToolbarButton
+              icon={undo}
+              title={__('Reselect data element type', Constants.TEXT_DOMAIN)}
+              onClick={clearDataElement}
+            />
+          </BlockControls>
+        ) : (
           <PlaceholderWithOptions
-            icon={LETTER_DATA_ELEMENTS_ICON}
+            icon={LETTER_DATA_ELEMENTS_INFO.icon}
             label={__(
               'Create a new shared data element',
               Constants.TEXT_DOMAIN,

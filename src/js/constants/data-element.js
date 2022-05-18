@@ -1,5 +1,12 @@
 import { __ } from '@wordpress/i18n';
-import { image, list, paragraph, symbolFilled } from '@wordpress/icons';
+import {
+  blockMeta,
+  image,
+  list,
+  paragraph,
+  receipt,
+  symbolFilled,
+} from '@wordpress/icons';
 import * as Constants from 'src/js/constants';
 import { markAttrHiddenInApi } from 'src/js/utils/api';
 
@@ -42,7 +49,34 @@ export const TEXT_INFO = {
   title: __('Text Element', Constants.TEXT_DOMAIN),
   description: __('Allows entry of text-based values', Constants.TEXT_DOMAIN),
 };
-export const LETTER_DATA_ELEMENTS_ICON = symbolFilled;
+
+export const LETTER_DATA_ELEMENTS_INFO = {
+  name: Constants.BLOCK_LETTER_DATA_ELEMENTS,
+  icon: symbolFilled,
+  title: __('Data Elements', Constants.TEXT_DOMAIN),
+  description: __(
+    'Specify definitions for data elements local to this letter template',
+    Constants.TEXT_DOMAIN,
+  ),
+};
+export const LETTER_CONTENT_INFO = {
+  name: Constants.BLOCK_LETTER_CONTENT,
+  icon: receipt,
+  title: __('Letter Content', Constants.TEXT_DOMAIN),
+  description: __(
+    'Specify letter content with embedded data elements for a letter template',
+    Constants.TEXT_DOMAIN,
+  ),
+};
+export const LETTER_DATA_LAYOUT_INFO = {
+  name: Constants.BLOCK_LETTER_DATA_LAYOUT,
+  icon: blockMeta,
+  title: __('Data Layout', Constants.TEXT_DOMAIN),
+  description: __(
+    'Arrange and group local and shared data elements by sections',
+    Constants.TEXT_DOMAIN,
+  ),
+};
 
 // *******************
 // * Text attributes *
@@ -59,7 +93,7 @@ export const ATTR_NOOP_SHOW_EXAMPLES = markAttrHiddenInApi('noopShowExamples');
 
 export const ATTR_OTHER_OPTION = 'hasOtherOption';
 export const ATTR_NOOP_SHOW_OPTIONS = markAttrHiddenInApi('noopShowOptions');
-export const ATTR_SHAPE_VALUE = markAttrHiddenInApi('shapeOfValue'); // TODO do we need to `markAttrHiddenInApi`??
+export const ATTR_SHAPE_VALUE = markAttrHiddenInApi('shapeOfValue');
 
 // **********************************
 // * Autocomplete option attributes *

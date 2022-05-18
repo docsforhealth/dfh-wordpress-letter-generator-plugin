@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import * as Constants from 'src/js/constants';
 import { tryChildrenAsFunction } from 'src/js/utils/component';
-import { slotName } from 'src/js/utils/data-element';
+import { slotName } from 'src/js/utils/block';
 
 export const SLOT_CONTROLS_SECONDARY = `${Constants.NAMESPACE}/data-element/controls-secondary`;
 export const SLOT_CONTROLS_TOGGLES = `${Constants.NAMESPACE}/data-element/controls-toggles`;

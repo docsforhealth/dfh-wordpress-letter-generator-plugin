@@ -4,15 +4,6 @@
     z-index: $z-index-reset;
 
     &:before {
-        @mixin set-overhang-position($overhang) {
-            left: $overhang * -1.2;
-            width: if($overhang == 0, 100%, calc(100% + #{$overhang * 2}));
-        }
-
-        $overhang-small: 0;
-        $overhang-medium: $baseunit * 3;
-        $overhang-large: $baseunit * 5;
-
         @include set-overhang-position($overhang-small);
 
         content: '';

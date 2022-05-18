@@ -23,7 +23,8 @@ import EditorLabelWrapper, {
 } from 'src/js/component/editor-label-wrapper';
 import HelpLabel from 'src/js/component/help-label';
 import * as Constants from 'src/js/constants';
-import { buildAttrPropType, slotName } from 'src/js/utils/data-element';
+import { slotName } from 'src/js/utils/block';
+import { buildAttrPropType } from 'src/js/utils/data-element';
 
 export default function Controls({
   clientId,
