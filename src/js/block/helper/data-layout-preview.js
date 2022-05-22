@@ -15,18 +15,28 @@ import {
   OPTION_LABEL,
 } from 'src/js/constants/data-element';
 import {
+  API_CONFIG_IGNORED_ATTRIBUTES,
+  markAttrHiddenInApi,
+} from 'src/js/utils/api';
+import {
   getIconFromBlockName,
   getTitleFromBlockName,
   tryRegisterBlockType,
 } from 'src/js/utils/block';
 import { parseOptionIsShared } from 'src/js/utils/data-element';
 
+const ATTR_LINKED_DATA_BLOCK_NAME = markAttrHiddenInApi('linkedDataBlockName'),
+  ATTR_LINKED_DATA_LABEL = markAttrHiddenInApi('linkedDataLabel'),
+  ATTR_LINKED_DATA_IS_SHARED = markAttrHiddenInApi('linkedDataIsShared');
+
+export const ATTR_LINKED_DATA_KEY = 'linkedDataKey';
+
 export function createPreviewBlockFromBadge(badge) {
   return createBlock(Constants.BLOCK_DATA_LAYOUT_PREVIEW, {
-    linkedDataKey: badge[OPTION_DATA_KEY],
-    linkedDataBlockName: badge[OPTION_BLOCK_NAME],
-    linkedDataIsShared: parseOptionIsShared(badge[OPTION_IS_SHARED]),
-    linkedDataLabel: badge[OPTION_LABEL],
+    [ATTR_LINKED_DATA_KEY]: badge[OPTION_DATA_KEY],
+    [ATTR_LINKED_DATA_BLOCK_NAME]: badge[OPTION_BLOCK_NAME],
+    [ATTR_LINKED_DATA_LABEL]: badge[OPTION_LABEL],
+    [ATTR_LINKED_DATA_IS_SHARED]: parseOptionIsShared(badge[OPTION_IS_SHARED]),
   });
 }
 
@@ -37,6 +47,8 @@ const tryUpdateLabel = debounce((badge, oldLabel, updateLabel) => {
     updateLabel(badge[OPTION_LABEL]);
   }
 }, 200);
+
+// NOTE: no ID so should not be treated as an independent entity in the API
 
 tryRegisterBlockType(Constants.BLOCK_DATA_LAYOUT_PREVIEW, {
   apiVersion: 2,
@@ -49,6 +61,7 @@ tryRegisterBlockType(Constants.BLOCK_DATA_LAYOUT_PREVIEW, {
   ),
   parent: [Constants.BLOCK_LETTER_DATA_LAYOUT],
   attributes: {
+    [API_CONFIG_IGNORED_ATTRIBUTES]: { type: 'array', default: ['lock'] },
     // Block-level locking since WP 5.9 using the older syntax
     // 1. Older syntax in dev note: https://make.wordpress.org/core/2022/01/08/locking-blocks-in-wordpress-5-9/
     // 2. Newer syntax in documentation: https://developer.wordpress.org/block-editor/reference-guides/block-api/block-templates/#individual-block-locking
@@ -63,28 +76,29 @@ tryRegisterBlockType(Constants.BLOCK_DATA_LAYOUT_PREVIEW, {
     // is a LARGER entity than a single data option. One data element can give rise to several data
     // options. For example, an options data element gives rise to a distinct data option for every
     // shape value attribute it contains
-    linkedDataKey: { type: 'string' },
-    linkedDataBlockName: { type: 'string' },
-    linkedDataLabel: { type: 'string' },
-    linkedDataIsShared: { type: 'boolean' },
+    [ATTR_LINKED_DATA_KEY]: { type: 'string' },
+    [ATTR_LINKED_DATA_BLOCK_NAME]: { type: 'string' },
+    [ATTR_LINKED_DATA_LABEL]: { type: 'string' },
+    [ATTR_LINKED_DATA_IS_SHARED]: { type: 'boolean' },
   },
   edit({ clientId, attributes, setAttributes }) {
     // Update label based on options that this preview is watching. Need to rely on parent
     // `BLOCK_LETTER_DATA_LAYOUT` to remove because block locking prevents us from using the
     // `removeBlock` action availble via the `core/block-editor` store so we need to use
     // `replaceInnerBlocks` at the parent block level instead
-    const icon = getIconFromBlockName(attributes.linkedDataBlockName),
-      title = getTitleFromBlockName(attributes.linkedDataBlockName),
+    const icon = getIconFromBlockName(attributes[ATTR_LINKED_DATA_BLOCK_NAME]),
+      title = getTitleFromBlockName(attributes[ATTR_LINKED_DATA_BLOCK_NAME]),
       { badges } = useContext(LetterContentContext),
       foundBadge = find(
         badges,
-        (badge) => badge[OPTION_DATA_KEY] === attributes.linkedDataKey,
+        (badge) => badge[OPTION_DATA_KEY] === attributes[ATTR_LINKED_DATA_KEY],
       );
     useEffect(() => {
       tryUpdateLabel(
         foundBadge,
-        attributes.linkedDataLabel,
-        (linkedDataLabel) => setAttributes({ linkedDataLabel }),
+        attributes[ATTR_LINKED_DATA_LABEL],
+        (linkedDataLabel) =>
+          setAttributes({ [ATTR_LINKED_DATA_LABEL]: linkedDataLabel }),
       );
       return tryUpdateLabel.cancel;
     }, [foundBadge?.[OPTION_LABEL]]);
@@ -92,7 +106,9 @@ tryRegisterBlockType(Constants.BLOCK_DATA_LAYOUT_PREVIEW, {
       <div
         {...useBlockProps({
           className: `data-layout-preview-container__preview data-layout-preview ${
-            attributes.linkedDataIsShared ? 'data-layout-preview--shared' : ''
+            attributes[ATTR_LINKED_DATA_IS_SHARED]
+              ? 'data-layout-preview--shared'
+              : ''
           }`,
         })}
       >
@@ -107,10 +123,10 @@ tryRegisterBlockType(Constants.BLOCK_DATA_LAYOUT_PREVIEW, {
             </HelpLabel>
           )}
           <span className="data-layout-preview__title__text">
-            {attributes.linkedDataLabel}
+            {attributes[ATTR_LINKED_DATA_LABEL]}
           </span>
         </h3>
-        {attributes.linkedDataIsShared && (
+        {attributes[ATTR_LINKED_DATA_IS_SHARED] && (
           <div className="data-layout-preview__shared-badge">
             {LABEL_SHARED_OPTION}
           </div>

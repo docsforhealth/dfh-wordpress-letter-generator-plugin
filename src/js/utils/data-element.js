@@ -10,14 +10,15 @@ import {
   memoize,
   some,
   startsWith,
-  values,
 } from 'lodash';
 import PropTypes from 'prop-types';
 import * as Constants from 'src/js/constants';
 import {
+  API_ATTR_SHAPE,
   ATTR_KEY,
   ATTR_LABEL,
   ATTR_SHAPE_VALUE,
+  ATTR_TYPE,
   ELEMENT_ATTR_BLOCK_NAME,
   ELEMENT_ATTR_COMBO_KEY,
   ELEMENT_ATTR_DATA_KEY,
@@ -37,7 +38,10 @@ import {
   OPTION_OPTIONS_SHAPE_LABEL,
   OPTION_TEXT_SPACER,
 } from 'src/js/constants/data-element';
-import { tryFindBlockInfoFromName } from 'src/js/utils/block';
+import {
+  restoreBlockNameNamespace,
+  tryFindBlockInfoFromName,
+} from 'src/js/utils/block';
 import { dataAttributeToProperty } from 'src/js/utils/component';
 
 /**
@@ -142,70 +146,32 @@ export function completionDatasetToOption(dataset) {
 
 /**
  * Retrieves shared data elements and converts to standardized OptionInfo format
- * @param  {?String} search     Optional, string to search for
+ * @param  {?Object} options        Optional, retrieval options
+ * @param  {?String} options.search Optional, string to search for
  * @param  {?Function} mySelect Optional, `select` function
  * @return {Array}              Array of shared data elements as OptionInfo objects
  */
-export function getSharedDataOptions(search = '', mySelect = null) {
-  const thisSelect = mySelect ? mySelect : select,
-    requestOptions = {
-      context: Constants.API_CONTEXT_VIEW,
-      status: Constants.POST_STATUS_PUBLISHED,
-    };
-  // when selecting shared data elements, leverage the built-in search functionality of the WP API
-  if (search) {
-    requestOptions.search = encodeURIComponent(search);
-  }
-  const dataElementsFromAPI =
-    // 7. flatten into an array of data elements
-    flatten(
-      // 6. extract the 'innerBlocks' property to get the contained data element
-      map(
-        // 5. extract only the block infos for `BLOCK_SHARED_DATA_ELEMENT`
-        filter(
-          // 4. flatten array of arrays
-          flatten(
-            // 3. extract the values from each object in the array, yielding an array of arrays
-            map(
-              // 2. extract the custom `block_data` property, see `content_type_shared_data_element.php`
-              //    NOTE: due to the PHP roots of the API, this is an array of OBJECTS each with
-              //    NUMBERED KEYS
-              map(
-                // 1. select all the shared data element pages
-                thisSelect(Constants.STORE_CORE_DATA).getEntityRecords(
-                  Constants.ENTITY_KIND_POST_TYPE,
-                  Constants.CONTENT_TYPE_SHARED_DATA_ELEMENT,
-                  requestOptions,
-                ),
-                'block_data',
-              ),
-              values,
-            ),
-          ),
-          ['blockName', Constants.BLOCK_SHARED_DATA_ELEMENT],
-        ),
-        'innerBlocks',
-      ),
-    );
-  // Need to standardize API data to the same format as that returned by `store/block-editor`
-  const standardizedDataElements = filter(
-    map(dataElementsFromAPI, standardizeBlockInfoFromAPI),
-  );
-  // Then convert to OptionInfo form
+export function buildSharedDataOptions(sharedApiData) {
+  // convert to OptionInfo form
   return flatten(
-    map(standardizedDataElements, (el) => blockInfoToDataOption(el, true)),
+    map(sharedApiData, (el) =>
+      // See `shared-data-element.js` for the format of the API data. In summary this API data
+      // is the attributes of the selected data element with some additional InnerBlock related info
+      blockInfoToDataOption({ attributes: el }, true),
+    ),
   );
 }
 
 /**
  * Retrieves local data elements and converts to standardized OptionInfo format
- * @param  {?String} search     Optional, string to search for
- * @param  {?Function} mySelect Optional, `select` function
- * @param  {?String} clientId   Optional, client id to start searching from
- * @return {Array}              Array of local data elements as OptionInfo objects
+ * @param  {?Object} options        Optional, retrieval options
+ * @param  {?String} options.search Optional, string to search for
+ * @param  {?Function} mySelect     Optional, `select` function
+ * @param  {?String} clientId       Optional, client id to start searching from
+ * @return {Array}                  Array of local data elements as OptionInfo objects
  */
 export function getLocalDataOptions(
-  search = '',
+  options = null,
   mySelect = null,
   clientId = null,
 ) {
@@ -220,8 +186,8 @@ export function getLocalDataOptions(
     localDataOptions = flatten(
       map(localDataElements, (el) => blockInfoToDataOption(el, false)),
     );
-  if (search) {
-    const filteredRegex = buildRegexForSearch(search);
+  if (options?.search) {
+    const filteredRegex = buildRegexForSearch(options.search);
     return filter(localDataOptions, (option) =>
       some(getLocalOptionKeywords(option), (keyword) =>
         filteredRegex.test(keyword),
@@ -336,31 +302,35 @@ function getLocalOptionKeywords(option) {
  *   [OPTION_OPTIONS_SHAPE_KEY]: 'subject',
  *   [OPTION_OPTIONS_SHAPE_LABEL]: 'Subject',
  * }
- * @param  {String}  options.name       Block's registered name, such as `dfh/text`
  * @param  {Object}  options.attributes Block's attributes
  * @param  {Boolean} isShared           Whether or not this is a shared or local data element
  * @return {Array}                      Array of OptionInfo objects
  */
-function blockInfoToDataOption({ name, attributes }, isShared) {
-  const options = [],
+function blockInfoToDataOption({ attributes }, isShared) {
+  const blockName = restoreBlockNameNamespace(attributes[ATTR_TYPE]),
+    options = [],
     sharedAttrs = {
       [OPTION_DATA_KEY]: attributes[ATTR_KEY],
       [OPTION_LABEL]: attributes[ATTR_LABEL],
       [OPTION_IS_SHARED]: isShared,
-      [OPTION_BLOCK_NAME]: name,
+      [OPTION_BLOCK_NAME]: blockName,
     };
-  if (name === Constants.BLOCK_DATA_ELEMENT_OPTIONS) {
-    forEach(attributes[ATTR_SHAPE_VALUE], (shapeAttrs) =>
-      options.push({
-        ...sharedAttrs,
-        [OPTION_OPTIONS_SHAPE_KEY]: shapeAttrs[ATTR_KEY],
-        [OPTION_OPTIONS_SHAPE_LABEL]: shapeAttrs[ATTR_LABEL],
-      }),
+  if (blockName === Constants.BLOCK_DATA_ELEMENT_OPTIONS) {
+    forEach(
+      // If local data element, will have `ATTR_SHAPE_VALUE`
+      // If shared data element retrieved from the API, will have `API_ATTR_SHAPE`
+      attributes[ATTR_SHAPE_VALUE] ?? attributes[API_ATTR_SHAPE],
+      (shapeAttrs) =>
+        options.push({
+          ...sharedAttrs,
+          [OPTION_OPTIONS_SHAPE_KEY]: shapeAttrs[ATTR_KEY],
+          [OPTION_OPTIONS_SHAPE_LABEL]: shapeAttrs[ATTR_LABEL],
+        }),
     );
   } else {
     options.push(sharedAttrs);
   }
-  // Build display labels and combo keys  for all options
+  // Build display labels and combo keys for all options
   options.forEach((option) => {
     option[OPTION_COMBO_KEY] = buildDataOptionKey(
       option[OPTION_DATA_KEY],

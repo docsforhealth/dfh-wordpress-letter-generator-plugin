@@ -5,9 +5,10 @@ import { map } from 'lodash';
 import DataElementCompletion from 'src/js/component/data-element-completion';
 import * as Constants from 'src/js/constants';
 import { OPTION_COMBO_KEY } from 'src/js/constants/data-element';
+import useSharedElementApiData from 'src/js/hook/use-shared-element-api-data';
 import {
+  buildSharedDataOptions,
   getLocalDataOptions,
-  getSharedDataOptions,
 } from 'src/js/utils/data-element';
 
 export const TRIGGER_PREFIX = '#';
@@ -37,22 +38,23 @@ const dataElementCompleter = {
   // 5. `useItems` example: https://github.com/WordPress/gutenberg/blob/trunk/packages/editor/src/components/autocompleters/user.js
   useItems(filteredValue) {
     // when selecting shared data elements, leverage the built-in search functionality of the WP API
-    const sharedOptions = useSelect(
-        (select) => getSharedDataOptions(filteredValue, select),
+    const [sharedElementApiData, isSharedFetchDone] = useSharedElementApiData(
+        { search: filteredValue },
         [filteredValue],
       ),
       localOptions = useSelect(
-        (select) => getLocalDataOptions(filteredValue, select),
+        (select) => getLocalDataOptions({ search: filteredValue }, select),
         [filteredValue],
       );
     // Completer options MUST be REFERENTIALLY STABLE ACROSS RENDERS. Returning a new array each
     // render will result in an infinite loop as this array is used as a dependency downstream
-    const options = useMemo(
-      () =>
-        // Convert options to completer items, show local items before shared items
-        map([...localOptions, ...sharedOptions], optionsToCompleterItem),
-      [sharedOptions, localOptions],
-    );
+    const options = useMemo(() => {
+      const sharedOptions = isSharedFetchDone
+        ? buildSharedDataOptions(sharedElementApiData)
+        : [];
+      // Convert options to completer items, show local items before shared items
+      return map([...localOptions, ...sharedOptions], optionsToCompleterItem);
+    }, [sharedElementApiData, isSharedFetchDone, localOptions]);
     // Note expected return value is AN ARRAY OF AN ARRAY. Nested `options` array must be
     // referentially stable across renders
     return [options];

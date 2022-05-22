@@ -1,4 +1,6 @@
-.letter-data-elements {
+// Styles shared between `BLOCK_SHARED_DATA_ELEMENT` and `BLOCK_LETTER_DATA_ELEMENTS`
+
+.data-elements-counter-container {
     counter-reset: info-messages;
 
     & &__info {

@@ -21,14 +21,15 @@ import {
   TEXT_INFO,
 } from 'src/js/constants/data-element';
 import useInsertBlock from 'src/js/hook/use-insert-block';
+import useSharedElementApiData from 'src/js/hook/use-shared-element-api-data';
 import {
   countInnerBlocks,
   slotName,
   tryRegisterBlockType,
 } from 'src/js/utils/block';
 import {
+  buildSharedDataOptions,
   getLocalDataOptions,
-  getSharedDataOptions,
 } from 'src/js/utils/data-element';
 
 const tryUpdateDataOptions = debounce(
@@ -57,8 +58,8 @@ tryRegisterBlockType(LETTER_DATA_ELEMENTS_INFO.name, {
       onSelect = ({ name }) => insertBlock(createBlock(name));
     // Keep track of data options for local and shared data elements for updating in
     // `BLOCK_LETTER_CONTENT` and individual `BLOCK_DATA_LAYOUT_PREVIEW` blocks
-    const sharedOptions = useSelect(
-        (select) => getSharedDataOptions(null, select),
+    const [sharedElementApiData, isSharedFetchDone] = useSharedElementApiData(
+        { per_page: -1 },
         [], // Only fetch the shared data elements/options ON INITIAL RENDER
       ),
       numInnerBlocks = useSelect((select) =>
@@ -78,14 +79,26 @@ tryRegisterBlockType(LETTER_DATA_ELEMENTS_INFO.name, {
     );
     // Update data options context with any local data element changes
     useEffect(() => {
-      tryUpdateDataOptions(
-        sharedOptions,
-        localOptions,
-        comboKeyToOption,
-        updateComboKeyToOption,
-      );
+      // need to wait until shared elements are finished fetching to avoid a race condition
+      // where all shared elements are removed because they aren't shown in `comboKeyToOption`
+      // INSTEAD, we allow `comboKeyToOption` to remain null until we can initialize with both
+      // local and shared data elments
+      if (isSharedFetchDone) {
+        const sharedOptions = buildSharedDataOptions(sharedElementApiData);
+        tryUpdateDataOptions(
+          sharedOptions,
+          localOptions,
+          comboKeyToOption,
+          updateComboKeyToOption,
+        );
+      }
       return tryUpdateDataOptions.cancel;
-    }, [sharedOptions, localOptions, comboKeyToOption]);
+    }, [
+      sharedElementApiData,
+      isSharedFetchDone,
+      localOptions,
+      comboKeyToOption,
+    ]);
     return (
       <Fill name={slotName(LETTER_DATA_ELEMENTS_INFO.name, templateClientId)}>
         <div {...useBlockProps()}>
@@ -101,7 +114,11 @@ tryRegisterBlockType(LETTER_DATA_ELEMENTS_INFO.name, {
           )}
           <EditorLabelWrapper label={LETTER_DATA_ELEMENTS_INFO.title}>
             {(id) => (
-              <div id={id} tabIndex="0" className="letter-data-elements">
+              <div
+                id={id}
+                tabIndex="0"
+                className="data-elements-counter-container"
+              >
                 <InnerBlocks
                   templateLock={Constants.INNER_BLOCKS_UNLOCKED}
                   // NOTE we can't actually prevent any of these block types from showing up

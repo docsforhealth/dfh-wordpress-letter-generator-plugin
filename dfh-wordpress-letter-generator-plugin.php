@@ -13,6 +13,10 @@
  * Text Domain: dlg
  */
 
+// TODO explore requiring https://wordpress.org/plugins/wp-rest-cache/
+// TODO consider monorepo with yarn workspaces
+// TODO set up CI build environment
+
 defined('ABSPATH') || exit;
 
 if (!defined('DLG_PLUGIN_ROOT')) {

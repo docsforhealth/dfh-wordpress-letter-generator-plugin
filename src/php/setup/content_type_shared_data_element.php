@@ -100,16 +100,20 @@ function dlg_register_custom_content_type_scripts() {
     }
 }
 
-// Add structured block data to the REST API endpoint for shared data elements
+// Add structured API data to the REST API endpoint
 // see https://wpscholar.com/blog/add-gutenberg-blocks-to-wp-rest-api/
 add_action('rest_api_init', function() {
     // NOTE: for some reason, checking `use_block_editor_for_post_type` here results in a critical error
     // see https://developer.wordpress.org/reference/functions/register_rest_field/
-    register_rest_field('dlg_data_element', 'block_data', [
+    register_rest_field('dlg_data_element', 'data', [
         'get_callback' => function($post) {
-            return array_filter(parse_blocks($post['content']['raw']), function($block) {
-                return !empty($block['blockName']);
+            // use `array_filter` to filter the array for the template block. Note that PHP doesn't
+            // have a built-in method to search for arrays of objects so we use `array_filter`
+            // then simply select the first object in the array as a workaround
+            $template_blocks = array_filter(parse_blocks($post['content']['raw']), function($block) {
+                return $block['blockName'] == 'dlg/shared-data-element';
             });
+            return !empty($template_blocks) ? reset($template_blocks)['attrs']['_API_CONFIG_API_DATA_'] : array();
         },
     ]);
 });

@@ -12,12 +12,12 @@ import {
   ATTR_KEY,
   ATTR_LABEL,
   ATTR_PLACEHOLDER,
-  ATTR_TYPE,
+  ATTR_TEXT_TYPE,
 } from 'src/js/constants/data-element';
 
 export default function ShapeValueEditField({
   [ATTR_KEY]: dataKey,
-  [ATTR_TYPE]: textType,
+  [ATTR_TEXT_TYPE]: textType,
   [ATTR_LABEL]: label,
   [ATTR_PLACEHOLDER]: placeholder,
   [ATTR_HELP_TEXT]: helpText,
@@ -46,7 +46,7 @@ export default function ShapeValueEditField({
 }
 ShapeValueEditField.propTypes = {
   [ATTR_KEY]: PropTypes.string.isRequired,
-  [ATTR_TYPE]: PropTypes.oneOf(TEXT_TYPE_VALUES),
+  [ATTR_TEXT_TYPE]: PropTypes.oneOf(TEXT_TYPE_VALUES),
   [ATTR_LABEL]: PropTypes.string,
   [ATTR_PLACEHOLDER]: PropTypes.string,
   [ATTR_HELP_TEXT]: PropTypes.string,

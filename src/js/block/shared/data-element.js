@@ -10,8 +10,10 @@ import {
   ATTR_LABEL,
   ATTR_REQUIRED,
   ATTR_SAVEABLE,
+  ATTR_TYPE,
   ATTR_VISIBLE_CONTROLS,
 } from 'src/js/constants/data-element';
+import { blockNameWithoutNamespace } from 'src/js/utils/block';
 import {
   reconcileVisibleAttrsAndContext,
   shouldShowControl,
@@ -35,8 +37,13 @@ export const CONTEXT_VISIBLE_CONTROLS_DEFINITION = { type: 'array' };
 
 export const SHARED_CONFIG = {
   category: Constants.CATEGORY_LETTER_TEMPLATE,
-  parent: [Constants.BLOCK_LETTER_DATA_ELEMENTS, Constants.BLOCK_SHARED_DATA_ELEMENT],
+  parent: [
+    Constants.BLOCK_LETTER_DATA_ELEMENTS,
+    Constants.BLOCK_SHARED_DATA_ELEMENT,
+  ],
   attributes: {
+    // To denote polymorphic subtypes, will differ by sub-type so need to be dynamically set
+    [ATTR_TYPE]: { type: 'string' },
     // If defined, only controls corresponding to attribute keys contained in this array will be
     // shown in the editor. If not defined, then all attribute controls will be shown.
     [ATTR_VISIBLE_CONTROLS]: CONTEXT_VISIBLE_CONTROLS_DEFINITION,
@@ -77,9 +84,15 @@ export const Edit = forwardRef(
       return tryValidateSelf.cancel;
     }, [validateDataElementDependencyString(thisBlockInfo)]);
     // if key is null on initial insertion, set unique key programmatically ONCE
+    // Also set polymorphic type as block name WITHOUT the namespace prefix
     useEffect(() => {
       if (!attributes[ATTR_KEY]) {
         setAttributes({ [ATTR_KEY]: clientId });
+      }
+      if (!attributes[ATTR_TYPE]) {
+        setAttributes({
+          [ATTR_TYPE]: blockNameWithoutNamespace(thisBlockInfo.name),
+        });
       }
     }, []);
     const visibleControls = reconcileVisibleAttrsAndContext(

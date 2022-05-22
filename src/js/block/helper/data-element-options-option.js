@@ -1,12 +1,14 @@
 import { useBlockProps } from '@wordpress/block-editor';
+import { useMemo } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { map, pick } from 'lodash';
 import DataElementOption from 'src/js/component/data-element-option';
 import * as Constants from 'src/js/constants';
 import {
   ATTR_KEY,
   ATTR_LABEL,
   ATTR_PLACEHOLDER,
-  ATTR_TYPE,
+  ATTR_TEXT_TYPE,
 } from 'src/js/constants/data-element';
 import { tryRegisterBlockType } from 'src/js/utils/block';
 
@@ -16,10 +18,12 @@ export const CONTEXT_SHAPE_DEFINITION = { type: 'array' };
 
 export const EXPECTED_VISIBLE_ATTRS = [
   ATTR_KEY,
-  ATTR_TYPE,
+  ATTR_TEXT_TYPE,
   ATTR_LABEL,
   ATTR_PLACEHOLDER,
 ];
+
+// NOTE: no ID so should not be treated as an independent entity in the API
 
 tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_OPTION, {
   apiVersion: 2,
@@ -40,6 +44,10 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_OPTION, {
   },
   usesContext: [CONTEXT_SHAPE_KEY],
   edit({ attributes, context, setAttributes }) {
+    const currentShapeDataKeys = useMemo(
+      () => map(context[CONTEXT_SHAPE_KEY], ATTR_KEY),
+      [context[CONTEXT_SHAPE_KEY]],
+    );
     return (
       <DataElementOption
         {...useBlockProps()}
@@ -49,7 +57,10 @@ tryRegisterBlockType(Constants.BLOCK_DATA_ELEMENT_OPTIONS_OPTION, {
         updateLabel={(label) => setAttributes({ label })}
         updateThisValue={(dataKey, newValue) =>
           setAttributes({
-            value: { ...attributes.value, [dataKey]: newValue },
+            value: {
+              ...pick(attributes.value, currentShapeDataKeys),
+              [dataKey]: newValue,
+            },
           })
         }
       />

@@ -10,17 +10,6 @@ import {
 import * as Constants from 'src/js/constants';
 import { markAttrHiddenInApi } from 'src/js/utils/api';
 
-// *******************
-// * Base attributes *
-// *******************
-
-export const ATTR_KEY = 'dataKey';
-export const ATTR_LABEL = 'label';
-export const ATTR_VISIBLE_CONTROLS = markAttrHiddenInApi('controlsToShow');
-export const ATTR_HELP_TEXT = 'helpText';
-export const ATTR_SAVEABLE = 'saveable';
-export const ATTR_REQUIRED = 'required';
-
 // *********************
 // * Block information *
 // *********************
@@ -79,10 +68,22 @@ export const LETTER_DATA_LAYOUT_INFO = {
 };
 
 // *******************
+// * Base attributes *
+// *******************
+
+export const ATTR_TYPE = 'type'; // to denote polymorphic data elements
+export const ATTR_KEY = 'dataKey';
+export const ATTR_LABEL = 'label';
+export const ATTR_VISIBLE_CONTROLS = markAttrHiddenInApi('controlsToShow');
+export const ATTR_HELP_TEXT = 'helpText';
+export const ATTR_SAVEABLE = 'saveable';
+export const ATTR_REQUIRED = 'required';
+
+// *******************
 // * Text attributes *
 // *******************
 
-export const ATTR_TYPE = 'textType';
+export const ATTR_TEXT_TYPE = 'textType';
 export const ATTR_PLACEHOLDER = 'placeholder';
 export const ATTR_CONTEXT_BEFORE = 'showContextBefore';
 export const ATTR_NOOP_SHOW_EXAMPLES = markAttrHiddenInApi('noopShowExamples');
@@ -90,6 +91,8 @@ export const ATTR_NOOP_SHOW_EXAMPLES = markAttrHiddenInApi('noopShowExamples');
 // **********************
 // * Options attributes *
 // **********************
+
+export const API_ATTR_SHAPE = 'shape'
 
 export const ATTR_OTHER_OPTION = 'hasOtherOption';
 export const ATTR_NOOP_SHOW_OPTIONS = markAttrHiddenInApi('noopShowOptions');

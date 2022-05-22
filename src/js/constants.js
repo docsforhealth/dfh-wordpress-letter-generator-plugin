@@ -6,7 +6,8 @@ export const INNER_BLOCKS_LOCKED = 'all';
 export const INNER_BLOCKS_UNLOCKED = false;
 
 export const STORE_BLOCK_EDITOR = 'core/block-editor';
-export const STORE_CORE_DATA = 'core';
+export const STORE_CORE = 'core';
+export const STORE_CORE_DATA = 'core/data';
 export const STORE_EDITOR_UI = 'core/edit-post';
 export const STORE_POST_EDITOR = 'core/editor';
 
@@ -23,8 +24,6 @@ export const POST_STATUS_PUBLISHED = 'publish';
 
 export const NAMESPACE = 'dlg';
 export const TEXT_DOMAIN = 'dlg';
-
-export const ATTR_HIDE_API_PREFIX = '_noApi_';
 
 export const CONTENT_TYPE_SHARED_DATA_ELEMENT = 'dlg_data_element';
 

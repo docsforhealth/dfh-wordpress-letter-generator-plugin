@@ -3,7 +3,7 @@ import { Fill } from '@wordpress/components';
 import { renderToString, useContext, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import $ from 'jquery';
-import { debounce, isEqual } from 'lodash';
+import { debounce, isEqual, memoize } from 'lodash';
 import { TRIGGER_PREFIX } from 'src/js/autocomplete/data-element';
 import {
   DataOptionsContext,
@@ -22,9 +22,9 @@ import {
 import { slotName, tryRegisterBlockType } from 'src/js/utils/block';
 import { completionDatasetToOption } from 'src/js/utils/data-element';
 
-const tryUpdateBadges = debounce((clientId, oldBadges, updateBadges) => {
+const tryUpdateBadges = debounce((contentString, oldBadges, updateBadges) => {
   const newBadges = $.uniqueSort(
-    $(`[data-block='${clientId}'] .data-element-completion`),
+    $(parseContentToElement(contentString)).find('.data-element-completion'),
   )
     .map((index, element) => completionDatasetToOption(element.dataset))
     .toArray();
@@ -41,12 +41,12 @@ tryRegisterBlockType(LETTER_CONTENT_INFO.name, {
   attributes: {
     content: { type: 'string', default: '' },
   },
-  edit({ clientId, attributes, setAttributes }) {
+  edit({ attributes, setAttributes }) {
     const { templateClientId } = useContext(LetterTemplateContext);
     // Update badges on initail render and also whenever rich text content changes
     const { badges, updateBadges } = useContext(LetterContentContext);
     useEffect(
-      () => tryUpdateBadges(clientId, badges, updateBadges),
+      () => tryUpdateBadges(attributes.content, badges, updateBadges),
       [attributes.content],
     );
     // Track local and shared data elements to see if any badges need updating or removing
@@ -56,7 +56,7 @@ tryRegisterBlockType(LETTER_CONTENT_INFO.name, {
         return;
       }
       let modified = false;
-      const $content = $($.parseHTML(`<div>${attributes.content}</div>`));
+      const $content = $(parseContentToElement(attributes.content));
       badges.forEach((badge) => {
         const comboKey = badge[OPTION_COMBO_KEY],
           option = comboKeyToOption[comboKey],
@@ -111,4 +111,12 @@ tryRegisterBlockType(LETTER_CONTENT_INFO.name, {
       </div>
     );
   },
+});
+
+//////////////
+// Helpers  //
+//////////////
+
+const parseContentToElement = memoize((contentString) => {
+  return $.parseHTML(`<div>${contentString}</div>`)[0];
 });

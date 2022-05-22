@@ -1,7 +1,5 @@
 <?php
 
-// TODO custom REST API controller
-
 // Need to flush URL rewrite rules when plugin is re-activated in order to get custom post type
 // URL rewriting rules to work as intended
 // see https://developer.wordpress.org/reference/functions/register_post_type/#flushing-rewrite-on-activation
@@ -19,7 +17,7 @@ function dlg_register_letter_template_on_activation() {
 
 add_action('init', 'dlg_register_content_type_letter_template');
 function dlg_register_content_type_letter_template() {
-  // see https://developer.wordpress.org/plugins/post-types/registering-custom-post-types/
+    // see https://developer.wordpress.org/plugins/post-types/registering-custom-post-types/
     register_post_type('dlg_letter_template', array(
         'description'         => 'Letter Template',
         'hierarchical'        => false,
@@ -97,3 +95,21 @@ function dlg_register_letter_template_scripts() {
         );
     }
 }
+
+// Add structured API data to the REST API endpoint
+// see https://wpscholar.com/blog/add-gutenberg-blocks-to-wp-rest-api/
+add_action('rest_api_init', function() {
+    // NOTE: for some reason, checking `use_block_editor_for_post_type` here results in a critical error
+    // see https://developer.wordpress.org/reference/functions/register_rest_field/
+    register_rest_field('dlg_letter_template', 'data', [
+        'get_callback' => function($post) {
+            // use `array_filter` to filter the array for the template block. Note that PHP doesn't
+            // have a built-in method to search for arrays of objects so we use `array_filter`
+            // then simply select the first object in the array as a workaround
+            $template_blocks = array_filter(parse_blocks($post['content']['raw']), function($block) {
+                return $block['blockName'] == 'dlg/letter-template';
+            });
+            return !empty($template_blocks) ? reset($template_blocks)['attrs']['_API_CONFIG_API_DATA_'] : array();
+        },
+    ]);
+});

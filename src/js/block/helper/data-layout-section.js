@@ -5,6 +5,8 @@ import { pageBreak } from '@wordpress/icons';
 import * as Constants from 'src/js/constants';
 import { tryRegisterBlockType } from 'src/js/utils/block';
 
+// NOTE: no ID so should not be treated as an independent entity in the API
+
 tryRegisterBlockType(Constants.BLOCK_DATA_LAYOUT_SECTION, {
   apiVersion: 2,
   title: __('Data Layout Section', Constants.TEXT_DOMAIN),

@@ -25,10 +25,11 @@ import {
   ATTR_CONTEXT_BEFORE,
   ATTR_NOOP_SHOW_EXAMPLES,
   ATTR_PLACEHOLDER,
-  ATTR_TYPE,
+  ATTR_TEXT_TYPE,
   ATTR_VISIBLE_CONTROLS,
   TEXT_INFO,
 } from 'src/js/constants/data-element';
+import { API_CONFIG_INNER_BLOCKS_HAS_MANY } from 'src/js/utils/api';
 import { countInnerBlocks, tryRegisterBlockType } from 'src/js/utils/block';
 import {
   reconcileVisibleAttrsAndContext,
@@ -55,7 +56,11 @@ tryRegisterBlockType(
     apiVersion: 2,
     parent: [Constants.BLOCK_DATA_ELEMENT_OPTIONS_SHAPE], // merged with shared array
     attributes: {
-      [ATTR_TYPE]: { type: 'string', default: TEXT_TYPE_SHORT },
+      [API_CONFIG_INNER_BLOCKS_HAS_MANY]: {
+        type: 'string',
+        default: 'examples',
+      },
+      [ATTR_TEXT_TYPE]: { type: 'string', default: TEXT_TYPE_SHORT },
       [ATTR_PLACEHOLDER]: { type: 'string', default: '' },
       [ATTR_CONTEXT_BEFORE]: { type: 'boolean', default: false },
       // This is a no-op for `shouldShowControl` functionality. The actual examples are managed
@@ -86,12 +91,14 @@ tryRegisterBlockType(
           }) => (
             <>
               <Fill name={headerSlotName}>
-                {shouldShowControl(visibleControls, ATTR_TYPE) && (
+                {shouldShowControl(visibleControls, ATTR_TEXT_TYPE) && (
                   <div className="data-element__control data-element-text__type">
                     <SelectControl
                       label={__('Type', Constants.TEXT_DOMAIN)}
-                      value={attributes[ATTR_TYPE]}
-                      onChange={(type) => setAttributes({ [ATTR_TYPE]: type })}
+                      value={attributes[ATTR_TEXT_TYPE]}
+                      onChange={(type) =>
+                        setAttributes({ [ATTR_TEXT_TYPE]: type })
+                      }
                       options={[
                         {
                           label: __(
@@ -152,6 +159,7 @@ tryRegisterBlockType(
                         className="data-element-text__examples"
                       >
                         <InnerBlocks
+                          templateLock={Constants.INNER_BLOCKS_UNLOCKED}
                           allowedBlocks={[Constants.DFH_BLOCK_TEXT]}
                           renderAppender={() => (
                             <SingleBlockAppender
@@ -181,6 +189,10 @@ tryRegisterBlockType(
                 <div className="data-element__contents__container">
                   <TextControl
                     label={__('Placeholder', Constants.TEXT_DOMAIN)}
+                    placeholder={__(
+                      'Add some instructions to show when this field is empty...',
+                      Constants.TEXT_DOMAIN,
+                    )}
                     value={attributes[ATTR_PLACEHOLDER]}
                     onChange={(placeholder) =>
                       setAttributes({ [ATTR_PLACEHOLDER]: placeholder })

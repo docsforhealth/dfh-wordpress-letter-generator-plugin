@@ -94,7 +94,7 @@ export default function Controls({
             <>
               <HelpLabel
                 text={__(
-                  'Add helpful tips and examples for this field',
+                  'Add helpful tips for filling out this field',
                   Constants.TEXT_DOMAIN,
                 )}
               >

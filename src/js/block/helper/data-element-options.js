@@ -19,13 +19,18 @@ import {
 import HelpLabel from 'src/js/component/help-label';
 import * as Constants from 'src/js/constants';
 import {
+  API_ATTR_SHAPE,
   ATTR_NOOP_SHOW_OPTIONS,
   ATTR_OTHER_OPTION,
   ATTR_SHAPE_VALUE,
   ATTR_VISIBLE_CONTROLS,
   OPTIONS_INFO,
 } from 'src/js/constants/data-element';
-import { markAttrHiddenInApi } from 'src/js/utils/api';
+import {
+  API_CONFIG_INNER_BLOCKS_NESTED_HAS_MANY,
+  markAttrHiddenInApi,
+  useChildInnerBlocks,
+} from 'src/js/utils/api';
 import { tryRegisterBlockType } from 'src/js/utils/block';
 import {
   getShapeDataElementBlocks,
@@ -49,6 +54,15 @@ tryRegisterBlockType(
   merge({}, SHARED_CONFIG, OPTIONS_INFO, {
     apiVersion: 2,
     attributes: {
+      [API_CONFIG_INNER_BLOCKS_NESTED_HAS_MANY]: {
+        type: 'object',
+        default: {
+          [Constants.BLOCK_DATA_ELEMENT_OPTIONS_SHAPE]:
+            useChildInnerBlocks(API_ATTR_SHAPE),
+          [Constants.BLOCK_DATA_ELEMENT_OPTIONS_CHOICES]:
+            useChildInnerBlocks('choices'),
+        },
+      },
       [ATTR_OTHER_OPTION]: { type: 'boolean', default: false },
       [ATTR_SHAPE_VALUE]: CONTEXT_SHAPE_DEFINITION,
       [ATTR_SHAPE_VISIBLE_CONTROLS]: {

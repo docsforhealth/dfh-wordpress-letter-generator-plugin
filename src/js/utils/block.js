@@ -50,6 +50,24 @@ export function countInnerBlocks(clientId, mySelect = null) {
 }
 
 /**
+ * Removes namespace before block name
+ * @param  {String} blockName Full block name with preceding namespace
+ * @return {String}           Block name sans preceding namespace prefix and forward slash
+ */
+export function blockNameWithoutNamespace(blockName) {
+  return blockName?.slice(Constants.NAMESPACE.length + 1);
+}
+
+/**
+ * Restores namespace to block name without namespace
+ * @param  {String} blockNameWithoutNamespace Block name sans preceding namespace prefix and forward slash
+ * @return {String}                           Full block name with preceding namespace
+ */
+export function restoreBlockNameNamespace(blockNameWithoutNamespace) {
+  return `${Constants.NAMESPACE}/${blockNameWithoutNamespace}`;
+}
+
+/**
  * Given the block name, return the block title
  * @param  {Object} blockName The block's name, for example `dfh/text`
  * @return {String}           The block's title

@@ -17,7 +17,7 @@ export default function Info({ clientId, errors }) {
     { icon, title } = getBlockType(name);
   return (
     <>
-      <div className="data-element__info letter-data-elements__info">
+      <div className="data-element__info data-elements-counter-container__info">
         <span className="data-element__info__item">{title}</span>
         <Slot name={slotName(SLOT_INFO, clientId)} />
       </div>

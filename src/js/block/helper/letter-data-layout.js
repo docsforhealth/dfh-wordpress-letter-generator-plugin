@@ -3,8 +3,11 @@ import { Fill } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useContext, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { differenceWith, filter, isEmpty, without } from 'lodash';
-import { createPreviewBlockFromBadge } from 'src/js/block/helper/data-layout-preview';
+import { differenceWith, filter, find, map } from 'lodash';
+import {
+  ATTR_LINKED_DATA_KEY,
+  createPreviewBlockFromBadge,
+} from 'src/js/block/helper/data-layout-preview';
 import {
   LetterContentContext,
   LetterTemplateContext,
@@ -57,6 +60,7 @@ tryRegisterBlockType(LETTER_DATA_LAYOUT_INFO.name, {
       if (badges === null) {
         return;
       }
+      // 1. Figure out which badges to add as previews
       const badgesToAdd = differenceWith(
         badges,
         dataPreviewsAndSections,
@@ -66,24 +70,37 @@ tryRegisterBlockType(LETTER_DATA_LAYOUT_INFO.name, {
         // duplicate data element previews
         (badge, previewOrSection) =>
           previewOrSection.name === Constants.BLOCK_DATA_LAYOUT_PREVIEW &&
-          badge[OPTION_DATA_KEY] === previewOrSection.attributes.linkedDataKey,
+          badge[OPTION_DATA_KEY] ===
+            previewOrSection.attributes[ATTR_LINKED_DATA_KEY],
       );
-      const dataPreviewsToRemove = differenceWith(
-        dataPreviewsAndSections,
-        badges,
-        // Do not remove (1) sections and (2) data previews that have a matching badge
-        (previewOrSection, badge) =>
-          previewOrSection.name === Constants.BLOCK_DATA_LAYOUT_SECTION ||
-          previewOrSection.attributes.linkedDataKey === badge[OPTION_DATA_KEY],
+      // 2. Figure out which data previews to keep (and update) and which to remove
+      const updatedDataPreviewsOrSectionsToKeep = filter(
+        map(dataPreviewsAndSections, (previewOrSection) => {
+          if (previewOrSection.name === Constants.BLOCK_DATA_LAYOUT_PREVIEW) {
+            const badge = find(badges, [
+              OPTION_DATA_KEY,
+              previewOrSection.attributes[ATTR_LINKED_DATA_KEY],
+            ]);
+            // 1. If badge is found, recreate the preview block from badge to ensure that the preview
+            // has the latest data to display
+            // 2. If a badge is NOT found for this preview, this means that the badge was removed
+            // and that this preview should also be removed. We return `null` and then `filter`
+            // the resulting array to ensure that this preview is not added to the list of new
+            // inner blocks to render in the layout tab
+            return badge ? createPreviewBlockFromBadge(badge) : null;
+          } else {
+            return previewOrSection;
+          }
+        }),
       );
-      if (!isEmpty(badgesToAdd) || !isEmpty(dataPreviewsToRemove)) {
-        const newInnerBlocks = [
-          ...badgesToAdd.map(createPreviewBlockFromBadge),
-          ...without(dataPreviewsAndSections, ...dataPreviewsToRemove),
-        ];
-        // Adds new badges to the top, individual previews handle updating + removing themselves
-        replaceInnerBlocks(clientId, newInnerBlocks);
-      }
+      // 3. Build new previews and sections, with newly-added previews (from badges) at the top
+      const newInnerBlocks = [
+        ...map(badgesToAdd, createPreviewBlockFromBadge),
+        ...updatedDataPreviewsOrSectionsToKeep,
+      ];
+      // No need to check if `newInnerBlocks` is equal to previous inner blocks because this `useEffect`
+      // hook is only called if an addition, removal, or update is needed
+      replaceInnerBlocks(clientId, newInnerBlocks);
     }, [badges, badges?.length]);
     return (
       <Fill name={slotName(LETTER_DATA_LAYOUT_INFO.name, templateClientId)}>
