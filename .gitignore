@@ -4,3 +4,13 @@
 .DS_Store
 build
 node_modules
+
+# not using zero installs yet
+# https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
