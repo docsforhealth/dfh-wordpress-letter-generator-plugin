@@ -18,7 +18,8 @@ const trySyncTwoValues = debounce(
 
 /**
  * Synchronizes two values based on which one changed the last. If both values have changed,
- * preference will be given to the first value
+ * preference will be given to the first value. Note that synchronization will NOT happen if
+ * either value is `undefined`. Please initialize both values to a value other than `undefined`.
  * @param  {Any} valueOne            First value
  * @param  {Any} valueTwo            Second value
  * @param  {Function} updateValueOne Function to update the first value
@@ -45,6 +46,11 @@ export default function useSyncTwoValues(
       updateCachedValues(newOne);
     };
   useEffect(() => {
+    // Both values must be INITIALIZED in order for the syncing to happen. An uninitialized value is
+    // when that value is `undefined`
+    if (valueOne === undefined || valueTwo === undefined) {
+      return;
+    }
     trySyncTwoValues(
       cachedValueOneObj.current,
       cachedValueTwoObj.current,

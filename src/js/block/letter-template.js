@@ -1,5 +1,6 @@
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import { Slot, TabPanel } from '@wordpress/components';
+import { useDispatch } from '@wordpress/data';
 import {
   createContext,
   useContext,
@@ -87,6 +88,8 @@ tryRegisterBlockType(
       return apiData;
     },
     edit({ clientId, attributes, setAttributes }) {
+      const { clearSelectedBlock } = useDispatch(Constants.STORE_BLOCK_EDITOR);
+      // Setting up context state
       const [badges, updateBadges] = useState(null),
         [comboKeyToOption, updateComboKeyToOption] = useState(null),
         [numLocalDataElements, updateNumLocalDataElements] = useState(0),
@@ -150,6 +153,15 @@ tryRegisterBlockType(
                 <TabPanel
                   className="letter-template"
                   activeClass="letter-template__tab--active"
+                  onSelect={(tabName) => {
+                    // clear block selection if switching to the data elements tab because
+                    // having the parent letter template block selected creates an iFrame that
+                    // prevents the buttons that insert additional blocks from receiving pointer
+                    // events until the parent is deselected for some reason `
+                    if (tabName === LETTER_DATA_ELEMENTS_INFO.name) {
+                      clearSelectedBlock();
+                    }
+                  }}
                   tabs={[
                     {
                       ...LETTER_DATA_ELEMENTS_INFO,

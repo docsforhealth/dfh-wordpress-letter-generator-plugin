@@ -7,7 +7,7 @@
  * GitHub Plugin URI: https://github.com/docsforhealth/dfh-wordpress-letter-generator-plugin
  * Release Asset: true
  * Description: Preview of the upcoming letter generator for the Docs for Health website
- * Version: 0.0.1
+ * Version: 0.0.2
  * License: Apache-2.0
  * License URI: https://www.apache.org/licenses/LICENSE-2.0.txt
  * Text Domain: dlg
