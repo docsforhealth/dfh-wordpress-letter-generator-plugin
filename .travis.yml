@@ -21,12 +21,12 @@ before_install:
 install:
   - yarn install
 script:
-  - yarn test
+  - yarn test --passWithNoTests
   - yarn build
 before_deploy:
   # see https://superuser.com/a/496903
   # we include the `src` folder to keep needed PHP and base assets
-  - zip -r /tmp/dfh-wordpress-letter-generator-plugin-${TRAVIS_TAG}.zip . -x 'node_modules/*' 'tests/*' '.git*'
+  - zip -r /tmp/dfh-wordpress-letter-generator-plugin-${TRAVIS_TAG}.zip . -x 'node_modules/*' 'tests/*' '.git*' '.yarn*'
 deploy:
   # using dpl v1 instead of v2 right now
   - provider: releases

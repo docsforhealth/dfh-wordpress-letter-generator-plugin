@@ -9,7 +9,7 @@ import 'src/js/format/data-element';
 /**
  * Blocks
  */
-// import 'src/js/block/letter-template-button'; // TODO
+// import 'src/js/block/letter-template-button'; // TODO for displaying embedded interface
 import 'src/js/block/letter-template';
 import 'src/js/block/shared-data-element';
 // Helpers

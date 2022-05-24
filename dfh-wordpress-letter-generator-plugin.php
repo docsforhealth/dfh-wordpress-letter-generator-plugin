@@ -13,9 +13,6 @@
  * Text Domain: dlg
  */
 
-// TODO consider monorepo with yarn workspaces
-// TODO set up CI build environment
-
 defined('ABSPATH') || exit;
 
 if (!defined('DLG_PLUGIN_ROOT')) {
