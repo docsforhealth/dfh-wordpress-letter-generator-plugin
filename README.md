@@ -1,5 +1,7 @@
 # Docs for Health WordPress Letter Generator Plugin
 
+[![Build Status](https://app.travis-ci.com/docsforhealth/dfh-wordpress-letter-generator-plugin.svg?branch=master)](https://app.travis-ci.com/docsforhealth/dfh-wordpress-letter-generator-plugin)
+
 Requires the [Docs for Health WordPress Plugin](https://github.com/docsforhealth/dfh-wordpress-plugin)
 
 ## Commands
